@@ -11,9 +11,6 @@ If you find this repository useful, I would greatly appreciate it if you could g
 
 <img src="assets/images/brave_zIW170CTdne5.png" alt="Cloudflare Web Application Firewall (WAF)"> 
 
-<div align="center">
-   My profile: https://www.abuseipdb.com/user/158699
-</div>
 
 ## 🛡️ What Can This List Block?
 | **Type**                        | **Brief Description**                                                                                                                                                                                                     |
