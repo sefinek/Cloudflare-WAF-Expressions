@@ -30,3 +30,5 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // https://crontab.guru
+
+if (process?.send) process.send('ready');
