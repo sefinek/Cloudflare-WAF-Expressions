@@ -100,7 +100,7 @@
 (http.request.uri.query contains "crlfinjection") or
 (http.request.uri.query contains "Set-Cookie:") or
 (http.request.uri.query contains "wget+") or
-(http.user_agent wildcard "masscan/")
+(http.user_agent wildcard "*masscan/*")
 ```
 
 ## 🗑️ Part 3 - Deprecated browsers, etc.
