@@ -73,14 +73,14 @@
 (http.request.uri.path eq "/ssh") or
 (http.user_agent contains "   ") or
 (http.user_agent eq "" and not http.host contains "api." and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
-(lower(http.request.uri.path) contains "dockerfile") or
-(lower(http.request.uri.path) contains "etc/passwd") or
-(lower(http.request.uri.query) contains "etc/passwd") or
-(lower(http.user_agent) contains "embeddedbrowser" and not http.host contains "api." and not http.host contains "cdn.") or
-(lower(http.user_agent) contains "go-http-client" and not http.host contains "api." and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
-(lower(http.user_agent) contains "headless" and not http.host contains "api." and not http.host contains "cdn.") or
-(lower(http.user_agent) contains "private_keys") or
-(lower(http.user_agent) contains "secrets.json")
+(http.request.uri.path wildcard "*dockerfile*") or
+(http.request.uri.path wildcard "*etc/passwd*") or
+(http.request.uri.query wildcard "*etc/passwd*") or
+(http.user_agent wildcard "*embeddedbrowser*" and not http.host contains "api." and not http.host contains "cdn.") or
+(http.user_agent wildcard "*go-http-client*" and not http.host contains "api." and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
+(http.user_agent wildcard "*headless*" and not http.host contains "api." and not http.host contains "cdn.") or
+(http.user_agent wildcard "*private_keys*") or
+(http.user_agent wildcard "*secrets.json*")
 ```
 
 ## 🔥 Part 2 - Main firewall
@@ -100,7 +100,7 @@
 (http.request.uri.query contains "crlfinjection") or
 (http.request.uri.query contains "Set-Cookie:") or
 (http.request.uri.query contains "wget+") or
-(lower(http.user_agent) contains "masscan/")
+(http.user_agent wildcard "masscan/")
 ```
 
 ## 🗑️ Part 3 - Deprecated browsers, etc.
@@ -116,122 +116,122 @@
 (http.user_agent contains "Chrome/104.") or
 (http.user_agent contains "Chrome/74" and not http.user_agent contains "Better Uptime Bot" and not http.host contains "api.") or
 (http.user_agent contains "Windows NT 5" and not http.user_agent contains "(via ggpht.com GoogleImageProxy)" and not http.host contains "api.") or
-(lower(http.user_agent) contains "android 8" and not http.host contains "api.") or
-(lower(http.user_agent) contains "archive.org_bot") or
-(lower(http.user_agent) contains "chrome/100") or
-(lower(http.user_agent) contains "chrome/103") or
-(lower(http.user_agent) contains "chrome/17") or
-(lower(http.user_agent) contains "chrome/30") or
-(lower(http.user_agent) contains "chrome/31") or
-(lower(http.user_agent) contains "chrome/32") or
-(lower(http.user_agent) contains "chrome/33") or
-(lower(http.user_agent) contains "chrome/34") or
-(lower(http.user_agent) contains "chrome/35") or
-(lower(http.user_agent) contains "chrome/36") or
-(lower(http.user_agent) contains "chrome/37") or
-(lower(http.user_agent) contains "chrome/38") or
-(lower(http.user_agent) contains "chrome/39") or
-(lower(http.user_agent) contains "chrome/41") or
-(lower(http.user_agent) contains "chrome/42") or
-(lower(http.user_agent) contains "chrome/44") or
-(lower(http.user_agent) contains "chrome/48") or
-(lower(http.user_agent) contains "chrome/49") or
-(lower(http.user_agent) contains "chrome/52") or
-(lower(http.user_agent) contains "chrome/53") or
-(lower(http.user_agent) contains "chrome/58") or
-(lower(http.user_agent) contains "chrome/60") or
-(lower(http.user_agent) contains "chrome/64") or
-(lower(http.user_agent) contains "chrome/65") or
-(lower(http.user_agent) contains "chrome/67") or
-(lower(http.user_agent) contains "chrome/68") or
-(lower(http.user_agent) contains "chrome/69") or
-(lower(http.user_agent) contains "chrome/71") or
-(lower(http.user_agent) contains "chrome/77") or
-(lower(http.user_agent) contains "chrome/78") or
-(lower(http.user_agent) contains "chrome/79") or
-(lower(http.user_agent) contains "chrome/80") or
-(lower(http.user_agent) contains "chrome/81") or
-(lower(http.user_agent) contains "chrome/83") or
-(lower(http.user_agent) contains "chrome/84") or
-(lower(http.user_agent) contains "chrome/85") or
-(lower(http.user_agent) contains "chrome/87") or
-(lower(http.user_agent) contains "chrome/88") or
-(lower(http.user_agent) contains "chrome/89") or
-(lower(http.user_agent) contains "chrome/91") or
-(lower(http.user_agent) contains "chrome/92") or
-(lower(http.user_agent) contains "chrome/93") or
-(lower(http.user_agent) contains "chrome/94") or
-(lower(http.user_agent) contains "chrome/95") or
-(lower(http.user_agent) contains "chrome/96") or
-(lower(http.user_agent) contains "chrome/98") or
-(lower(http.user_agent) contains "crios/121") or
-(lower(http.user_agent) contains "firefox/45") or
-(lower(http.user_agent) contains "firefox/52") or
-(lower(http.user_agent) contains "firefox/57") or
-(lower(http.user_agent) contains "firefox/62") or
-(lower(http.user_agent) contains "firefox/76") or
-(lower(http.user_agent) contains "firefox/77") or
-(lower(http.user_agent) contains "firefox/79") or
-(lower(http.user_agent) contains "firefox/83") or
-(lower(http.user_agent) contains "firefox/84") or
-(lower(http.user_agent) contains "html5plus") or
-(lower(http.user_agent) contains "mac os x 10_15" and not http.host contains "api.") or
-(lower(http.user_agent) contains "mac os x 10_9") or
-(lower(http.user_agent) contains "mac os x 12_5") or
-(lower(http.user_agent) contains "msie 9.0") or
-(lower(http.user_agent) contains "netfront") or
-(lower(http.user_agent) contains "symbianos") or
-(lower(http.user_agent) contains "trident/")
+(http.user_agent wildcard "*android 8*" and not http.host contains "api.") or
+(http.user_agent wildcard "*archive.org_bot*") or
+(http.user_agent wildcard "*chrome/100*") or
+(http.user_agent wildcard "*chrome/103*") or
+(http.user_agent wildcard "*chrome/17*") or
+(http.user_agent wildcard "*chrome/30*") or
+(http.user_agent wildcard "*chrome/31*") or
+(http.user_agent wildcard "*chrome/32*") or
+(http.user_agent wildcard "*chrome/33*") or
+(http.user_agent wildcard "*chrome/34*") or
+(http.user_agent wildcard "*chrome/35*") or
+(http.user_agent wildcard "*chrome/36*") or
+(http.user_agent wildcard "*chrome/37*") or
+(http.user_agent wildcard "*chrome/38*") or
+(http.user_agent wildcard "*chrome/39*") or
+(http.user_agent wildcard "*chrome/41*") or
+(http.user_agent wildcard "*chrome/42*") or
+(http.user_agent wildcard "*chrome/44*") or
+(http.user_agent wildcard "*chrome/48*") or
+(http.user_agent wildcard "*chrome/49*") or
+(http.user_agent wildcard "*chrome/52*") or
+(http.user_agent wildcard "*chrome/53*") or
+(http.user_agent wildcard "*chrome/58*") or
+(http.user_agent wildcard "*chrome/60*") or
+(http.user_agent wildcard "*chrome/64*") or
+(http.user_agent wildcard "*chrome/65*") or
+(http.user_agent wildcard "*chrome/67*") or
+(http.user_agent wildcard "*chrome/68*") or
+(http.user_agent wildcard "*chrome/69*") or
+(http.user_agent wildcard "*chrome/71*") or
+(http.user_agent wildcard "*chrome/77*") or
+(http.user_agent wildcard "*chrome/78*") or
+(http.user_agent wildcard "*chrome/79*") or
+(http.user_agent wildcard "*chrome/80*") or
+(http.user_agent wildcard "*chrome/81*") or
+(http.user_agent wildcard "*chrome/83*") or
+(http.user_agent wildcard "*chrome/84*") or
+(http.user_agent wildcard "*chrome/85*") or
+(http.user_agent wildcard "*chrome/87*") or
+(http.user_agent wildcard "*chrome/88*") or
+(http.user_agent wildcard "*chrome/89*") or
+(http.user_agent wildcard "*chrome/91*") or
+(http.user_agent wildcard "*chrome/92*") or
+(http.user_agent wildcard "*chrome/93*") or
+(http.user_agent wildcard "*chrome/94*") or
+(http.user_agent wildcard "*chrome/95*") or
+(http.user_agent wildcard "*chrome/96*") or
+(http.user_agent wildcard "*chrome/98*") or
+(http.user_agent wildcard "*crios/121*") or
+(http.user_agent wildcard "*firefox/45*") or
+(http.user_agent wildcard "*firefox/52*") or
+(http.user_agent wildcard "*firefox/57*") or
+(http.user_agent wildcard "*firefox/62*") or
+(http.user_agent wildcard "*firefox/76*") or
+(http.user_agent wildcard "*firefox/77*") or
+(http.user_agent wildcard "*firefox/79*") or
+(http.user_agent wildcard "*firefox/83*") or
+(http.user_agent wildcard "*firefox/84*") or
+(http.user_agent wildcard "*html5plus*") or
+(http.user_agent wildcard "*mac os x 10_15*" and not http.host contains "api.") or
+(http.user_agent wildcard "*mac os x 10_9*") or
+(http.user_agent wildcard "*mac os x 12_5*") or
+(http.user_agent wildcard "*msie 9.0*") or
+(http.user_agent wildcard "*netfront*") or
+(http.user_agent wildcard "*symbianos*") or
+(http.user_agent wildcard "*trident/")
 ```
 
 ## 🤖 Part 4 - Block unnecessary bots
 > **Action:** Block
 ```
 (http.referer eq "binance.com") or
-(lower(http.user_agent) contains "barkrowler") or
-(lower(http.user_agent) contains "blexbot") or
-(lower(http.user_agent) contains "bomborabot") or
-(lower(http.user_agent) contains "buck") or
-(lower(http.user_agent) contains "bvbot") or
-(lower(http.user_agent) contains "bytespider") or
-(lower(http.user_agent) contains "ccbot") or
-(lower(http.user_agent) contains "checkhost") or
-(lower(http.user_agent) contains "cincraw") or
-(lower(http.user_agent) contains "claudebot") or
-(lower(http.user_agent) contains "clickagy") or
-(lower(http.user_agent) contains "cocolyzebot") or
-(lower(http.user_agent) contains "criteobot") or
-(lower(http.user_agent) contains "df bot 1.0") or
-(lower(http.user_agent) contains "domainstatsbot") or
-(lower(http.user_agent) contains "domcopbot") or
-(lower(http.user_agent) contains "dotbot") or
-(lower(http.user_agent) contains "gulperbot") or
-(lower(http.user_agent) contains "httrack") or
-(lower(http.user_agent) contains "internet-structure") or
-(lower(http.user_agent) contains "ioncrawl") or
-(lower(http.user_agent) contains "keys-so-bot") or
-(lower(http.user_agent) contains "magpie-crawler") or
-(lower(http.user_agent) contains "megaindex") or
-(lower(http.user_agent) contains "mj12bot") or
-(lower(http.user_agent) contains "nimbostratus") or
-(lower(http.user_agent) contains "omgili") or
-(lower(http.user_agent) contains "onalyticabot") or
-(lower(http.user_agent) contains "panscient.com") or
-(lower(http.user_agent) contains "proximic") or
-(lower(http.user_agent) contains "riddler") or
-(lower(http.user_agent) contains "rogerbot") or
-(lower(http.user_agent) contains "sbl-bot") or
-(lower(http.user_agent) contains "semantic-visions") or
-(lower(http.user_agent) contains "semanticbot") or
-(lower(http.user_agent) contains "serpstatbot") or
-(lower(http.user_agent) contains "sqlmap") or
-(lower(http.user_agent) contains "trendictionbot") or
-(lower(http.user_agent) contains "ttd-content") or
-(lower(http.user_agent) contains "voluumdsp") or
-(lower(http.user_agent) contains "wc-test-dev-bot") or
-(lower(http.user_agent) contains "webtechbot") or
-(lower(http.user_agent) contains "whatcms") or
-(lower(http.user_agent) contains "zgrab")
+(http.user_agent wildcard "*barkrowler*") or
+(http.user_agent wildcard "*blexbot*") or
+(http.user_agent wildcard "*bomborabot*") or
+(http.user_agent wildcard "*buck*") or
+(http.user_agent wildcard "*bvbot*") or
+(http.user_agent wildcard "*bytespider*") or
+(http.user_agent wildcard "*ccbot*") or
+(http.user_agent wildcard "*checkhost*") or
+(http.user_agent wildcard "*cincraw*") or
+(http.user_agent wildcard "*claudebot*") or
+(http.user_agent wildcard "*clickagy*") or
+(http.user_agent wildcard "*cocolyzebot*") or
+(http.user_agent wildcard "*criteobot*") or
+(http.user_agent wildcard "*df bot 1.0*") or
+(http.user_agent wildcard "*domainstatsbot*") or
+(http.user_agent wildcard "*domcopbot*") or
+(http.user_agent wildcard "*dotbot*") or
+(http.user_agent wildcard "*gulperbot*") or
+(http.user_agent wildcard "*httrack*") or
+(http.user_agent wildcard "*internet-structure*") or
+(http.user_agent wildcard "*ioncrawl*") or
+(http.user_agent wildcard "*keys-so-bot*") or
+(http.user_agent wildcard "*magpie-crawler*") or
+(http.user_agent wildcard "*megaindex*") or
+(http.user_agent wildcard "*mj12bot*") or
+(http.user_agent wildcard "*nimbostratus*") or
+(http.user_agent wildcard "*omgili*") or
+(http.user_agent wildcard "*onalyticabot*") or
+(http.user_agent wildcard "*panscient.com*") or
+(http.user_agent wildcard "*proximic*") or
+(http.user_agent wildcard "*riddler*") or
+(http.user_agent wildcard "*rogerbot*") or
+(http.user_agent wildcard "*sbl-bot*") or
+(http.user_agent wildcard "*semantic-visions*") or
+(http.user_agent wildcard "*semanticbot*") or
+(http.user_agent wildcard "*serpstatbot*") or
+(http.user_agent wildcard "*sqlmap*") or
+(http.user_agent wildcard "*trendictionbot*") or 
+(http.user_agent wildcard "*ttd-content*") or 
+(http.user_agent wildcard "*voluumdsp*") or 
+(http.user_agent wildcard "*wc-test-dev-bot*") or 
+(http.user_agent wildcard "*webtechbot*") or 
+(http.user_agent wildcard "*whatcms*") or 
+(http.user_agent wildcard "*zgrab*")
 ```
 
 ## 🌍 Part 5 - Block bots, ASNs and IPs
