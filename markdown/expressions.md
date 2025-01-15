@@ -206,6 +206,7 @@
 (http.user_agent wildcard "*domainstatsbot*") or
 (http.user_agent wildcard "*domcopbot*") or
 (http.user_agent wildcard "*dotbot*") or
+(http.user_agent wildcard "*globalping*") or
 (http.user_agent wildcard "*gulperbot*") or
 (http.user_agent wildcard "*httrack*") or
 (http.user_agent wildcard "*internet-structure*") or
