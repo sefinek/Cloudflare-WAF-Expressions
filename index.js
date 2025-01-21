@@ -1,7 +1,7 @@
 require('dotenv').config();
 const { CronJob } = require('cron');
 const simpleGit = require('simple-git');
-const gitClient = simpleGit();
+const git = simpleGit();
 const executeWAFRuleUpdate = require('./jobs/updateWAFRules.js');
 const log = require('./scripts/log.js');
 const { version } = require('./package.json');
@@ -10,7 +10,7 @@ log(0, `Cloned version: v${version}`);
 
 const pullAndUpdateWAFRules = async () => {
 	try {
-		const { summary } = await gitClient.pull();
+		const { summary } = await git.pull();
 		log(0, JSON.stringify(summary));
 
 		await executeWAFRuleUpdate();
