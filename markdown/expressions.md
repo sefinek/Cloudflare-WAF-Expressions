@@ -1,5 +1,5 @@
 <div align="right">
-    <h4>📥 » Last update: 8.01.2025 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 2.02.2025 [DD.MM.YYYY]</h4>
 </div>
 
 ## 🔥 Part 1 - Main firewall
@@ -100,7 +100,8 @@
 (http.request.uri.query contains "crlfinjection") or
 (http.request.uri.query contains "Set-Cookie:") or
 (http.request.uri.query contains "wget+") or
-(http.user_agent wildcard "*masscan/*")
+(http.user_agent wildcard "*masscan/*") or
+(http.user_agent wildcard "*php7.4-global*")
 ```
 
 ## 🗑️ Part 3 - Deprecated browsers, etc.
@@ -289,6 +290,6 @@
     93.91.196.190         94.179.141.78         176.102.144.126
     103.28.253.19         89.228.193.116        88.218.62.29
     119.45.233.65         162.240.107.211       143.110.208.18
-    122.10.112.77         80.85.245.5
+    122.10.112.77         80.85.245.5           179.43.191.19
 })
 ```
