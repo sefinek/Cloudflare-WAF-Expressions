@@ -6,9 +6,9 @@ module.exports = {
 		// Logging configuration
 		log_date_format: 'HH:mm:ss.SSS DD.MM.YYYY',
 		merge_logs: true,
-		log_file: '/home/sefinek/logs/other/waf/combined.log',
-		out_file: '/home/sefinek/logs/other/waf/out.log',
-		error_file: '/home/sefinek/logs/other/waf/error.log',
+		log_file: '~/logs/other/waf/combined.log',
+		out_file: '~/logs/other/waf/out.log',
+		error_file: '~/logs/other/waf/error.log',
 
 		// Application restart policy settings
 		wait_ready: true,
