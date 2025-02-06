@@ -1,6 +1,6 @@
 module.exports = {
 	apps: [{
-		name: 'waf',
+		name: 'cwe',
 		script: './index.js',
 
 		// Logging configuration
