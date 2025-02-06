@@ -31,4 +31,4 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // PM2
-if (process?.send) process.send('ready');
+process.send && process.send('ready');
