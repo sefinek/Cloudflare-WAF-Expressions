@@ -90,7 +90,10 @@
 (http.request.uri.path contains ".sh") or
 (http.request.uri.path contains "auth.json") or
 (http.request.uri.path contains "crlfinjection") or
+(http.request.uri.path contains "curl+") or
+(http.request.uri.path contains "curl%20") or
 (http.request.uri.path contains "wget+") or
+(http.request.uri.path contains "wget%20") or
 (http.request.uri.query contains "%00") or
 (http.request.uri.query contains "%0A") or
 (http.request.uri.query contains "%0D") or
@@ -99,7 +102,11 @@
 (http.request.uri.query contains "auto_prepend_file") or
 (http.request.uri.query contains "crlfinjection") or
 (http.request.uri.query contains "Set-Cookie:") or
+(http.request.uri.query contains "curl+") or
+(http.request.uri.query contains "curl%20") or
 (http.request.uri.query contains "wget+") or
+(http.request.uri.query contains "wget%20") or
+(http.request.uri.query contains "../") or
 (http.user_agent wildcard "*masscan/*") or
 (http.user_agent wildcard "*php7.4-global*")
 ```
