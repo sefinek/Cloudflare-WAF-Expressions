@@ -1,5 +1,5 @@
 <div align="right">
-    <h4>📥 » Last update: 20.02.2025 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 22.02.2025 [DD.MM.YYYY]</h4>
 </div>
 
 ## 🔥 Part 1 - Main firewall
@@ -8,20 +8,19 @@
 (cf.waf.credential_check.password_leaked) or
 (http.referer eq "http://n666888.com") or
 (http.request.uri.path contains "\\") or
-(http.request.uri.path eq "/old") or
 (http.request.uri.path eq "/backup") or
+(http.request.uri.path eq "/git") or
+(http.request.uri.path eq "/old") or
 (http.request.uri.path wildcard "*/.*") or
 (http.request.uri.path wildcard "*//*") or
 (http.request.uri.path wildcard "*/actuator*") or
 (http.request.uri.path wildcard "*/bkp*") or
 (http.request.uri.path wildcard "*/cms*") or
-(http.request.uri.path wildcard "*/config*" and not http.host contains "cdn.") or
 (http.request.uri.path wildcard "*/credentials*") or
 (http.request.uri.path wildcard "*/dbadmin*") or
 (http.request.uri.path wildcard "*/debug*") or
 (http.request.uri.path wildcard "*/env*") or
 (http.request.uri.path wildcard "*/etc*") or
-(http.request.uri.path wildcard "*/git*") or
 (http.request.uri.path wildcard "*/login.action*") or
 (http.request.uri.path wildcard "*/phpmyadmin*") or
 (http.request.uri.path wildcard "*/readme*") or
@@ -37,6 +36,7 @@
 (http.request.uri.path wildcard "*appsettings*") or
 (http.request.uri.path wildcard "*authorized_keys*") or
 (http.request.uri.path wildcard "*backup.*") or
+(http.request.uri.path wildcard "*config*" and not http.host contains "cdn.") or
 (http.request.uri.path wildcard "*docker-compose*") or
 (http.request.uri.path wildcard "*dockerfile*") or
 (http.request.uri.path wildcard "*dump.*") or
@@ -69,7 +69,6 @@
 (http.request.uri.path eq "/" and http.user_agent wildcard "*aiohttp*") or
 (http.request.uri.path eq "/" and http.user_agent wildcard "*python-requests*") or
 (http.request.uri.path eq "/" and http.user_agent wildcard "*okhttp*") or
-(http.request.uri.path wildcard "*.config*") or
 (http.request.uri.path wildcard "*.log*" and not http.request.uri.path contains "ReShade.log" and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.request.uri.path wildcard "*.py*") or
 (http.request.uri.path wildcard "*.sh*") or
@@ -79,7 +78,6 @@
 (http.request.uri.path wildcard "*.yml*") or
 (http.request.uri.path wildcard "*auth.json*") or
 (http.request.uri.path wildcard "*conf.*") or
-(http.request.uri.path wildcard "*config.*") or
 (http.request.uri.path wildcard "*crlfinjection*") or
 (http.request.uri.path wildcard "*curl%20*") or
 (http.request.uri.path wildcard "*curl+*") or
