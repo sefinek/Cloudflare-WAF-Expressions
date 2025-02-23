@@ -10,10 +10,10 @@ if (!CF_API_TOKEN) throw new Error('CF_API_TOKEN is missing. Check the .env file
 const getZones = async () => {
 	try {
 		log(0, 'Retrieving all zones from your Cloudflare account...');
-		const res = await axios.get('/zones');
-		if (!res.data.success) throw new Error(`Failed to fetch zones. ${JSON.stringify(res.data?.errors)}`);
+		const { data } = await axios.get('/zones');
+		if (!data.success) throw new Error(`Failed to fetch zones. ${JSON.stringify(data?.errors)}`);
 
-		const zones = res.data.result;
+		const zones = data.result;
 		log(0, `Successfully retrieved ${zones.length} zone(s): ${zones.map(zone => zone.name).join(', ')}`);
 		return zones;
 	} catch (err) {
@@ -25,10 +25,10 @@ const getZones = async () => {
 const verifyFilterUpdate = async (zoneId, filterId, expression) => {
 	try {
 		log(0, 'Verifying if the update was completed successfully...');
-		const res = await axios.get(`/zones/${zoneId}/filters/${filterId}`);
-		if (!res.data.success) throw new Error(`Verification failed. ${res.data?.errors}`);
+		const { data } = await axios.get(`/zones/${zoneId}/filters/${filterId}`);
+		if (!data.success) throw new Error(`Verification failed. ${data?.errors}`);
 
-		if (res.data.result.expression !== expression) log(2, 'Verification failed. Expression mismatch!');
+		if (data.result.expression !== expression) log(2, 'Verification failed. Expression mismatch!');
 	} catch (err) {
 		log(3, `Filter ${filterId}: Failed to verify - ${JSON.stringify(err.response?.data) || err.stack}`);
 	}
@@ -39,8 +39,8 @@ const updateFilter = async (zoneId, filterId, expression, oldExpression) => {
 		if (oldExpression === expression) return log(0, 'No update needed. Rule is already up-to-date.');
 
 		log(0, 'Discrepancy detected, updating the rule...');
-		const res = await axios.put(`/zones/${zoneId}/filters/${filterId}`, { id: filterId, expression });
-		if (!res.data.success) throw new Error(`Update failed. Details: ${res.data?.errors}`);
+		const { data } = await axios.put(`/zones/${zoneId}/filters/${filterId}`, { id: filterId, expression });
+		if (!data.success) throw new Error(`Update failed. Details: ${data?.errors}`);
 
 		await verifyFilterUpdate(zoneId, filterId, expression);
 	} catch (err) {
@@ -51,11 +51,11 @@ const updateFilter = async (zoneId, filterId, expression, oldExpression) => {
 const createNewRule = async (zoneId, description, action, expression, index) => {
 	try {
 		log(0, `Creating new WAF rule '${description}' (action ${action})...`);
-		const filterResponse = await axios.post(`/zones/${zoneId}/filters`, [{ expression }]);
-		if (!filterResponse.data.success) throw new Error(`Failed to create filter. ${filterResponse.data?.errors}`);
+		const { data } = await axios.post(`/zones/${zoneId}/filters`, [{ expression }]);
+		if (!data.success) throw new Error(`Failed to create filter. ${data?.errors}`);
 
 		const res = await axios.post(`/zones/${zoneId}/firewall/rules`, [{
-			filter: { id: filterResponse.data.result[0].id },
+			filter: { id: data.result[0].id },
 			action,
 			description,
 			priority: (index || 0) + 1,
