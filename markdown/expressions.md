@@ -1,5 +1,5 @@
 <div align="right">
-    <h4>📥 » Last update: 23.02.2025 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 3.03.2025 [DD.MM.YYYY]</h4>
 </div>
 
 ## 🔥 Part 1 - Main firewall
@@ -246,7 +246,7 @@
 > **Action:** Block
 ```
 (ip.geoip.country eq "T1" and http.host ne "blocklist.sefinek.net") or
-(ip.geoip.asnum in {10630}) or
+(ip.geoip.asnum in {10630 15169}) or
 (ip.src in {
     102.22.20.58          102.68.128.195        103.106.114.106
     103.151.30.155        103.153.134.22        103.156.70.38
@@ -298,5 +298,6 @@
     122.10.112.77         80.85.245.5           179.43.191.19
     92.63.25.37           89.110.84.123         193.41.206.72
     13.95.133.245         146.190.174.167       182.44.2.148
+    175.27.157.221
 })
 ```
