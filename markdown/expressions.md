@@ -1,5 +1,5 @@
 <div align="right">
-    <h4>📥 » Last update: 3.03.2025 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 7.03.2025 [DD.MM.YYYY]</h4>
 </div>
 
 ## 🔥 Part 1 - Main firewall
@@ -7,6 +7,7 @@
 ```
 (cf.waf.credential_check.password_leaked) or
 (http.referer eq "http://n666888.com") or
+(http.request.full_uri eq "https://api.sefinek.net/api/v2/random/animal/cat" and ip.geoip.asnum eq 8075 and http.user_agent eq "python-requests/2.31.0") or
 (http.request.uri.path contains "\\") or
 (http.request.uri.path eq "/backup") or
 (http.request.uri.path eq "/git") or
