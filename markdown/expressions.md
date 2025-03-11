@@ -108,7 +108,7 @@
 > **Action:** Managed Challenge
 ```
 (http.request.uri eq "https://sefinek.net/milosna-grota/verification/upload") or
-(http.request.uri.path wildcard "*.php*") or
+(http.request.uri.path wildcard "*.php*" and not http.request.uri.path contains "/clientarea.php") or
 (http.request.uri.path wildcard "*/wp-admin*") or
 (http.request.uri.path wildcard "*/wp-includes*") or
 (http.user_agent contains "/112.0") or
