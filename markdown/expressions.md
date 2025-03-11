@@ -1,5 +1,5 @@
 <div align="right">
-    <h4>📥 » Last update: 9.03.2025 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 11.03.2025 [DD.MM.YYYY]</h4>
 </div>
 
 ## 🔥 Part 1 - Main firewall
@@ -27,8 +27,6 @@
 (http.request.uri.path wildcard "*/readme*") or
 (http.request.uri.path wildcard "*/sito*") or
 (http.request.uri.path wildcard "*/ssh*") or
-(http.request.uri.path wildcard "*/temp*" and not http.host contains "cdn.") or
-(http.request.uri.path wildcard "*/tmp*" and not http.host contains "cdn.") or
 (http.request.uri.path wildcard "*/user.action*") or
 (http.request.uri.path wildcard "*/webdav*") or
 (http.request.uri.path wildcard "*/~adm*") or
