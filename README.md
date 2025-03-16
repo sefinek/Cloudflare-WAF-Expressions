@@ -1,12 +1,10 @@
-<div align="center">
-    <h1>☁️ Cloudflare Web Application Firewall Rules</h1>
-</div>
+<div align="center"><h1>☁️ Cloudflare Web Application Firewall Rules</h1></div>
 
 By using these WAF expressions, you can effectively block all unnecessary and potentially malicious requests targeting your origin server, thereby enhancing its security.
 If you find this repository useful, I would greatly appreciate it if you could give it a **star** ⭐. Thank you!
 
-> [!TIP]  
-> - Use a [dedicated script](#automatic-installation) to automatically update rules for each zone.  
+> [!TIP]
+> - Use a [dedicated script](#automatic-installation) to automatically update rules for each zone.
 > - Do you want to report events from Cloudflare WAF to AbuseIPDB? See [Cloudflare-WAF-To-AbuseIPDB](https://github.com/sefinek/Cloudflare-WAF-To-AbuseIPDB).
 > - Join my [Discord server](https://discord.gg/53DBjTuzgZ) if you need help or want to receive notifications about important updates.
 
@@ -36,13 +34,13 @@ If you find this repository useful, I would greatly appreciate it if you could g
 ## ✅ Usage
 ### Automatic (Recommended)<div id="automatic-installation"></div>
 You can use the JavaScript code from this repository to automatically update the rules throughout the day.  
-There's no need to add them manually because the script takes care of everything for you (:
+There's no need to add them manually, as the script takes care of everything for you (:
 
 #### Requirements
 1. [Node.js LTS + npm](https://nodejs.org)
 2. [PM2](https://www.npmjs.com/package/pm2) (`npm i pm2 -g`)
 3. [Git](https://git-scm.com/downloads)
-4. Linux (recommended) or Windows
+4. Linux (also works on Windows Server)
 
 #### Tutorial (for Linux)
 1. Clone this repository:
@@ -59,19 +57,19 @@ There's no need to add them manually because the script takes care of everything
    ```
 4. Open the `.env` file and ensure `NODE_ENV` is set to `production`. Paste your Cloudflare token in place of `CF_API_TOKEN`.
    ```bash
-   mcedit .env
+   nano .env
    ```
    ![brave_JDyTDLnUFonD.png](assets/images/brave_JDyTDLnUFonD.png)
 5. Run the script 24/7 using PM2:
    ```bash
    pm2 start && pm2 save
    ```
-6. Add PM2 to autostart:
+6. Configure PM2 to start on system boot:
    ```bash
    pm2 startup
-   Then execute the generated command from the output.
    ```
-   
+   Then, execute the generated command from the output.
+
 ### Manually
 1. Log in to your [Cloudflare](https://dash.cloudflare.com) account.
 2. Select the domain where you want to add the expressions.
@@ -80,16 +78,39 @@ There's no need to add them manually because the script takes care of everything
 5. Copy the expressions from the [markdown/expressions.md](markdown/expressions.md) file.
 6. Click `Edit expression` and paste the copied expressions.
 7. Click `Deploy` to save the changes. Repeat this process for the remaining parts of the expressions, ensuring you select the appropriate action (Block or Managed Challenge) as specified in the file.
-8. Done! The expressions are now active and will start blocking unwanted traffic to your origin server. Check that your website functions correctly, and visit this repository periodically for the latest updates.
+8. Done! The expressions are now active and will start blocking unwanted traffic to your origin server. Make sure your website functions correctly, and visit this repository periodically for the latest updates.
 
 
-## 🔥 DDoS Mitigation (Highly Recommended)
-Enabling DDoS protection in the `Security` tab is also recommended. Navigate to `DDoS` and click `Deploy a DDoS override`.
+## 🔥 DDoS Protection (Additional Security Measures)
+Cloudflare offers many settings that need to be configured manually according to your preferences.
+In this tutorial, we will enable only those that will safeguard your server from DDoS attacks.
+Keep in mind that there are many more measures available to mitigate DDoS attacks.
 
-### Configuration
+### 1: Creating DDoS L7 Ruleset
+#### Security > DDoS > Deploy a DDoS override
 1. **Override name:** DDoS L7 ruleset
 2. **Ruleset action:** Block
 3. **Ruleset sensitivity:** Default
+
+### 2: Rate Limits
+#### Security > Rate limiting rules > Create rule
+1. **Rule name:** Default rate limit
+2. Expression: `(starts_with(http.request.uri.path, "/"))`
+   - **Field:** URI Path
+   - **Operator:** starts with
+   - **Value:** /
+3. When rate exceeds…
+   - **Requests:** 200 (you should adjust this value yourself based on your website's traffic)
+   - **Period:** 10 seconds
+4. Then take action…
+   - **Choose action:** Block
+5. For duration…
+   - **Duration:** 10 seconds
+
+### 3: Good to Know
+1. Make sure that your server's IP address has not been leaked.
+2. Your server should accept only requests coming from Cloudflare. Accessing your website directly, bypassing Cloudflare, should not be possible.
+3. Configure rate limits on your server to reduce its load during a DDoS attack.
 
 
 ## 🤝 Pull requests
