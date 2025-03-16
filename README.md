@@ -8,7 +8,7 @@ If you find this repository useful, I would greatly appreciate it if you could g
 > [!TIP]  
 > - Use a [dedicated script](#automatic-installation) to automatically update rules for each zone.  
 > - Join my [Discord server](https://discord.gg/53DBjTuzgZ) if you need help or want to receive notifications about important updates.
-> - Do you want to report events from Cloudflare WAF to AbuseIPDB? Check out [sefinek/Cloudflare-WAF-To-AbuseIPDB](https://github.com/sefinek/Cloudflare-WAF-To-AbuseIPDB).
+> - Do you want to report events from Cloudflare WAF to AbuseIPDB? Check out [Cloudflare-WAF-To-AbuseIPDB](https://github.com/sefinek/Cloudflare-WAF-To-AbuseIPDB).
 
 <img src="assets/images/brave_7GZjqAdswro2.png" alt="Cloudflare Web Application Firewall (WAF)"> 
 
