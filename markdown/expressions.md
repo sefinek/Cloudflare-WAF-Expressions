@@ -6,6 +6,8 @@
 > **Action:** Block
 ```
 (cf.waf.credential_check.password_leaked) or
+(http.referer eq "binance.com") or
+(http.referer eq "google.com") or
 (http.referer eq "http://n666888.com") or
 (http.request.full_uri eq "https://api.sefinek.net/api/v2/random/animal/cat" and ip.geoip.asnum eq 8075 and http.user_agent eq "python-requests/2.31.0") or
 (http.request.uri.path contains "\\") or
@@ -191,7 +193,6 @@
 ## 🤖 Part 4 - Block unnecessary bots
 > **Action:** Block
 ```
-(http.referer eq "binance.com") or
 (http.user_agent wildcard "*archive.org_bot*") or
 (http.user_agent wildcard "*barkrowler*") or
 (http.user_agent wildcard "*blexbot*") or
