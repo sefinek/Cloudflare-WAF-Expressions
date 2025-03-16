@@ -6,10 +6,11 @@ By using these WAF expressions, you can effectively block all unnecessary and po
 If you find this repository useful, I would greatly appreciate it if you could give it a **star** ⭐. Thank you!
 
 > [!TIP]  
-> Use a [dedicated script](#automatic-installation) to automatically update rules for each zone.  
-> Join my [Discord server](https://discord.gg/53DBjTuzgZ) if you need help or want to receive notifications about important updates.
+> - Use a [dedicated script](#automatic-installation) to automatically update rules for each zone.  
+> - Join my [Discord server](https://discord.gg/53DBjTuzgZ) if you need help or want to receive notifications about important updates.
+> - Do you want to report events from Cloudflare WAF to AbuseIPDB? Check out [sefinek/Cloudflare-WAF-To-AbuseIPDB](https://github.com/sefinek/Cloudflare-WAF-To-AbuseIPDB).
 
-<img src="assets/images/brave_zIW170CTdne5.png" alt="Cloudflare Web Application Firewall (WAF)"> 
+<img src="assets/images/brave_7GZjqAdswro2.png" alt="Cloudflare Web Application Firewall (WAF)"> 
 
 
 ## 🛡️ What Can This List Block?
