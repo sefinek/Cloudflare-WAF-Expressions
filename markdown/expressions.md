@@ -102,7 +102,7 @@
 (http.request.uri.query wildcard "*set-cookie:*") or
 (http.request.uri.query wildcard "*wget%20*") or
 (http.request.uri.query wildcard "*wget+*") or
-(http.user_agent wildcard "*ALittle Client*") or
+(http.user_agent wildcard "*alittle client*") or
 (http.user_agent wildcard "*php7.4-global*")
 ```
 
