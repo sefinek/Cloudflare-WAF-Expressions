@@ -65,23 +65,22 @@
 ## 🔥 Part 2 - Main firewall
 > **Action:** Block
 ```
-(http.request.uri.path eq "/" and http.user_agent wildcard "*curl*") or
-(http.request.uri.path eq "/" and http.user_agent wildcard "*wget*") or
 (http.request.uri.path eq "/" and http.user_agent wildcard "*aiohttp*") or
-(http.request.uri.path eq "/" and http.user_agent wildcard "*python-requests*") or
+(http.request.uri.path eq "/" and http.user_agent wildcard "*curl*") or
 (http.request.uri.path eq "/" and http.user_agent wildcard "*okhttp*") or
+(http.request.uri.path eq "/" and http.user_agent wildcard "*python-requests*") or
+(http.request.uri.path eq "/" and http.user_agent wildcard "*wget*") or
 (http.request.uri.path wildcard "*.log*" and not http.request.uri.path contains "ReShade.log" and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.request.uri.path wildcard "*.py*") or
 (http.request.uri.path wildcard "*.sh*") or
 (http.request.uri.path wildcard "*.yaml*") or
-(http.user_agent wildcard "*ALittle Client*") or
-(http.request.uri.path wildcard "*fancyupload*") or
 (http.request.uri.path wildcard "*.yml*") or
 (http.request.uri.path wildcard "*auth.json*") or
 (http.request.uri.path wildcard "*conf.*") or
 (http.request.uri.path wildcard "*crlfinjection*") or
 (http.request.uri.path wildcard "*curl%20*") or
 (http.request.uri.path wildcard "*curl+*") or
+(http.request.uri.path wildcard "*fancyupload*") or
 (http.request.uri.path wildcard "*php.ini*") or
 (http.request.uri.path wildcard "*phpinfo*") or
 (http.request.uri.path wildcard "*phpsysinfo*") or
@@ -103,6 +102,7 @@
 (http.request.uri.query wildcard "*set-cookie:*") or
 (http.request.uri.query wildcard "*wget%20*") or
 (http.request.uri.query wildcard "*wget+*") or
+(http.user_agent wildcard "*ALittle Client*") or
 (http.user_agent wildcard "*php7.4-global*")
 ```
 
@@ -146,12 +146,14 @@
 (http.user_agent wildcard "*chrome/58*") or
 (http.user_agent wildcard "*chrome/60*") or
 (http.user_agent wildcard "*chrome/61*") or
+(http.user_agent wildcard "*chrome/62*") or
 (http.user_agent wildcard "*chrome/64*") or
 (http.user_agent wildcard "*chrome/65*") or
 (http.user_agent wildcard "*chrome/67*") or
 (http.user_agent wildcard "*chrome/68*") or
 (http.user_agent wildcard "*chrome/69*") or
 (http.user_agent wildcard "*chrome/71*") or
+(http.user_agent wildcard "*chrome/73*") or
 (http.user_agent wildcard "*chrome/77*") or
 (http.user_agent wildcard "*chrome/78*") or
 (http.user_agent wildcard "*chrome/79*") or
@@ -171,6 +173,7 @@
 (http.user_agent wildcard "*chrome/96*") or
 (http.user_agent wildcard "*chrome/98*") or
 (http.user_agent wildcard "*crios/121*") or
+(http.user_agent wildcard "*firefox/3.5*") or
 (http.user_agent wildcard "*firefox/45*") or
 (http.user_agent wildcard "*firefox/52*") or
 (http.user_agent wildcard "*firefox/57*") or
@@ -181,9 +184,8 @@
 (http.user_agent wildcard "*firefox/83*") or
 (http.user_agent wildcard "*firefox/84*") or
 (http.user_agent wildcard "*html5plus*") or
-(http.user_agent wildcard "*mac os x 10_15*" and not http.host contains "api.") or
+(http.user_agent wildcard "*mac os x 10_15*") or
 (http.user_agent wildcard "*mac os x 10_9*") or
-(http.user_agent wildcard "*mac os x 12_5*") or
 (http.user_agent wildcard "*msie 9.0*") or
 (http.user_agent wildcard "*netfront*") or
 (http.user_agent wildcard "*symbianos*") or
@@ -193,6 +195,7 @@
 ## 🤖 Part 4 - Block unnecessary bots
 > **Action:** Block
 ```
+(http.user_agent wildcard "*2ip*") or
 (http.user_agent wildcard "*archive.org_bot*") or
 (http.user_agent wildcard "*barkrowler*") or
 (http.user_agent wildcard "*blexbot*") or
@@ -215,6 +218,7 @@
 (http.user_agent wildcard "*gulperbot*") or
 (http.user_agent wildcard "*httrack*") or
 (http.user_agent wildcard "*internet-structure*") or
+(http.user_agent wildcard "*internetmeasurement*") or
 (http.user_agent wildcard "*ioncrawl*") or
 (http.user_agent wildcard "*keys-so-bot*") or
 (http.user_agent wildcard "*magpie-crawler*") or
@@ -300,6 +304,7 @@
     13.95.133.245         146.190.174.167       182.44.2.148
     175.27.157.221        37.187.181.109        196.251.72.191
     156.228.179.28        104.207.39.26         156.228.100.3
-    196.251.113.74        77.111.245.13
+    196.251.113.74        77.111.245.13         162.240.96.88
+    35.222.91.153
 })
 ```
