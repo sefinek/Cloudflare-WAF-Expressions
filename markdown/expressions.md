@@ -14,6 +14,7 @@
 (http.request.uri.path eq "/backup") or
 (http.request.uri.path eq "/git") or
 (http.request.uri.path eq "/old") or
+(http.request.uri.path wildcard "*/.*" and not starts_with(http.request.uri.path, "/.well-known/")) or
 (http.request.uri.path wildcard "*//*") or
 (http.request.uri.path wildcard "*/actuator*") or
 (http.request.uri.path wildcard "*/bkp*") or
