@@ -1,5 +1,5 @@
 <div align="right">
-    <h4>📥 » Last update: 16.03.2025 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 20.03.2025 [DD.MM.YYYY]</h4>
 </div>
 
 ## 🔥 Part 1 - Main firewall
@@ -14,7 +14,6 @@
 (http.request.uri.path eq "/backup") or
 (http.request.uri.path eq "/git") or
 (http.request.uri.path eq "/old") or
-(http.request.uri.path wildcard "*/.*") or
 (http.request.uri.path wildcard "*//*") or
 (http.request.uri.path wildcard "*/actuator*") or
 (http.request.uri.path wildcard "*/bkp*") or
