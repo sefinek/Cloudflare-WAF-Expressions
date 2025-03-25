@@ -1,5 +1,5 @@
 <div align="right">
-    <h4>📥 » Last update: 20.03.2025 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 25.03.2025 [DD.MM.YYYY]</h4>
 </div>
 
 ## 🔥 Part 1 - Main firewall
@@ -59,7 +59,8 @@
 (http.user_agent wildcard "*embeddedbrowser*" and not http.host contains "api." and not http.host contains "cdn.") or
 (http.user_agent wildcard "*go-http-client*" and not http.host contains "api." and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.user_agent wildcard "*headless*" and not http.host contains "api." and not http.host contains "cdn.") or
-(http.user_agent wildcard "*private_keys*")
+(http.user_agent wildcard "*private_keys*") or
+(http.user_agent wildcard "*windows 11*")
 ```
 
 ## 🔥 Part 2 - Main firewall
