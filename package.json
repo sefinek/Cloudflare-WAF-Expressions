@@ -2,13 +2,13 @@
   "name": "cf-waf-expressions",
   "version": "1.2.2",
   "description": "Cloudflare WAF (Web Application Firewall) rules + a script for their automatic updates. Block unwanted and malicious requests to enhance the security of your origin server!",
-  "homepage": "https://github.com/sefinek/Cloudflare-WAF-Expressions#readme",
+  "homepage": "https://github.com/sefinek/Cloudflare-WAF-Rules#readme",
   "bugs": {
-    "url": "https://github.com/sefinek/Cloudflare-WAF-Expressions/issues"
+    "url": "https://github.com/sefinek/Cloudflare-WAF-Rules/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/sefinek/Cloudflare-WAF-Expressions.git"
+    "url": "git+https://github.com/sefinek/Cloudflare-WAF-Rules.git"
   },
   "license": "MIT",
   "author": "Sefinek <contact@sefinek.net> (https://sefinek.net)",

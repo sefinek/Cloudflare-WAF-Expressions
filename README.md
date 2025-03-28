@@ -45,7 +45,7 @@ There's no need to add them manually, as the script takes care of everything for
 #### Tutorial (for Linux)
 1. Clone this repository:
    ```bash
-   git clone https://github.com/sefinek/Cloudflare-WAF-Expressions.git
+   git clone https://github.com/sefinek/Cloudflare-WAF-Rules.git
    ```
 2. Install the necessary dependencies:
    ```bash
@@ -114,7 +114,7 @@ Keep in mind that there are many more measures available to mitigate DDoS attack
 
 
 ## 🤝 Pull requests
-If you have any suggestions or improvements, feel free to open a [Pull request](https://github.com/sefinek/Cloudflare-WAF-Expressions/pulls).
+If you have any suggestions or improvements, feel free to open a [Pull request](https://github.com/sefinek/Cloudflare-WAF-Rules/pulls).
 Your contribution will be appreciated and will help keep this list up-to-date and effective in combating the latest threats. Thank you!
 
 
