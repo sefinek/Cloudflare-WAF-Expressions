@@ -1,5 +1,5 @@
 <div align="right">
-    <h4>📥 » Last update: 29.03.2025 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 31.03.2025 [DD.MM.YYYY]</h4>
 </div>
 
 ## 🔥 Part 1 - Main firewall
@@ -230,6 +230,7 @@
 (http.user_agent wildcard "*omgili*") or
 (http.user_agent wildcard "*onalyticabot*") or
 (http.user_agent wildcard "*panscient.com*") or
+(http.user_agent wildcard "*peer39_crawler*") or
 (http.user_agent wildcard "*proximic*") or
 (http.user_agent wildcard "*riddler*") or
 (http.user_agent wildcard "*rogerbot*") or
@@ -306,6 +307,8 @@
     175.27.157.221        37.187.181.109        196.251.72.191
     156.228.179.28        104.207.39.26         156.228.100.3
     196.251.113.74        77.111.245.13         162.240.96.88
-    35.222.91.153         196.251.72.64
+    35.222.91.153         196.251.72.64         173.199.122.130
+    136.227.162.124       152.39.163.95         185.247.229.182
+    92.118.69.175         119.13.224.52         222.252.17.222
 })
 ```
