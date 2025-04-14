@@ -235,6 +235,7 @@
 (http.user_agent wildcard "*nimbostratus*") or
 (http.user_agent wildcard "*omgili*") or
 (http.user_agent wildcard "*onalyticabot*") or
+(http.user_agent wildcard "*palo alto networks company*") or
 (http.user_agent wildcard "*panscient.com*") or
 (http.user_agent wildcard "*peer39_crawler*") or
 (http.user_agent wildcard "*proximic*") or
