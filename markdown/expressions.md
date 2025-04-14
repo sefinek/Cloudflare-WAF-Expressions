@@ -1,5 +1,5 @@
 <div align="right">
-    <h4>📥 » Last update: 14.04.2025 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 15.04.2025 [DD.MM.YYYY]</h4>
 </div>
 
 ## 🔥 Part 1 - Main firewall
@@ -93,12 +93,17 @@
 (http.request.uri.query contains "%0A") or
 (http.request.uri.query contains "%0D") or
 (http.request.uri.query contains "%2e%2e") or
+(http.request.uri.query contains "..%2f") or
 (http.request.uri.query contains "..%5c") or
 (http.request.uri.query contains "../") or
+(http.request.uri.query contains "..\\") or
+(http.request.uri.query contains "squelette=../") or
 (http.request.uri.query wildcard "*auto_prepend_file*") or
 (http.request.uri.query wildcard "*crlfinjection*") or
 (http.request.uri.query wildcard "*curl%20*") or
 (http.request.uri.query wildcard "*curl+*") or
+(http.request.uri.query wildcard "*file://*") or
+(http.request.uri.query wildcard "*php://*") or
 (http.request.uri.query wildcard "*secrets.json*") or
 (http.request.uri.query wildcard "*set-cookie:*") or
 (http.request.uri.query wildcard "*wget%20*") or
