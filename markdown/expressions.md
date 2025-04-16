@@ -1,5 +1,5 @@
 <div align="right">
-    <h4>📥 » Last update: 15.04.2025 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 16.04.2025 [DD.MM.YYYY]</h4>
 </div>
 
 ## 🔥 Part 1 - Main firewall
@@ -204,6 +204,7 @@
 ```
 (http.user_agent wildcard "*2ip*") or
 (http.user_agent wildcard "*archive.org_bot*") or
+(http.user_agent wildcard "*awariobot*") or
 (http.user_agent wildcard "*barkrowler*") or
 (http.user_agent wildcard "*blexbot*") or
 (http.user_agent wildcard "*bomborabot*") or
