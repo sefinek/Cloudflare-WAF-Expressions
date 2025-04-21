@@ -1,5 +1,5 @@
 <div align="right">
-    <h4>📥 » Last update: 16.04.2025 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 21.04.2025 [DD.MM.YYYY]</h4>
 </div>
 
 ## 🔥 Part 1 - Main firewall
@@ -66,11 +66,13 @@
 ## 🔥 Part 2 - Main firewall
 > **Action:** Block
 ```
-(http.request.uri.path eq "/" and http.user_agent wildcard "*aiohttp*") or
-(http.request.uri.path eq "/" and http.user_agent wildcard "*curl*") or
-(http.request.uri.path eq "/" and http.user_agent wildcard "*okhttp*") or
-(http.request.uri.path eq "/" and http.user_agent wildcard "*python-requests*") or
-(http.request.uri.path eq "/" and http.user_agent wildcard "*wget*") or
+(http.request.uri.path eq "/" and 
+  (http.user_agent contains "aiohttp" or
+   http.user_agent contains "curl" or
+   http.user_agent contains "okhttp" or
+   http.user_agent contains "python-requests" or
+   http.user_agent contains "wget")) or
+(http.request.uri.path wildcard "*.js*" and starts_with(http.host, "screenshots.")) or
 (http.request.uri.path wildcard "*.log*" and not http.request.uri.path contains "ReShade.log" and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.request.uri.path wildcard "*.py*") or
 (http.request.uri.path wildcard "*.sh*") or
@@ -102,6 +104,7 @@
 (http.request.uri.query wildcard "*crlfinjection*") or
 (http.request.uri.query wildcard "*curl%20*") or
 (http.request.uri.query wildcard "*curl+*") or
+(http.request.uri.query wildcard "*ed25519*") or
 (http.request.uri.query wildcard "*file://*") or
 (http.request.uri.query wildcard "*php://*") or
 (http.request.uri.query wildcard "*secrets.json*") or
@@ -320,5 +323,6 @@
     92.118.69.175         119.13.224.52         222.252.17.222
     124.243.183.136       111.119.201.71        111.119.217.95
     146.70.187.159        5.62.47.232           162.240.151.98
+    203.33.203.148
 })
 ```
