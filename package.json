@@ -19,12 +19,12 @@
   },
   "dependencies": {
     "axios": "^1.8.4",
-    "cron": "^4.1.1",
-    "dotenv": "^16.4.7",
+    "cron": "^4.3.0",
+    "dotenv": "^16.5.0",
     "simple-git": "^3.27.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.23.0",
+    "@eslint/js": "^9.25.1",
     "globals": "^16.0.0"
   }
 }
