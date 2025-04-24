@@ -34,6 +34,6 @@ module.exports = async zoneId => {
 			}
 		}
 	} catch (err) {
-		log(3, `Failed to verify or reorder WAF parts - ${JSON.stringify(err.response?.data) || err.message}`);
+		log(3, `Failed to verify or reorder WAF parts - ${JSON.stringify(err.response?.data) || err.stack}`);
 	}
 };

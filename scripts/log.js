@@ -1,9 +1,9 @@
 const levels = {
-	0: '[INFO   ]',
-	1: '[SUCCESS]',
-	2: '[WARN   ]',
-	3: '[ERROR  ]',
-	4: '[DEBUG  ]',
+	0: '[i]',
+	1: '[✔]',
+	2: '[⚠]',
+	3: '[×]',
+	4: '[D]',
 };
 
 module.exports = (level, message) => {

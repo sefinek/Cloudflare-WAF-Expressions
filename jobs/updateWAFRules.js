@@ -1,8 +1,8 @@
 const { axios, getRequestCount } = require('../services/axios.js');
-const log = require('../scripts/log.js');
 const expressionParser = require('../scripts/expressionParser.js');
 const fetchWAFRules = require('../cloudflare/fetchWAFRules.js');
 const verifyAndReorderParts = require('../cloudflare/verifyAndReorderParts.js');
+const log = require('../scripts/log.js');
 
 const { CF_API_TOKEN } = process.env;
 if (!CF_API_TOKEN) throw new Error('CF_API_TOKEN is missing. Check the .env file.');
@@ -36,7 +36,7 @@ const verifyFilterUpdate = async (zoneId, filterId, expression) => {
 
 const updateFilter = async (zoneId, filterId, expression, oldExpression) => {
 	try {
-		if (oldExpression === expression) return log(0, 'No update needed. Rule is already up-to-date.');
+		if (oldExpression === expression) return log(1, 'No update needed. Rule is already up-to-date.');
 
 		log(0, 'Discrepancy detected, updating the rule...');
 		const { data } = await axios.put(`/zones/${zoneId}/filters/${filterId}`, { id: filterId, expression });
@@ -107,6 +107,6 @@ module.exports = async () => {
 
 		log(1, `Successfully! All API requests: ${getRequestCount()}`);
 	} catch (err) {
-		log(3, `Error during update for all zones: ${err.message}`);
+		log(3, `WAF update failed: ${err.message}`);
 	}
 };
