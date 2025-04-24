@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/sefinek/Cloudflare-WAF-Rules.git"
   },
-  "license": "MIT",
+  "license": "GPL-3.0",
   "author": "Sefinek <contact@sefinek.net> (https://sefinek.net)",
   "main": "index.js",
   "scripts": {
