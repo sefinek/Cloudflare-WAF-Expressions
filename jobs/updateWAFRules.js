@@ -36,7 +36,7 @@ const verifyFilterUpdate = async (zoneId, filterId, expression) => {
 
 const updateFilter = async (zoneId, filterId, expression, oldExpression) => {
 	try {
-		if (oldExpression === expression) return log(1, 'No update needed. Rule is already up-to-date.');
+		if (oldExpression === expression) return log(1, 'Rule is already up-to-date');
 
 		log(0, 'Discrepancy detected, updating the rule...');
 		const { data } = await axios.put(`/zones/${zoneId}/filters/${filterId}`, { id: filterId, expression });
@@ -44,7 +44,7 @@ const updateFilter = async (zoneId, filterId, expression, oldExpression) => {
 
 		await verifyFilterUpdate(zoneId, filterId, expression);
 	} catch (err) {
-		log(3, `Update failed - ${JSON.stringify(err.response?.data) || err.message || err.stack}`);
+		log(3, `Update failed - ${JSON.stringify(err.response?.data) || err.stack}`);
 	}
 };
 
@@ -70,7 +70,7 @@ const createNewRule = async (zoneId, description, action, expression, index) => 
 
 const updateWAFCustomRulesForZone = async (expressions, zone) => {
 	try {
-		log(0, `=================== CHECKING THE ZONE ${zone.name.toUpperCase()} (${zone.id}) ===================`);
+		log(0, `=================== ANALYZING THE ZONE ${zone.name.toUpperCase()} (${zone.id}) ===================`);
 
 		const rules = await fetchWAFRules(zone.id);
 
@@ -81,17 +81,17 @@ const updateWAFCustomRulesForZone = async (expressions, zone) => {
 
 			if (part && matchingRule) {
 				const filterId = matchingRule.filter.id;
-				log(0, `-> Checking '${matchingRule.description}' (${filterId})...`);
+				log(0, `» Checking '${matchingRule.description}' (${filterId})...`);
 				await updateFilter(zone.id, filterId, part, matchingRule.filter.expression);
 			} else if (part) {
-				log(2, `-> No matching rule found for part ${index}`);
+				log(2, `» No matching rule found for part ${index}`);
 				await createNewRule(zone.id, name, action, part, index);
 			}
 		}
 
 		await verifyAndReorderParts(zone.id);
 	} catch (err) {
-		log(3, `-> Error during update: ${err.message}`);
+		log(3, `» Error during update: ${err.message}`);
 	}
 };
 

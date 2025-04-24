@@ -10,7 +10,7 @@ module.exports = async zoneId => {
 
 		return data.result;
 	} catch (err) {
-		log(3, JSON.stringify(err.response?.data) || err.message);
+		log(3, JSON.stringify(err.response?.data) || err.stack);
 		throw err;
 	}
 };

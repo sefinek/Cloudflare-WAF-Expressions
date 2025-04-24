@@ -1,14 +1,26 @@
 require('dotenv').config();
+
 const { CronJob } = require('cron');
 const simpleGit = require('simple-git');
-const git = simpleGit();
-const executeWAFRuleUpdate = require('./jobs/updateWAFRules.js');
 const restartApp = require('./jobs/reloadApp.js');
-const log = require('./scripts/log.js');
+const executeWAFRuleUpdate = require('./jobs/updateWAFRules.js');
 const { version } = require('./package.json');
+const log = require('./scripts/log.js');
 
-log(0, `v${version} | https://github.com/sefinek/Cloudflare-WAF-Rules`);
+const git = simpleGit();
 
+log(0, `https://github.com/sefinek/Cloudflare-WAF-Rules - v${version} | Author: Sefinek <contact@sefinek.net> (https://sefinek.net)`);
+
+// Validate environment variables
+const { NODE_ENV, CF_API_TOKEN } = process.env;
+if (NODE_ENV !== 'production' && NODE_ENV !== 'development') {
+	log(2, 'NODE_ENV is not set (process.env.NODE_ENV)');
+}
+if (!CF_API_TOKEN || typeof CF_API_TOKEN !== 'string' || CF_API_TOKEN.trim() === '' || CF_API_TOKEN.length !== 40) {
+	throw new Error('Missing or invalid Cloudflare API token (process.env.CF_API_TOKEN)');
+}
+
+// Functions
 const gitPullAndMaybeRestart = async () => {
 	log(0, 'Checking for updates...');
 
@@ -33,5 +45,5 @@ new CronJob(process.env.GIT_PULL_CRON || '0 11,14,16,18,20 * * *', executeWAFRul
 	await executeWAFRuleUpdate();
 })();
 
-// PM2
+// PM2 signal
 process.send && process.send('ready');

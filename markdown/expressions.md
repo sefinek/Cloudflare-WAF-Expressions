@@ -17,7 +17,6 @@
 (http.request.uri.path wildcard "*/.*" and not starts_with(http.request.uri.path, "/.well-known/")) or
 (http.request.uri.path wildcard "*//*") or
 (http.request.uri.path wildcard "*/actuator*") or
-(http.request.uri.path wildcard "*/bkp*") or
 (http.request.uri.path wildcard "*/cms*") or
 (http.request.uri.path wildcard "*/credentials*") or
 (http.request.uri.path wildcard "*/dbadmin*") or

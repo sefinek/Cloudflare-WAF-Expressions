@@ -13,7 +13,7 @@ const expressionParser = text => [...text.matchAll(PATTERN)].map(([, name, actio
 		.replace(/[\n\r]+/g, ' ')
 		.replace(/\s+/g, ' ')
 		.replace(/\{\s+/g, '{')
-		.replace(/\s+\}/g, '}')
+		.replace(/\s+}/g, '}')
 		.replace(/__QUOTE_PLACEHOLDER__/g, () => `"${quotedParts.shift()}"`);
 
 	return {
@@ -30,7 +30,7 @@ module.exports = async () => {
 		const data = await fs.readFile('markdown/expressions.md', 'utf8');
 		const codeBlocks = expressionParser(data);
 		if (codeBlocks.length === 0) {
-			log(2, 'No code blocks found.');
+			log(2, 'No code blocks found');
 			return null;
 		}
 
@@ -39,7 +39,7 @@ module.exports = async () => {
 			return acc;
 		}, {});
 	} catch (err) {
-		log(3, 'Error reading the file:', err.message);
+		log(3, `Error reading the file: ${err.message}`);
 		return null;
 	}
 };
