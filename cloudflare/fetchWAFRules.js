@@ -2,7 +2,7 @@ const log = require('../scripts/log.js');
 const { axios } = require('../services/axios.js');
 
 module.exports = async zoneId => {
-	log(0, 'Fetching WAF rules...');
+	log('Fetching WAF rules...');
 
 	try {
 		const { data } = await axios.get(`/zones/${zoneId}/firewall/rules`);
@@ -10,7 +10,7 @@ module.exports = async zoneId => {
 
 		return data.result;
 	} catch (err) {
-		log(3, JSON.stringify(err.response?.data) || err.stack);
+		log(JSON.stringify(err.response?.data) || err.stack, 3);
 		throw err;
 	}
 };

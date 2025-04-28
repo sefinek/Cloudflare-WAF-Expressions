@@ -24,13 +24,13 @@ const expressionParser = text => [...text.matchAll(PATTERN)].map(([, name, actio
 });
 
 module.exports = async () => {
-	log(0, 'Parsing expressions from the markdown file...');
+	log('Parsing expressions from the markdown file...');
 
 	try {
 		const data = await fs.readFile('markdown/expressions.md', 'utf8');
 		const codeBlocks = expressionParser(data);
 		if (codeBlocks.length === 0) {
-			log(2, 'No code blocks found');
+			log('No code blocks found', 2);
 			return null;
 		}
 
@@ -39,7 +39,7 @@ module.exports = async () => {
 			return acc;
 		}, {});
 	} catch (err) {
-		log(3, `Error reading the file: ${err.message}`);
+		log(`Error reading the file: ${err.message}`, 3);
 		return null;
 	}
 };
