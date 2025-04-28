@@ -1,6 +1,6 @@
-const { axios } = require('../services/axios.js');
+const { axios } = require('../axios.js');
 const fetchWAFCustomRules = require('./fetchWAFRules.js');
-const log = require('../scripts/log.js');
+const log = require('../../scripts/log.js');
 
 module.exports = async zoneId => {
 	log('Verifying the order of WAF parts for this zone...');

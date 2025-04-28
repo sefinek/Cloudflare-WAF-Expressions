@@ -2,8 +2,8 @@ require('dotenv').config();
 
 const { CronJob } = require('cron');
 const simpleGit = require('simple-git');
-const restartApp = require('./jobs/reloadApp.js');
-const executeWAFRuleUpdate = require('./jobs/updateWAFRules.js');
+const restartApp = require('./services/reloadApp.js');
+const updateWAFRules = require('./services/cloudflare/updateWAFRules.js');
 const { version, author } = require('./package.json');
 const log = require('./scripts/log.js');
 
@@ -20,7 +20,7 @@ if (!CF_API_TOKEN || typeof CF_API_TOKEN !== 'string' || CF_API_TOKEN.trim() ===
 	throw new Error('Missing or invalid Cloudflare API token (process.env.CF_API_TOKEN)');
 }
 
-// Functions
+// Update?
 const gitPullAndMaybeRestart = async () => {
 	log('Checking for updates...');
 
@@ -36,13 +36,13 @@ const gitPullAndMaybeRestart = async () => {
 };
 
 // Cron jobs
-new CronJob(process.env.RULES_UPDATE_CRON || '0 11 * * *', gitPullAndMaybeRestart, null, true); // At 11:00.
-new CronJob(process.env.GIT_PULL_CRON || '0 11,14,16,18,20 * * *', executeWAFRuleUpdate, null, true); // At minute 0 past hour 11, 14, 16, 18, and 20.
+new CronJob(process.env.RULES_UPDATE_CRON || '0 13 * * *', gitPullAndMaybeRestart, null, true); // At 13:00.
+new CronJob(process.env.GIT_PULL_CRON || '0 11,14,16,18,20 * * *', updateWAFRules, null, true); // At minute 0 past hour 11, 14, 16, 18, and 20.
 
 // Run the jobs immediately
 (async () => {
 	await gitPullAndMaybeRestart();
-	await executeWAFRuleUpdate();
+	await updateWAFRules();
 })();
 
 // PM2 signal

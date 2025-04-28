@@ -1,5 +1,5 @@
-const log = require('../scripts/log.js');
-const { axios } = require('../services/axios.js');
+const log = require('../../scripts/log.js');
+const { axios } = require('../axios.js');
 
 module.exports = async zoneId => {
 	log('Fetching WAF rules...');

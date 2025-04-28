@@ -1,8 +1,8 @@
-const { axios, getRequestCount } = require('../services/axios.js');
-const expressionParser = require('../scripts/expressionParser.js');
-const fetchWAFRules = require('../cloudflare/fetchWAFRules.js');
-const verifyAndReorderParts = require('../cloudflare/verifyAndReorderParts.js');
-const log = require('../scripts/log.js');
+const { axios, getRequestCount } = require('../axios.js');
+const expressionParser = require('../../scripts/expressionParser.js');
+const fetchWAFRules = require('./fetchWAFRules.js');
+const verifyAndReorderParts = require('./verifyAndReorderParts.js');
+const log = require('../../scripts/log.js');
 
 const { CF_API_TOKEN } = process.env;
 if (!CF_API_TOKEN) throw new Error('CF_API_TOKEN is missing. Check the .env file.');
