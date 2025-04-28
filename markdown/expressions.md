@@ -74,7 +74,7 @@
 (http.request.uri.path wildcard "*.js*" and starts_with(http.host, "screenshots.")) or
 (http.request.uri.path wildcard "*.log*" and not http.request.uri.path contains "ReShade.log" and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.request.uri.path wildcard "*.py*") or
-(http.request.uri.path wildcard "*.sh*") or
+(http.request.uri.path wildcard "*.sh*" and http.host ne "cdn.sefinek.net") or
 (http.request.uri.path wildcard "*.yaml*") or
 (http.request.uri.path wildcard "*.yml*") or
 (http.request.uri.path wildcard "*auth.json*") or
