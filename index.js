@@ -9,7 +9,7 @@ const log = require('./scripts/log.js');
 
 const git = simpleGit();
 
-log(`https://github.com/sefinek/Cloudflare-WAF-Rules - v${version} | Author: ${author}`);
+log(`https://github.com/sefinek/Cloudflare-WAF-Expressions - v${version} | Author: ${author}`);
 
 // Validate environment variables
 const { NODE_ENV, CF_API_TOKEN } = process.env;

@@ -9,7 +9,7 @@ const api = axios.create({
 	baseURL: 'https://api.cloudflare.com/client/v4',
 	timeout: 30000,
 	headers: {
-		'User-Agent': `Mozilla/5.0 (compatible; Cloudflare-WAF-Rules/${version}; +https://github.com/sefinek/Cloudflare-WAF-Rules)`,
+		'User-Agent': `Mozilla/5.0 (compatible; Cloudflare-WAF-Expressions/${version}; +https://github.com/sefinek/Cloudflare-WAF-Expressions)`,
 		'Authorization': `Bearer ${process.env.CF_API_TOKEN}`,
 		'Accept': 'application/json',
 		'Cache-Control': 'no-cache',

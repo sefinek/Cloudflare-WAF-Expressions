@@ -12,14 +12,14 @@ If you find this repository useful, I would greatly appreciate it if you could g
 
 
 ## 🛡️ What Can This List Block?
-| **Type**                        | **Brief Description**                                                                                                                                                                                                     |
-|---------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **Sensitive Files and Folders** | Access to critical files and directories, such as `.git`, `.env`, and `.htaccess`, which often contain sensitive information requiring protection. Also prevents access to other configuration files and keys, e.g., SSH. |
-| **Common Attack Vectors**       | URLs with patterns commonly used in attacks.                                                                                                                                                                              |
-| **Backup Files**                | Requests for backup files that may contain sensitive data.                                                                                                                                                                |
-| **Outdated Browsers**           | Versions of browsers, often used by bots for automated attacks (DDoS attacks from botnets, which frequently utilize outdated user agents) or unnecessary website indexing.                                                |
-| **Useless Bots**                | Various unwanted and unnecessary web crawlers as well as known malicious bots. Blocking them can reduce server load.                                                                                                      |
-| **Specific IP Addresses & ASN** | Traffic from known malicious IP addresses and ASNs. The list also includes IP addresses associated with botnets.                                                                                                          |
+| **Type**                        | **Brief Description**                                                                                                                                                      |
+|---------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Sensitive Files and Folders** | Access to critical files and directories, such as `.git`, `.env`, `.htaccess`, `SSH keys`, etc.                                                                            |
+| **Common Attack Vectors**       | URLs with patterns commonly used in attacks.                                                                                                                               |
+| **Backup Files**                | Requests for backup files that may contain sensitive data.                                                                                                                 |
+| **Outdated Browsers**           | Versions of browsers, often used by bots for automated attacks (DDoS attacks from botnets, which frequently utilize outdated user agents) or unnecessary website indexing. |
+| **Useless Bots**                | Various unwanted and unnecessary web crawlers as well as known malicious bots. Blocking them can reduce server load.                                                       |
+| **Specific IP Addresses & ASN** | Traffic from known malicious IP addresses and ASNs. The list also includes IP addresses associated with botnets.                                                           |
 
 > [!IMPORTANT]  
 > It is also recommended to **disable** the `Bot Fight Mode` feature in the `Security` tab.  
@@ -45,7 +45,7 @@ There's no need to add them manually, as the script takes care of everything for
 #### Tutorial (for Linux)
 1. Clone this repository:
    ```bash
-   git clone https://github.com/sefinek/Cloudflare-WAF-Rules.git
+   git clone https://github.com/sefinek/Cloudflare-WAF-Expressions.git
    ```
 2. Install the necessary dependencies:
    ```bash
@@ -114,7 +114,7 @@ Keep in mind that there are many more measures available to mitigate DDoS attack
 
 
 ## 🤝 Pull requests
-If you have any suggestions or improvements, feel free to open a [Pull request](https://github.com/sefinek/Cloudflare-WAF-Rules/pulls).
+If you have any suggestions or improvements, feel free to open a [Pull request](https://github.com/sefinek/Cloudflare-WAF-Expressions/pulls).
 Your contribution will be appreciated and will help keep this list up-to-date and effective in combating the latest threats. Thank you!
 
 
