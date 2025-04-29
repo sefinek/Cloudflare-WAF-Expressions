@@ -2,7 +2,7 @@
     <h4>📥 » Last update: 21.04.2025 [DD.MM.YYYY]</h4>
 </div>
 
-## 🔥 Part 1 - Main firewall
+## 🔥 Part 1 - Main firewall<div id="part1"></div>
 > **Action:** Block
 ```
 (cf.waf.credential_check.password_leaked) or
@@ -62,7 +62,7 @@
 (http.user_agent wildcard "*windows 11*")
 ```
 
-## 🔥 Part 2 - Main firewall
+## 🔥 Part 2 - Main firewall<div id="part2"></div>
 > **Action:** Block
 ```
 (http.request.uri.path eq "/" and 
@@ -114,7 +114,7 @@
 (http.user_agent wildcard "*php7.4-global*")
 ```
 
-## 🗑️ Part 3 - Deprecated browsers, etc.
+## 🗑️ Part 3 - Deprecated browsers, etc.<div id="part3"></div>
 > **Action:** Managed Challenge
 ```
 (http.request.uri eq "https://sefinek.net/milosna-grota/verification/upload") or
@@ -201,7 +201,7 @@
 (http.user_agent wildcard "*trident/")
 ```
 
-## 🤖 Part 4 - Block unnecessary bots
+## 🤖 Part 4 - Block unnecessary bots<div id="part4"></div>
 > **Action:** Block
 ```
 (http.user_agent wildcard "*2ip*") or
@@ -258,7 +258,7 @@
 (http.user_agent wildcard "*zgrab*")
 ```
 
-## 🌍 Part 5 - Block bots, ASNs and IPs
+## 🌍 Part 5 - Block bots, ASNs and IPs<div id="part5"></div>
 > **Action:** Block
 ```
 (ip.geoip.country eq "T1" and http.host ne "blocklist.sefinek.net") or
