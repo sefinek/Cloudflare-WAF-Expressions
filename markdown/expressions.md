@@ -70,6 +70,7 @@
    http.user_agent contains "curl" or
    http.user_agent contains "okhttp" or
    http.user_agent contains "python-requests" or
+   http.user_agent contains "node" or
    http.user_agent contains "wget")) or
 (http.request.uri.path wildcard "*.js*" and starts_with(http.host, "screenshots.")) or
 (http.request.uri.path wildcard "*.log*" and not http.request.uri.path contains "ReShade.log" and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
