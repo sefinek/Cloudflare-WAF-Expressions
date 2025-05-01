@@ -2,18 +2,21 @@ const { axios, getRequestCount } = require('../axios.js');
 const expressionParser = require('../../scripts/expressionParser.js');
 const fetchWAFRules = require('./fetchWAFRules.js');
 const verifyAndReorderParts = require('./verifyAndReorderParts.js');
+const { gitPull } = require('../../services/update.js');
 const log = require('../../scripts/log.js');
 
 const { CF_API_TOKEN } = process.env;
 if (!CF_API_TOKEN) throw new Error('CF_API_TOKEN is missing. Check the .env file.');
 
 const getZones = async () => {
+	await gitPull();
+
 	log('Retrieving all zones from your Cloudflare account...');
 	const { data } = await axios.get('/zones');
 	if (!data.success) throw new Error(`Failed to fetch zones. ${JSON.stringify(data?.errors)}`);
 
 	const zones = data.result;
-	log(`Successfully retrieved ${zones.length} zone(s): ${zones.map(zone => zone.name).join(', ')}`);
+	log(`Successfully retrieved ${zones.length} zone(s): ${zones.map(zone => zone.name).join(', ')}`, 1);
 	return zones;
 };
 
