@@ -1,5 +1,5 @@
 <div align="right">
-    <h4>📥 » Last update: 1.05.2025 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 4.05.2025 [DD.MM.YYYY]</h4>
 </div>
 
 ## 🔥 Part 1 - Main firewall<div id="part1"></div>
@@ -124,8 +124,8 @@
 (http.request.uri.path wildcard "*/wp-includes*") or
 (http.user_agent contains "/112.0") or
 (http.user_agent contains "/113.0") or
-(http.user_agent contains "/114.0" and not http.user_agent contains "OPR/114.0") or
-(http.user_agent contains "/118.0") or
+(http.user_agent contains "/114.0" and not http.user_agent contains "OPR/114.0.0.0") or
+(http.user_agent contains "/118.0" and not http.user_agent contains "OPR/118.0.0.0") or
 (http.user_agent contains "Chrome/101.") or
 (http.user_agent contains "Chrome/104.") or
 (http.user_agent contains "Chrome/74" and not http.user_agent contains "Better Uptime Bot" and not http.host contains "api.") or
