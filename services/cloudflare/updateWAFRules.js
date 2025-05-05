@@ -47,8 +47,9 @@ const updateFilter = async (zoneId, filterId, expression, oldExpression) => {
 };
 
 const createNewRule = async (zoneId, description, action, expression, index) => {
+	log(`Creating new WAF rule '${description}' (action ${action}, length: ${expression.length})...`);
+
 	try {
-		log(`Creating new WAF rule '${description}' (action ${action})...`);
 		const { data } = await axios.post(`/zones/${zoneId}/filters`, [{ expression }]);
 		if (!data.success) throw new Error(`Failed to create filter. ${data?.errors}`);
 
@@ -72,14 +73,14 @@ const updateWAFCustomRulesForZone = async (expressions, zone) => {
 
 		const rules = await fetchWAFRules(zone.id);
 
-		for (const [indexString, block] of Object.entries(expressions)) {
-			const index = parseInt(indexString);
+		for (const [indexStr, block] of Object.entries(expressions)) {
+			const index = parseInt(indexStr);
 			const { name, action, expressions: part } = block;
 			const matchingRule = rules.find(rule => rule.description && rule.description.includes(`Part ${index}`));
 
 			if (part && matchingRule) {
 				const filterId = matchingRule.filter.id;
-				log(`» Checking '${matchingRule.description}' (${filterId})...`);
+				log(`» Checking '${matchingRule.description}' (${filterId}) [length: ${block.length}]...`);
 				await updateFilter(zone.id, filterId, part, matchingRule.filter.expression);
 			} else if (part) {
 				log(`» No matching rule found for part ${index}`, 2);

@@ -37,9 +37,8 @@ const parseExpressions = text => {
 };
 
 module.exports = async () => {
-	log('Parsing expressions from the markdown file...');
-
 	try {
+		// Extract expressions
 		const data = await fs.readFile('markdown/expressions.md', 'utf8');
 		const parsed = parseExpressions(data);
 		if (!parsed.length) {
@@ -56,6 +55,15 @@ module.exports = async () => {
 			return acc;
 		}, {});
 
+		// _meta section
+		const versionMatch = data.match(/Last update:\s*([\d.]+)/i);
+		result._meta = {
+			version: versionMatch ? versionMatch[1] : null,
+			totalLength: parsed.reduce((sum, block) => sum + block.length, 0),
+			blocks: parsed.length,
+		};
+
+		log(`Parsed ${result._meta.blocks} expression blocks (rules version: ${result._meta.version}, length: ${result._meta.totalLength} characters)`, 1);
 		return Object.keys(result).length ? result : null;
 	} catch (err) {
 		log(`Error reading the file: ${err.message}`, 3);
