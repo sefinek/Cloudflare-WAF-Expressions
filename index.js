@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const { CronJob } = require('cron');
-const { gitPullAndRestart } = require('./services/update.js');
+const { pullAndRestart } = require('./services/updates.js');
 const updateWAFRules = require('./services/cloudflare/updateWAFRules.js');
 const { version, author } = require('./package.json');
 const log = require('./scripts/log.js');
@@ -19,7 +19,7 @@ if (!CF_API_TOKEN || typeof CF_API_TOKEN !== 'string' || CF_API_TOKEN.trim() ===
 
 
 // Cron jobs
-new CronJob(process.env.RULES_UPDATE_CRON || '0 13 * * *', gitPullAndRestart, null, true); // At 13:00.
+new CronJob(process.env.RULES_UPDATE_CRON || '0 13 * * *', pullAndRestart, null, true); // At 13:00.
 new CronJob(process.env.GIT_PULL_CRON || '0 11,14,16,18,20 * * *', updateWAFRules, null, true); // At minute 0 past hour 11, 14, 16, 18, and 20.
 
 // Run the job immediately

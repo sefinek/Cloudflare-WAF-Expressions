@@ -1,15 +1,15 @@
 const { axios, getRequestCount } = require('../axios.js');
-const expressionParser = require('../../scripts/expressionParser.js');
+const expressionParser = require('../../scripts/parseExpressions.js');
 const fetchWAFRules = require('./fetchWAFRules.js');
 const verifyAndReorderParts = require('./verifyAndReorderParts.js');
-const { gitPull } = require('../../services/update.js');
+const { pull } = require('../updates.js');
 const log = require('../../scripts/log.js');
 
 const { CF_API_TOKEN } = process.env;
 if (!CF_API_TOKEN) throw new Error('CF_API_TOKEN is missing. Check the .env file.');
 
 const getZones = async () => {
-	await gitPull();
+	await pull();
 
 	log('Retrieving all zones from your Cloudflare account...');
 	const { data } = await axios.get('/zones');
@@ -96,7 +96,7 @@ const updateWAFCustomRulesForZone = async (expressions, zone) => {
 module.exports = async () => {
 	try {
 		const expressions = await expressionParser();
-		if (!expressions || !Object.keys(expressions).length) return log('No expressions found.');
+		if (!expressions || !Object.keys(expressions).length) return log('No expressions found.', 3);
 
 		const zones = await getZones();
 		for (const zone of zones) {

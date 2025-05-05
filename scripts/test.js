@@ -1,4 +1,4 @@
-const expressionParser = require('../scripts/expressionParser.js');
+const expressionParser = require('./parseExpressions.js');
 
 (async () => {
 	const expressions = await expressionParser();
