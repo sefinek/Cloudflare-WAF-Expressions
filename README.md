@@ -44,11 +44,11 @@ There's no need to add them manually, as the script takes care of everything for
 #### Tutorial (for Linux)
 1. Clone this repository:
    ```bash
-   git clone https://github.com/sefinek/Cloudflare-WAF-Expressions.git
+   git clone https://github.com/sefinek/Cloudflare-WAF-Expressions.git cf-expressions
    ```
 2. Install the necessary dependencies:
    ```bash
-   cd Cloudflare-WAF-Expressions && npm install
+   cd cf-expressions && npm install
    ```
 3. Copy the `.env.default` file and rename it to `.env`:
    ```bash
