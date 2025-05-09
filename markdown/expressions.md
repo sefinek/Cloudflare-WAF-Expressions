@@ -1,5 +1,5 @@
 <div align="right">
-    <h4>📥 » Last update: 4.05.2025 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 9.05.2025 [DD.MM.YYYY]</h4>
 </div>
 
 ## 🔥 Part 1 - Main firewall<div id="part1"></div>
@@ -70,6 +70,7 @@
    http.user_agent contains "curl" or
    http.user_agent contains "okhttp" or
    http.user_agent contains "python-requests" or
+   http.user_agent contains "python-httpx" or
    http.user_agent contains "node" or
    http.user_agent contains "wget")) or
 (http.request.uri.path wildcard "*.js*" and starts_with(http.host, "screenshots.")) or
