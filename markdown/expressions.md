@@ -1,5 +1,5 @@
 <div align="right">
-    <h4>📥 » Last update: 9.05.2025 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 10.05.2025 [DD.MM.YYYY]</h4>
 </div>
 
 ## 🔥 Part 1 - Main firewall<div id="part1"></div>
@@ -22,6 +22,7 @@
 (http.request.uri.path wildcard "*/dbadmin*") or
 (http.request.uri.path wildcard "*/debug*") or
 (http.request.uri.path wildcard "*/env*") or
+(http.request.uri.path wildcard "*.env*") or
 (http.request.uri.path wildcard "*/etc*") or
 (http.request.uri.path wildcard "*/login.action*") or
 (http.request.uri.path wildcard "*/phpmyadmin*") or
