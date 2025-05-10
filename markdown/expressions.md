@@ -23,6 +23,7 @@
 (http.request.uri.path wildcard "*/debug*") or
 (http.request.uri.path wildcard "*/env*") or
 (http.request.uri.path wildcard "*.env*") or
+(http.request.uri.query wildcard "*.env*") or
 (http.request.uri.path wildcard "*/etc*") or
 (http.request.uri.path wildcard "*/login.action*") or
 (http.request.uri.path wildcard "*/phpmyadmin*") or
