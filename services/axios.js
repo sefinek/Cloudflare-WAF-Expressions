@@ -25,7 +25,7 @@ axiosRetry(api, {
 	},
 	onRetry: (retryCount, err, requestConfig) => {
 		const status = err.response?.status ? `Status ${err.response.status}` : (err.code || err.message || 'Unknown error');
-		log(`${status} - retry #${retryCount} for ${requestConfig.url}`, 2);
+		log(`${status} - retry #${retryCount} for ${requestConfig.url}\n${err.response.data ? JSON.stringify(err.response.data) : err.message}`, 2);
 	},
 });
 
