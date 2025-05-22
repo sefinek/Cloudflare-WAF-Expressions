@@ -175,6 +175,7 @@
 (http.user_agent wildcard "*chrome/84*") or
 (http.user_agent wildcard "*chrome/85*") or
 (http.user_agent wildcard "*chrome/87*") or
+(http.user_agent wildcard "*chrome/86*") or
 (http.user_agent wildcard "*chrome/88*") or
 (http.user_agent wildcard "*chrome/89*") or
 (http.user_agent wildcard "*chrome/91*") or
