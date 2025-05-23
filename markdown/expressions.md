@@ -127,16 +127,15 @@
 (http.request.uri.path wildcard "*/wp-includes*") or
 (http.user_agent contains "/112.0") or
 (http.user_agent contains "/113.0") or
-(http.user_agent contains "/114.0" and not http.user_agent contains "OPR/114.0.0.0") or
-(http.user_agent contains "/118.0" and not http.user_agent contains "OPR/118.0.0.0") or
+(http.user_agent contains "/114.0") or
+(http.user_agent contains "/118.0") or
 (http.user_agent contains "Chrome/101.") or
 (http.user_agent contains "Chrome/104.") or
-(http.user_agent contains "Chrome/74" and not http.user_agent contains "Better Uptime Bot" and not http.host contains "api.") or
-(http.user_agent contains "Windows NT 5" and not http.user_agent contains "(via ggpht.com GoogleImageProxy)" and not http.host contains "api.") or
-(http.user_agent wildcard "*android 8*" and not http.host contains "api.") or
+(http.user_agent contains "Chrome/74" and not http.user_agent contains "Better Uptime Bot") or
+(http.user_agent contains "Windows NT 5" and not http.user_agent contains "(via ggpht.com GoogleImageProxy)") or
+(http.user_agent wildcard "*android 8*") or
 (http.user_agent wildcard "*chrome/100*") or
 (http.user_agent wildcard "*chrome/103*") or
-(http.user_agent wildcard "*chrome/117*") or
 (http.user_agent wildcard "*chrome/17*") or
 (http.user_agent wildcard "*chrome/30*") or
 (http.user_agent wildcard "*chrome/31*") or
@@ -198,7 +197,6 @@
 (http.user_agent wildcard "*firefox/83*") or
 (http.user_agent wildcard "*firefox/84*") or
 (http.user_agent wildcard "*html5plus*") or
-(http.user_agent wildcard "*mac os x 10_15*") or
 (http.user_agent wildcard "*mac os x 10_9*") or
 (http.user_agent wildcard "*msie 9.0*") or
 (http.user_agent wildcard "*netfront*") or
