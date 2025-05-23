@@ -24,7 +24,7 @@
     "simple-git": "^3.27.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.26.0",
-    "globals": "^16.0.0"
+    "@eslint/js": "^9.27.0",
+    "globals": "^16.1.0"
   }
 }
