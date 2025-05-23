@@ -75,7 +75,6 @@
    http.user_agent contains "python-httpx" or
    http.user_agent contains "node" or
    http.user_agent contains "wget")) or
-(http.request.uri.path wildcard "*.js*" and starts_with(http.host, "screenshots.")) or
 (http.request.uri.path wildcard "*.log*" and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.request.uri.path wildcard "*.py*") or
 (http.request.uri.path wildcard "*.sh*" and http.host ne "cdn.sefinek.net") or
@@ -121,6 +120,7 @@
 ## 🗑️ Part 3 - Deprecated browsers, etc.<div id="part3"></div>
 > **Action:** Managed Challenge
 ```
+(http.referer contains "http://") or
 (http.request.uri eq "https://sefinek.net/milosna-grota/verification/upload") or
 (http.request.uri.path wildcard "*.php*" and not http.request.uri.path contains "/clientarea.php") or
 (http.request.uri.path wildcard "*/wp-admin*") or
@@ -173,8 +173,8 @@
 (http.user_agent wildcard "*chrome/83*") or
 (http.user_agent wildcard "*chrome/84*") or
 (http.user_agent wildcard "*chrome/85*") or
-(http.user_agent wildcard "*chrome/87*") or
 (http.user_agent wildcard "*chrome/86*") or
+(http.user_agent wildcard "*chrome/87*") or
 (http.user_agent wildcard "*chrome/88*") or
 (http.user_agent wildcard "*chrome/89*") or
 (http.user_agent wildcard "*chrome/91*") or
