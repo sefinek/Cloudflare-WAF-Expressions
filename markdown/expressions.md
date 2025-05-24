@@ -114,7 +114,8 @@
 (http.request.uri.query wildcard "*wget%20*") or
 (http.request.uri.query wildcard "*wget+*") or
 (http.user_agent wildcard "*alittle client*") or
-(http.user_agent wildcard "*php7.4-global*")
+(http.user_agent wildcard "*php7.4-global*") or
+(http.user_agent wildcard "*haxball-raid-clones*")
 ```
 
 ## 🗑️ Part 3 - Deprecated browsers, etc.<div id="part3"></div>
@@ -327,6 +328,6 @@
     213.232.87.230       213.232.87.232       213.232.87.234
     216.87.69.230        216.9.224.141        217.182.194.108
     222.252.17.222       222.73.130.30        2001:b011:3012:1f8e:61b5:bc47:64dd:3381
-    41.141.247.176
+    105.158.111.117
 })
 ```
