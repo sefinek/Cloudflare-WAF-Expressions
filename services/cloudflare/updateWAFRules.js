@@ -9,8 +9,6 @@ const { CF_API_TOKEN } = process.env;
 if (!CF_API_TOKEN) throw new Error('CF_API_TOKEN is missing. Check the .env file.');
 
 const getZones = async () => {
-	await pull();
-
 	log('Retrieving all zones from your Cloudflare account...');
 	const { data } = await axios.get('/zones');
 	if (!data.success) throw new Error(`Failed to fetch zones. ${JSON.stringify(data?.errors)}`);
@@ -95,6 +93,8 @@ const updateWAFCustomRulesForZone = async (expressions, zone) => {
 };
 
 module.exports = async () => {
+	await pull();
+
 	try {
 		const expressions = await expressionParser();
 		if (!expressions || !Object.keys(expressions).length) return log('No expressions found.', 3);
