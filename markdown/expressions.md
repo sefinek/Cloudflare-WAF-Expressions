@@ -125,17 +125,16 @@
 (http.request.uri.path wildcard "*.php*" and not http.request.uri.path contains "/clientarea.php") or
 (http.request.uri.path wildcard "*/wp-admin*") or
 (http.request.uri.path wildcard "*/wp-includes*") or
-(http.user_agent contains "/112.0") or
-(http.user_agent contains "/113.0") or
-(http.user_agent contains "/114.0") or
-(http.user_agent contains "/118.0") or
-(http.user_agent contains "Chrome/101.") or
-(http.user_agent contains "Chrome/104.") or
-(http.user_agent contains "Chrome/74" and not http.user_agent contains "Better Uptime Bot") or
 (http.user_agent contains "Windows NT 5" and not http.user_agent contains "(via ggpht.com GoogleImageProxy)") or
 (http.user_agent wildcard "*android 8*") or
 (http.user_agent wildcard "*chrome/100*") or
+(http.user_agent wildcard "*chrome/101.*") or
 (http.user_agent wildcard "*chrome/103*") or
+(http.user_agent wildcard "*chrome/104.*") or
+(http.user_agent wildcard "*chrome/112*") or
+(http.user_agent wildcard "*chrome/113*") or
+(http.user_agent wildcard "*chrome/114*") or
+(http.user_agent wildcard "*chrome/118*") or
 (http.user_agent wildcard "*chrome/17*") or
 (http.user_agent wildcard "*chrome/30*") or
 (http.user_agent wildcard "*chrome/31*") or
@@ -165,6 +164,7 @@
 (http.user_agent wildcard "*chrome/69*") or
 (http.user_agent wildcard "*chrome/71*") or
 (http.user_agent wildcard "*chrome/73*") or
+(http.user_agent wildcard "*chrome/74*" and not http.user_agent contains "Better Uptime Bot") or
 (http.user_agent wildcard "*chrome/77*") or
 (http.user_agent wildcard "*chrome/78*") or
 (http.user_agent wildcard "*chrome/79*") or
