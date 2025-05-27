@@ -1,5 +1,5 @@
 <div align="right">
-    <h4>📥 » Last update: 24.05.2025 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 27.05.2025 [DD.MM.YYYY]</h4>
 </div>
 
 ## 🔥 Part 1 - Main firewall<div id="part1"></div>
@@ -114,8 +114,7 @@
 (http.request.uri.query wildcard "*wget%20*") or
 (http.request.uri.query wildcard "*wget+*") or
 (http.user_agent wildcard "*alittle client*") or
-(http.user_agent wildcard "*php7.4-global*") or
-(http.user_agent wildcard "*haxball-raid-clones*")
+(http.user_agent wildcard "*php7.4-global*")
 ```
 
 ## 🗑️ Part 3 - Deprecated browsers, etc.<div id="part3"></div>
@@ -327,7 +326,6 @@
     209.209.28.22        212.174.79.169       212.54.224.108
     213.232.87.230       213.232.87.232       213.232.87.234
     216.87.69.230        216.9.224.141        217.182.194.108
-    222.252.17.222       222.73.130.30        2001:b011:3012:1f8e:61b5:bc47:64dd:3381
-    105.158.111.117
+    222.252.17.222       222.73.130.30
 })
 ```
