@@ -115,7 +115,6 @@
 (http.request.uri.query wildcard "*wget+*") or
 (http.user_agent wildcard "*alittle client*") or
 (http.user_agent wildcard "*example.com*") or
-(http.user_agent wildcard "*haxball-raid-clones*") or
 (http.user_agent wildcard "*php7.4-global*")
 ```
 
