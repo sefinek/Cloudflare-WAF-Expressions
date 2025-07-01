@@ -114,8 +114,9 @@
 (http.request.uri.query wildcard "*wget%20*") or
 (http.request.uri.query wildcard "*wget+*") or
 (http.user_agent wildcard "*alittle client*") or
-(http.user_agent wildcard "*php7.4-global*") or
-(http.user_agent wildcard "*haxball-raid-clones*")
+(http.user_agent wildcard "*example.com*") or
+(http.user_agent wildcard "*haxball-raid-clones*") or
+(http.user_agent wildcard "*php7.4-global*")
 ```
 
 ## 🗑️ Part 3 - Deprecated browsers, etc.<div id="part3"></div>
