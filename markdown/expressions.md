@@ -255,6 +255,7 @@
 (http.user_agent wildcard "*semanticbot*") or
 (http.user_agent wildcard "*serpstatbot*") or
 (http.user_agent wildcard "*sqlmap*") or
+(http.user_agent wildcard "*thinkbot*") or
 (http.user_agent wildcard "*trendictionbot*") or
 (http.user_agent wildcard "*ttd-content*") or
 (http.user_agent wildcard "*voluumdsp*") or
