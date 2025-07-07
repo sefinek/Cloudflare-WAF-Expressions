@@ -1,5 +1,5 @@
 <div align="right">
-    <h4>📥 » Last update: 5.07.2025 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 7.07.2025 [DD.MM.YYYY]</h4>
 </div>
 
 ## 🔥 Part 1 - Main firewall<div id="part1"></div>
