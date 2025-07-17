@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('env-native').config();
 
 const { CronJob } = require('cron');
 const { pullAndRestart } = require('./services/updates.js');
