@@ -203,6 +203,7 @@
 (http.user_agent wildcard "*firefox/84*") or
 (http.user_agent wildcard "*html5plus*") or
 (http.user_agent wildcard "*mac os x 10_9*") or
+(http.user_agent wildcard "*mac os x 10_15*") or
 (http.user_agent wildcard "*msie 9.0*") or
 (http.user_agent wildcard "*msie*") or
 (http.user_agent wildcard "*netfront*") or
