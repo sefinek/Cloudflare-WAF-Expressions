@@ -17,14 +17,14 @@
     "up": "ncu -u && npm i && npm update && npm audit fix"
   },
   "dependencies": {
-    "axios": "^1.10.0",
+    "axios": "^1.11.0",
     "axios-retry": "^4.5.0",
-    "cron": "^4.3.2",
-    "env-native": "^1.1.1",
+    "cron": "^4.3.3",
+    "env-native": "^1.1.2",
     "simple-git": "^3.28.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.31.0",
+    "@eslint/js": "^9.32.0",
     "globals": "^16.3.0"
   }
 }
