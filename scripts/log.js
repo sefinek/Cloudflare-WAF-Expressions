@@ -11,6 +11,6 @@ module.exports = (msg, type = 0) => {
 	if (typeof msg === 'string' && (msg.includes('Ignoring local IP address') || msg.includes('Ignoring own IP address'))) type = 0;
 
 	const { method, label, color } = LEVELS[type] || LEVELS[0];
-	const output = process.env.NODE_ENV === 'development' ? `${color}${label} ${msg}${RESET}` : `${label} ${msg}`;
+	const output = 'pm_id' in process.env ? `${label} ${msg}` : `${color}${label} ${msg}${RESET}`;
 	console[method](output);
 };
