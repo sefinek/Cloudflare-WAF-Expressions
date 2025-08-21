@@ -58,6 +58,7 @@
 (http.user_agent contains "   ") or
 (http.user_agent eq "" and not http.host contains "api." and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.user_agent eq "Mozilla/5.0") or
+(http.user_agent eq "Mozilla/5.0 (Windows NT 10.0; Win64; x64)") or
 (http.user_agent wildcard "*embeddedbrowser*" and not http.host contains "api." and not http.host contains "cdn.") or
 (http.user_agent wildcard "*go-http-client*" and not http.host contains "api." and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.user_agent wildcard "*headless*" and not http.host contains "api." and not http.host contains "cdn.") or
