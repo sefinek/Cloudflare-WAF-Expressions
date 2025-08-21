@@ -221,12 +221,12 @@
 > **Action:** Block
 ```
 (http.user_agent wildcard "*2ip*") or
-(http.user_agent wildcard "*brightbot*") or
 (http.user_agent wildcard "*archive.org_bot*") or
 (http.user_agent wildcard "*awariobot*") or
 (http.user_agent wildcard "*barkrowler*") or
 (http.user_agent wildcard "*blexbot*") or
 (http.user_agent wildcard "*bomborabot*") or
+(http.user_agent wildcard "*brightbot*") or
 (http.user_agent wildcard "*buck*") or
 (http.user_agent wildcard "*bvbot*") or
 (http.user_agent wildcard "*bytespider*") or
@@ -244,6 +244,7 @@
 (http.user_agent wildcard "*globalping*") or
 (http.user_agent wildcard "*gulperbot*") or
 (http.user_agent wildcard "*httrack*") or
+(http.user_agent wildcard "*iboubot*") or
 (http.user_agent wildcard "*internet-structure*") or
 (http.user_agent wildcard "*internetmeasurement*") or
 (http.user_agent wildcard "*ioncrawl*") or
