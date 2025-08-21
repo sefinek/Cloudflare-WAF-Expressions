@@ -213,6 +213,7 @@
 > **Action:** Block
 ```
 (http.user_agent wildcard "*2ip*") or
+(http.user_agent wildcard "*brightbot*") or
 (http.user_agent wildcard "*archive.org_bot*") or
 (http.user_agent wildcard "*awariobot*") or
 (http.user_agent wildcard "*barkrowler*") or
