@@ -58,10 +58,10 @@
 (http.user_agent contains "   ") or
 (http.user_agent eq "" and not http.host contains "api." and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.user_agent eq "Mozilla/5.0") or
-(http.user_agent wildcard "*mozilla/4.0*") or
 (http.user_agent wildcard "*embeddedbrowser*" and not http.host contains "api." and not http.host contains "cdn.") or
 (http.user_agent wildcard "*go-http-client*" and not http.host contains "api." and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.user_agent wildcard "*headless*" and not http.host contains "api." and not http.host contains "cdn.") or
+(http.user_agent wildcard "*mozilla/4.0*") or
 (http.user_agent wildcard "*private_keys*") or
 (http.user_agent wildcard "*windows 11*")
 ```
@@ -338,6 +338,6 @@
     222.252.17.222       222.73.130.30        105.158.111.117
     139.155.242.149      146.70.14.30         182.138.158.242
     43.134.167.103       13.69.240.241        162.240.151.141
-    84.55.46.74          162.240.111.156
+    84.55.46.74          162.240.111.156      5.112.16.2
 })
 ```
