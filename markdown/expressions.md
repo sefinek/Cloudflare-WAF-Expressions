@@ -57,8 +57,8 @@
 (http.request.uri.query wildcard "*etc/passwd*") or
 (http.user_agent contains "   ") or
 (http.user_agent eq "" and not http.host contains "api." and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
-(http.user_agent eq "Mozilla/5.0") or
 (http.user_agent eq "Mozilla/5.0 (Windows NT 10.0; Win64; x64)") or
+(http.user_agent eq "Mozilla/5.0") or
 (http.user_agent wildcard "*embeddedbrowser*" and not http.host contains "api." and not http.host contains "cdn.") or
 (http.user_agent wildcard "*go-http-client*" and not http.host contains "api." and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.user_agent wildcard "*headless*" and not http.host contains "api." and not http.host contains "cdn.") or
@@ -70,14 +70,19 @@
 ## 🔥 Part 2 - Main firewall<div id="part2"></div>
 > **Action:** Block
 ```
-(http.request.uri.path eq "/" and 
-  (http.user_agent contains "aiohttp" or
-   http.user_agent contains "curl" or
-   http.user_agent contains "okhttp" or
-   http.user_agent contains "python-requests" or
-   http.user_agent contains "python-httpx" or
-   http.user_agent contains "node" or
-   http.user_agent contains "wget")) or
+(
+  http.user_agent contains "aiohttp" or
+  http.user_agent contains "aioquic" or
+  http.user_agent contains "curl" or
+  http.user_agent contains "okhttp" or
+  http.user_agent contains "python-requests" or
+  http.user_agent contains "python-httpx" or
+  http.user_agent contains "wget"
+) and not (
+  starts_with(http.host, "api.") or
+  starts_with(http.host, "cdn.") or
+  http.host eq "blocklist.sefinek.net"
+) or
 (http.request.uri.path wildcard "*.log*" and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.request.uri.path wildcard "*.py*") or
 (http.request.uri.path wildcard "*.sh*" and http.host ne "cdn.sefinek.net") or
@@ -206,7 +211,6 @@
 (http.user_agent wildcard "*html5plus*") or
 (http.user_agent wildcard "*mac os x 10_9*") or
 (http.user_agent wildcard "*mac os x 10_15*") or
-(http.user_agent wildcard "*msie 9.0*") or
 (http.user_agent wildcard "*msie*") or
 (http.user_agent wildcard "*netfront*") or
 (http.user_agent wildcard "*symbianos*") or
