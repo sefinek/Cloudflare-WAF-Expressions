@@ -20,7 +20,6 @@
     "axios": "^1.11.0",
     "axios-retry": "^4.5.0",
     "cron": "^4.3.3",
-    "env-native": "^1.1.2",
     "simple-git": "^3.28.0"
   },
   "devDependencies": {

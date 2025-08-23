@@ -1,5 +1,4 @@
-require('env-native').config();
-
+require('node:process').loadEnvFile();
 const { CronJob } = require('cron');
 const { pullAndRestart } = require('./services/updates.js');
 const updateWAFRules = require('./services/cloudflare/updateWAFRules.js');
