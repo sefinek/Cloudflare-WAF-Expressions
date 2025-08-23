@@ -274,6 +274,7 @@
 (http.user_agent wildcard "*wc-test-dev-bot*") or
 (http.user_agent wildcard "*webtechbot*") or
 (http.user_agent wildcard "*whatcms*") or
+(http.user_agent wildcard "*intelx.io*") or
 (http.user_agent wildcard "*zgrab*")
 ```
 
