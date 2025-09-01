@@ -33,7 +33,7 @@ If you find this repository useful, I would greatly appreciate it if you could g
 ## ✅ Usage
 ### Automatic (highly recommended)<div id="automatic-installation"></div>
 You can use the JavaScript code from this repository to automatically update the rules throughout the day.  
-There's no need to add them manually, as the script takes care of everything for you (:
+There's no need to add them manually, as the script takes care of everything for you (;
 
 #### Requirements
 1. [Node.js LTS + npm](https://nodejs.org)
