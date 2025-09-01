@@ -54,7 +54,10 @@ There's no need to add them manually, as the script takes care of everything for
    ```bash
    cp .env.default .env
    ```
-4. Open the `.env` file and ensure `NODE_ENV` is set to `production`. Paste your Cloudflare token in place of `CF_API_TOKEN`.
+4. Open the `.env` file and configure the following variables:
+   - Set `NODE_ENV` to `production`
+   - Paste your Cloudflare token in place of `CF_API_TOKEN`
+   - Set `PHP_SUPPORT` to `true` if your website uses PHP (this will exclude .php blocking rules)
    ```bash
    nano .env
    ```
@@ -117,5 +120,5 @@ If you have any suggestions or improvements, feel free to open a [Pull request](
 Your contribution will be appreciated and will help keep this list up-to-date and effective in combating the latest threats. Thank you!
 
 
-## 🔖 [MIT License](LICENSE)
-Copyright 2023-2025 © by Sefinek. All Rights Reserved.
+## 🔖 License
+Copyright 2023-2025 © by Sefinek. This repository is licensed under the [MIT License](LICENSE).
