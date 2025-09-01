@@ -68,9 +68,8 @@ There's no need to add them manually, as the script takes care of everything for
    ```
 6. Configure PM2 to start on system boot:
    ```bash
-   pm2 startup
+   eval "$(pm2 startup | grep sudo)"
    ```
-   Then, execute the generated command from the output.
 
 ### Manually
 1. Log in to your [Cloudflare](https://dash.cloudflare.com) account.
