@@ -26,7 +26,24 @@ const parseExpressions = text => {
 			restored = restored.replace(key, `"${value}"`);
 		}
 
-		const cleaned = restored.trim();
+		let cleaned = restored.trim();
+
+		// Filter out PHP-related rules if PHP_SUPPORT is enabled
+		const phpSupport = process.env.PHP_SUPPORT || 'false';
+		if (phpSupport.toLowerCase() === 'true') {
+			// Remove PHP blocking expressions with proper parenthesis matching
+			cleaned = cleaned.replace(/\s*\(\s*http\.request\.uri\.path\s+(?:wildcard|contains|eq)\s+"[^"]*\.php[^"]*"(?:\s+and\s+[^)]+)?\s*\)\s*(?:or|$)/gi, '');
+
+			// Clean up remaining logical operators
+			cleaned = cleaned.replace(/^\s*(?:or|and)\s+/i, ''); // Remove leading operators
+			cleaned = cleaned.replace(/\s+(?:or|and)\s*$/i, ''); // Remove trailing operators
+			cleaned = cleaned.replace(/\s+(?:or|and)\s+(?:or|and)\s+/gi, ' or '); // Fix double operators
+			cleaned = cleaned.trim();
+
+			// Handle edge case where expression becomes empty or invalid
+			if (!cleaned || cleaned === 'or' || cleaned === 'and') cleaned = '(true)';
+		}
+
 		return {
 			name: name.trim(),
 			length: cleaned.length,
@@ -36,7 +53,11 @@ const parseExpressions = text => {
 	});
 };
 
-module.exports = async () => {
+const parseExpressionsMain = async () => {
+	// Validate PHP_SUPPORT environment variable
+	const phpSupport = process.env.PHP_SUPPORT || 'false';
+	if (!['true', 'false'].includes(phpSupport)) log('Invalid PHP_SUPPORT value. Must be "true" or "false"', 2);
+
 	try {
 		// Extract expressions
 		const data = await fs.readFile('markdown/expressions.md', 'utf8');
@@ -63,10 +84,26 @@ module.exports = async () => {
 			blocks: parsed.length,
 		};
 
-		log(`Parsed ${result._meta.blocks} expression blocks (rules version: ${result._meta.version}, length: ${result._meta.totalLength} characters)`, 1);
+		log(`Parsed ${result._meta.blocks} expression blocks (rules version: ${result._meta.version}, length: ${result._meta.totalLength} characters); PHP support: ${phpSupport === 'true' ? 'Enabled' : 'Disabled'}`, 1);
 		return Object.keys(result).length ? result : null;
 	} catch (err) {
 		log(`Error reading the file: ${err.message}`, 3);
 		return null;
 	}
 };
+
+module.exports = parseExpressionsMain;
+
+if (require.main === module) {
+	(async () => {
+		// Test with PHP_SUPPORT disabled
+		process.env.PHP_SUPPORT = 'false';
+		const resultDisabled = await parseExpressionsMain();
+		log(`Test 1 - PHP_SUPPORT=false: ${resultDisabled ? 'PASSED' : 'FAILED'}`, resultDisabled ? 1 : 2);
+
+		// Test with PHP_SUPPORT enabled
+		process.env.PHP_SUPPORT = 'true';
+		const resultEnabled = await parseExpressionsMain();
+		log(`Test 2 - PHP_SUPPORT=true: ${resultEnabled ? 'PASSED' : 'FAILED'}`, resultEnabled ? 1 : 2);
+	})();
+}
