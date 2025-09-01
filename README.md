@@ -57,7 +57,7 @@ There's no need to add them manually, as the script takes care of everything for
 4. Open the `.env` file and configure the following variables:
    - Set `NODE_ENV` to `production`
    - Paste your Cloudflare token in place of `CF_API_TOKEN`
-   - Set `PHP_SUPPORT` to `true` if your website uses PHP (this will exclude .php blocking rules)
+   - Set `PHP_SUPPORT` to `true` if your website uses PHP (this will exclude [.php blocking rules](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/markdown/expressions.md#%EF%B8%8F-firewall-rules-for-cloudflare-waf))
    ```bash
    nano .env
    ```
