@@ -1,6 +1,13 @@
-<div align="right">
-    <h4>📥 » Last update: 30.08.2025 [DD.MM.YYYY]</h4>
-</div>
+# ☁️ Firewall Rules for Cloudflare WAF
+1. If **you use PHP**: for requests ending with `.php`, the **MANAGED CHALLENGE** event will be triggered.
+    - **Using the script:** set `PHP_SUPPORT=true` in the `.env` file
+    - **Not using the script:** remove the entire `wildcard "*.php*"` line from Part 3
+2. There's no need to manually copy these expressions into Cloudflare or update them. The [script](https://github.com/sefinek/Cloudflare-WAF-Expressions?tab=readme-ov-file#automatic-recommended) automatically and continuously manages these rules.
+3. If you encounter any false positives, report them in the [Issues](https://github.com/sefinek/Cloudflare-WAF-Expressions/issues) section or on my [Discord server](https://discord.gg/RVH8UXgmzs).
+4. If you host an API, use the `api.` subdomain (e.g., `api.example.com`).
+5. If you use a CDN, use the `cdn.` subdomain (e.g., `cdn.example.com`).
+6. Got any suggestions or ideas? Feel free to share them! Thanks!
+
 
 ## 🔥 Part 1 - Main firewall<div id="part1"></div>
 > **Action:** Block
@@ -65,7 +72,7 @@
 (http.user_agent wildcard "*embeddedbrowser*" and not http.host contains "api." and not http.host contains "cdn.") or
 (http.user_agent wildcard "*go-http-client*" and not http.host contains "api." and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.user_agent wildcard "*headless*" and not http.host contains "api." and not http.host contains "cdn.") or
-(http.user_agent wildcard "*mozilla/4.0*") or
+(http.user_agent wildcard "*mozilla/4*") or
 (http.user_agent wildcard "*private_keys*") or
 (http.user_agent wildcard "*windows 11*")
 ```
@@ -352,3 +359,7 @@
     164.92.86.220
 })
 ```
+
+<div align="right">
+    <h4>📥 » Last update: 1.09.2025 [DD.MM.YYYY]</h4>
+</div>
