@@ -47,7 +47,7 @@
 (http.request.uri.path wildcard "*appsettings*") or
 (http.request.uri.path wildcard "*authorized_keys*") or
 (http.request.uri.path wildcard "*backup.*") or
-(http.request.uri.path wildcard "*config*" and not http.host contains "cdn.") or
+(http.request.uri.path wildcard "*config*" and not http.host contains "cdn." and not http.request.uri.path contains "/configuration") or
 (http.request.uri.path wildcard "*docker-compose*") or
 (http.request.uri.path wildcard "*dockerfile*") or
 (http.request.uri.path wildcard "*dump.*") or
