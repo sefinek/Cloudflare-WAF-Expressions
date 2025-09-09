@@ -1,6 +1,6 @@
 {
   "name": "cf-waf-expressions",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "homepage": "https://github.com/sefinek/Cloudflare-WAF-Expressions#readme",
   "bugs": {
     "url": "https://github.com/sefinek/Cloudflare-WAF-Expressions/issues"
@@ -24,6 +24,6 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.35.0",
-    "globals": "^16.3.0"
+    "globals": "^16.4.0"
   }
 }
