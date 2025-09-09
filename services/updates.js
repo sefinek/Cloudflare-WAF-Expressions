@@ -11,8 +11,8 @@ const pull = async () => {
 			await git.reset(['--hard']);
 		}
 
-		log('Pulling the repository and the required submodule...');
-		const { summary } = await git.pull(['--recurse-submodules']);
+		log('Pulling the repository...');
+		const { summary } = await git.pull();
 
 		const { changes, insertions, deletions } = summary;
 		if (changes > 0 || insertions > 0 || deletions > 0) {
