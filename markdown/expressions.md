@@ -6,7 +6,7 @@
 3. If you encounter any false positives, report them in the [Issues](https://github.com/sefinek/Cloudflare-WAF-Expressions/issues) section or on my [Discord server](https://discord.gg/RVH8UXgmzs).
 4. If you host an API, use the `api.` subdomain (e.g., `api.example.com`).
 5. If you use a CDN, use the `cdn.` subdomain (e.g., `cdn.example.com`).
-6. Got any suggestions or ideas? Feel free to share them! Thanks!
+6. Got any suggestions or ideas? Feel free to share them. Thanks!
 
 
 ## 🔥 Part 1 - Main firewall<div id="part1"></div>
@@ -131,6 +131,7 @@
 (http.request.uri.query wildcard "*set-cookie:*") or
 (http.request.uri.query wildcard "*wget%20*") or
 (http.request.uri.query wildcard "*wget+*") or
+(http.user_agent wildcard "*"*") or
 (http.user_agent wildcard "*alittle client*") or
 (http.user_agent wildcard "*example.com*") or
 (http.user_agent wildcard "*php7.4-global*")
@@ -141,7 +142,9 @@
 ```
 (http.referer contains "http://" and not http.referer contains "localhost" and not http.referer contains "127.0.0.1") or
 (http.request.uri.path wildcard "*.php*" and not http.request.uri.path contains "/clientarea.php") or
+(http.request.uri.path wildcard "*/admin*") or
 (http.request.uri.path wildcard "*/wp-admin*") or
+(http.request.uri.path wildcard "*/wp-content*") or
 (http.request.uri.path wildcard "*/wp-includes*") or
 (http.user_agent contains "Windows NT 5" and not http.user_agent contains "(via ggpht.com GoogleImageProxy)") or
 (http.user_agent wildcard "*android 8*") or
@@ -206,9 +209,9 @@
 (http.user_agent wildcard "*chrome/97*") or
 (http.user_agent wildcard "*chrome/98*") or
 (http.user_agent wildcard "*crios/121*") or
+(http.user_agent wildcard "*firefox/10*") or
 (http.user_agent wildcard "*firefox/114*") or
 (http.user_agent wildcard "*firefox/118*") or
-(http.user_agent wildcard "*firefox/10*") or
 (http.user_agent wildcard "*firefox/45*") or
 (http.user_agent wildcard "*firefox/52*") or
 (http.user_agent wildcard "*firefox/57*") or
