@@ -109,8 +109,7 @@
 (http.request.uri.path wildcard "*phpsysinfo*") or
 (http.request.uri.path wildcard "*settings.local*") or
 (http.request.uri.path wildcard "*settings.prod*") or
-(http.request.uri.path wildcard "*wget%20*") or
-(http.request.uri.path wildcard "*wget+*") or
+(http.request.uri.path wildcard "*wget*") or
 (http.request.uri.query contains "%00") or
 (http.request.uri.query contains "%0A") or
 (http.request.uri.query contains "%0D") or
@@ -122,16 +121,14 @@
 (http.request.uri.query contains "squelette=../") or
 (http.request.uri.query wildcard "*auto_prepend_file*") or
 (http.request.uri.query wildcard "*crlfinjection*") or
-(http.request.uri.query wildcard "*curl%20*") or
-(http.request.uri.query wildcard "*curl+*") or
+(http.request.uri.query wildcard "*curl*") or
 (http.request.uri.query wildcard "*ed25519*") or
 (http.request.uri.query wildcard "*file://*") or
 (http.request.uri.query wildcard "*php://*") or
 (http.request.uri.query wildcard "*secrets.json*") or
 (http.request.uri.query wildcard "*set-cookie:*") or
-(http.request.uri.query wildcard "*wget%20*") or
-(http.request.uri.query wildcard "*wget+*") or
-(http.user_agent wildcard "*"*") or
+(http.request.uri.query wildcard "*wget*") or
+(http.user_agent wildcard "*\"*") or
 (http.user_agent wildcard "*alittle client*") or
 (http.user_agent wildcard "*example.com*") or
 (http.user_agent wildcard "*php7.4-global*")
@@ -141,7 +138,7 @@
 > **Action:** Managed Challenge
 ```
 (http.referer contains "http://" and not http.referer contains "localhost" and not http.referer contains "127.0.0.1") or
-(http.request.uri.path wildcard "*.php*" and not http.request.uri.path contains "/clientarea.php") or
+(http.request.uri.path wildcard "*.php*") or
 (http.request.uri.path wildcard "*/admin*") or
 (http.request.uri.path wildcard "*/wp-admin*") or
 (http.request.uri.path wildcard "*/wp-content*") or
