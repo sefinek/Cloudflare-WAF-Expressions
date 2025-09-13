@@ -139,7 +139,6 @@
 ```
 (http.referer contains "http://" and not http.referer contains "localhost" and not http.referer contains "127.0.0.1") or
 (http.request.uri.path wildcard "*.php*") or
-(http.request.uri.path wildcard "*/admin*") or
 (http.request.uri.path wildcard "*/wp-admin*") or
 (http.request.uri.path wildcard "*/wp-content*") or
 (http.request.uri.path wildcard "*/wp-includes*") or
