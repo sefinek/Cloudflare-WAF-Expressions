@@ -16,6 +16,7 @@
 (http.referer eq "binance.com") or
 (http.referer eq "google.com") or
 (http.referer eq "https://google.com") or
+(http.referer eq "https://google.com/") or
 (http.referer eq "bing.com") or
 (http.referer eq "https://bing.com") or
 (http.referer eq "http://n666888.com") or
