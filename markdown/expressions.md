@@ -155,6 +155,7 @@
 (http.user_agent wildcard "*chrome/118*") or
 (http.user_agent wildcard "*chrome/119*" and ip.geoip.asnum ne 14618) or
 (http.user_agent wildcard "*chrome/120*") or
+(http.user_agent wildcard "*chrome/122*") or
 (http.user_agent wildcard "*chrome/17*") or
 (http.user_agent wildcard "*chrome/30*") or
 (http.user_agent wildcard "*chrome/31*") or
