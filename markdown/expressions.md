@@ -130,6 +130,7 @@
 (http.request.uri.query wildcard "*secrets.json*") or
 (http.request.uri.query wildcard "*set-cookie:*") or
 (http.request.uri.query wildcard "*wget*") or
+(http.request.uri.query wildcard "*formfinder*") or
 (http.user_agent wildcard "*\"*") or
 (http.user_agent wildcard "*alittle client*") or
 (http.user_agent wildcard "*example.com*") or
