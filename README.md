@@ -119,5 +119,6 @@ If you have any suggestions or improvements, feel free to open a [Pull request](
 Your contribution will be appreciated and will help keep this list up-to-date and effective in combating the latest threats. Thank you!
 
 
-## 🔖 MIT License
+## 🔖 GNU GPL v3 License
 Copyright © 2023–2025 [Sefinek](https://sefinek.net)
+
