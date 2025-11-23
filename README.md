@@ -8,7 +8,7 @@ If you find this repository useful, I would greatly appreciate it if you could g
 > - Do you want to report events from Cloudflare WAF to AbuseIPDB? See [Cloudflare-WAF-To-AbuseIPDB](https://github.com/sefinek/Cloudflare-WAF-To-AbuseIPDB).
 > - Join my [Discord server](https://discord.gg/53DBjTuzgZ) if you need help or want to receive notifications about important updates.
 
-<img src="assets/images/brave_7GZjqAdswro2.png" alt="Cloudflare Web Application Firewall [WAF] Rules"> 
+<img src="data/images/brave_7GZjqAdswro2.png" alt="Cloudflare Web Application Firewall [WAF] Rules"> 
 
 
 ## 🛡️ What Can This List Block?
@@ -61,7 +61,7 @@ There's no need to add them manually, as the script takes care of everything for
    ```bash
    nano .env
    ```
-   ![brave_JDyTDLnUFonD.png](assets/images/brave_JDyTDLnUFonD.png)
+   ![brave_JDyTDLnUFonD.png](data/images/brave_JDyTDLnUFonD.png)
 5. Run the script 24/7 using PM2:
    ```bash
    pm2 start && pm2 save

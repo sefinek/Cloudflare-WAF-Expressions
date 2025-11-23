@@ -1,7 +1,7 @@
 const axios = require('axios');
 const axiosRetry = require('axios-retry').default;
 const log = require('../scripts/log.js');
-const { version } = require('../package.json');
+const { version } = require('../../package.json');
 
 let requestCount = 0;
 

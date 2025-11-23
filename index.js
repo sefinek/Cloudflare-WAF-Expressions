@@ -1,9 +1,9 @@
 process.loadEnvFile();
 const { CronJob } = require('cron');
-const { pullAndRestart } = require('./services/updates.js');
-const updateWAFRules = require('./services/cloudflare/updateWAFRules.js');
+const { pullAndRestart } = require('./data/services/updates.js');
+const updateWAFRules = require('./data/services/cloudflare/updateWAFRules.js');
 const { version, author } = require('./package.json');
-const log = require('./scripts/log.js');
+const log = require('./data/scripts/log.js');
 
 log(`Author: ${author} | https://github.com/sefinek/Cloudflare-WAF-Expressions (v${version})`);
 
