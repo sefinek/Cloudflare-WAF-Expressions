@@ -17,7 +17,7 @@ If you find this repository useful, I would greatly appreciate it if you could g
 | [Main firewall (I)](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/markdown/expressions.md#part1)         | Blocks data leaks, suspicious referrers, malicious and unusual URL paths, as well as empty or anomalous User-Agents.           | Block             |
 | [Main firewall (II)](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/markdown/expressions.md#part2)        | Blocks suspicious requests, exploits, path traversal, configuration file access attempts, and the use of CLI tools in URLs.    | Block             |
 | [Deprecated browsers, etc.](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/markdown/expressions.md#part3) | Enforces additional verification for outdated browsers, operating systems, and suspicious User-Agents.                         | Managed Challenge |
-| Block unnecessary bots](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/markdown/expressions.md#part4)     | Blocks unnecessary, harmful bots, scanners, and web scrapers.                                                                  | Block             |
+| [Block unnecessary bots](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/markdown/expressions.md#part4)    | Blocks unnecessary, harmful bots, scanners, and web scrapers.                                                                  | Block             |
 | [Block bots, ASNs and IPs](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/markdown/expressions.md#part5)  | Blocks traffic from the Tor network, known malicious IP addresses, and autonomous systems (ASNs) linked to botnets or attacks. | Block             |
 
 > [!IMPORTANT]  
