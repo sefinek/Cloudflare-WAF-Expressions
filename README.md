@@ -12,7 +12,7 @@ If you find this repository useful, I would greatly appreciate it if you could g
 
 
 ## 🛡️ What Can This List Block?
-| **Part**                                                                                                                       | **Description**                                                                                                                | **Action**        |
+| Part (1-5)                                                                                                                     | Description                                                                                                                    | Action            |
 |--------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|:------------------|
 | **[Main firewall (I)](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/markdown/expressions.md#part1)**         | Blocks data leaks, suspicious referrers, malicious and unusual URL paths, as well as empty or anomalous User-Agents.           | Block             |
 | **[Main firewall (II)](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/markdown/expressions.md#part2)**        | Blocks suspicious requests, exploits, path traversal, configuration file access attempts, and the use of CLI tools in URLs.    | Block             |
