@@ -147,6 +147,7 @@
 (http.request.uri.path wildcard "*/wp-content*") or
 (http.request.uri.path wildcard "*/wp-includes*") or
 (http.user_agent contains "Windows NT 5" and not http.user_agent contains "(via ggpht.com GoogleImageProxy)") or
+(http.user_agent wildcard "*10_15*") or
 (http.user_agent wildcard "*android 8*") or
 (http.user_agent wildcard "*chrome/101*") or
 (http.user_agent wildcard "*chrome/103*") or
