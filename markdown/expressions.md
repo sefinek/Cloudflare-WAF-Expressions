@@ -142,12 +142,10 @@
 ```
 (http.referer contains "http://" and not http.referer contains "localhost" and not http.referer contains "127.0.0.1") or
 (http.request.uri.path wildcard "*.php*") or
-(http.request.uri.path wildcard "*/reports*") or
 (http.request.uri.path wildcard "*/wp-admin*") or
 (http.request.uri.path wildcard "*/wp-content*") or
 (http.request.uri.path wildcard "*/wp-includes*") or
 (http.user_agent contains "Windows NT 5" and not http.user_agent contains "(via ggpht.com GoogleImageProxy)") or
-(http.user_agent wildcard "*10_15*") or
 (http.user_agent wildcard "*android 8*") or
 (http.user_agent wildcard "*chrome/101*") or
 (http.user_agent wildcard "*chrome/103*") or
@@ -223,6 +221,7 @@
 (http.user_agent wildcard "*firefox/79*") or
 (http.user_agent wildcard "*firefox/83*") or
 (http.user_agent wildcard "*firefox/84*") or
+(http.user_agent wildcard "*10_15*") or
 (http.user_agent wildcard "*html5plus*") or
 (http.user_agent wildcard "*msie*") or
 (http.user_agent wildcard "*netfront*") or
@@ -368,5 +367,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 24.11.2025 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 7.11.2025 [DD.MM.YYYY]</h4>
 </div>
