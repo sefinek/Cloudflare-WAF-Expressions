@@ -10,6 +10,7 @@ if (!CF_API_TOKEN) throw new Error('CF_API_TOKEN is missing. Check the .env file
 
 const getZones = async () => {
 	log('Retrieving all zones from your Cloudflare account...');
+
 	const { data } = await axios.get('/zones');
 	if (!data.success) throw new Error(`Failed to fetch zones. ${JSON.stringify(data?.errors)}`);
 
@@ -31,10 +32,11 @@ const verifyFilterUpdate = async (zoneId, filterId, expression) => {
 };
 
 const updateFilter = async (zoneId, filterId, expression, oldExpression) => {
-	try {
-		if (oldExpression === expression) return log('Rule is already up-to-date', 1);
+	if (oldExpression === expression) return log('Rule is already up-to-date', 1);
 
+	try {
 		log('Discrepancy detected, updating the rule...');
+
 		const { data } = await axios.put(`/zones/${zoneId}/filters/${filterId}`, { id: filterId, expression });
 		if (!data.success) throw new Error(`Update failed. Details: ${data?.errors}`);
 
@@ -66,9 +68,9 @@ const createNewRule = async (zoneId, description, action, expression, index) => 
 };
 
 const updateWAFCustomRulesForZone = async (expressions, zone) => {
-	try {
-		log(`=================== ANALYZING THE ZONE ${zone.name.toUpperCase()} (${zone.id}) ===================`);
+	log(`=================== ANALYZING THE ZONE ${zone.name.toUpperCase()} (${zone.id}) ===================`);
 
+	try {
 		const rules = await fetchWAFRules(zone.id);
 
 		for (const [indexStr, block] of Object.entries(expressions)) {
