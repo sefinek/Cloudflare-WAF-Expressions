@@ -22,9 +22,7 @@ new CronJob(process.env.RULES_UPDATE_CRON || '0 13 * * *', pullAndRestart, null,
 new CronJob(process.env.GIT_PULL_CRON || '0 11,14,16,18,20 * * *', updateWAFRules, null, true); // At minute 0 past hour 11, 14, 16, 18, and 20.
 
 // Run the job immediately
-(async () => {
-	await updateWAFRules();
-})();
+void updateWAFRules();
 
 // PM2 signal
 process.send && process.send('ready');
