@@ -19,13 +19,13 @@
     "update": "npm run pull && npm ci --omit=dev && pm2 restart cf-waf"
   },
   "dependencies": {
-    "axios": "^1.13.4",
+    "axios": "^1.13.5",
     "axios-retry": "^4.5.0",
     "cron": "^4.4.0",
-    "simple-git": "^3.30.0"
+    "simple-git": "^3.32.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.39.2",
+    "@eslint/js": "^10.0.1",
     "globals": "^17.3.0"
   }
 }
