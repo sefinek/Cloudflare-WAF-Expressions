@@ -26,8 +26,6 @@
 (http.request.uri.path eq "/backup") or
 (http.request.uri.path eq "/git") or
 (http.request.uri.path eq "/old") or
-(http.request.uri.path wildcard "*.env*") or
-(http.request.uri.path wildcard "*.sql*") or
 (http.request.uri.path wildcard "*/.*" and not starts_with(http.request.uri.path, "/.well-known/")) or
 (http.request.uri.path wildcard "*//*") or
 (http.request.uri.path wildcard "*/actuator*") or
@@ -96,9 +94,11 @@
   starts_with(http.host, "cdn.") or
   http.host eq "blocklist.sefinek.net"
 ) or
+(http.request.uri.path wildcard "*.env*") or
 (http.request.uri.path wildcard "*.log*" and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.request.uri.path wildcard "*.py*") or
 (http.request.uri.path wildcard "*.sh*" and http.host ne "cdn.sefinek.net") or
+(http.request.uri.path wildcard "*.sql*") or
 (http.request.uri.path wildcard "*.yaml*") or
 (http.request.uri.path wildcard "*.yml*") or
 (http.request.uri.path wildcard "*auth.json*") or
