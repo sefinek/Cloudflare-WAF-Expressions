@@ -14,19 +14,20 @@
 ```
 (cf.waf.credential_check.password_leaked) or
 (http.referer eq "binance.com") or
-(http.referer eq "google.com") or
-(http.referer eq "https://google.com") or
-(http.referer eq "https://google.com/") or
 (http.referer eq "bing.com") or
+(http.referer eq "google.com") or
+(http.referer eq "http://n666888.com") or
 (http.referer eq "https://bing.com") or
 (http.referer eq "https://bing.com/") or
-(http.referer eq "http://n666888.com") or
+(http.referer eq "https://google.com") or
+(http.referer eq "https://google.com/") or
 (http.request.full_uri eq "https://api.sefinek.net/api/v2/random/animal/cat" and ip.geoip.asnum eq 8075 and http.user_agent eq "python-requests/2.31.0") or
 (http.request.uri.path contains "\\") or
 (http.request.uri.path eq "/backup") or
 (http.request.uri.path eq "/git") or
 (http.request.uri.path eq "/old") or
 (http.request.uri.path wildcard "*.env*") or
+(http.request.uri.path wildcard "*.sql*") or
 (http.request.uri.path wildcard "*/.*" and not starts_with(http.request.uri.path, "/.well-known/")) or
 (http.request.uri.path wildcard "*//*") or
 (http.request.uri.path wildcard "*/actuator*") or
@@ -366,5 +367,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 25.02.2026 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 27.02.2026 [DD.MM.YYYY]</h4>
 </div>
