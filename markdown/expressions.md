@@ -153,7 +153,7 @@
 (http.user_agent wildcard "*chrome/113*") or
 (http.user_agent wildcard "*chrome/114*") or
 (http.user_agent wildcard "*chrome/118*") or
-(http.user_agent wildcard "*chrome/119*") or
+(http.user_agent wildcard "*chrome/119*" and not ip.geoip.asnum eq 14618) or
 (http.user_agent wildcard "*chrome/120*") or
 (http.user_agent wildcard "*chrome/122*") or
 (http.user_agent wildcard "*chrome/17*") or
@@ -365,5 +365,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 27.02.2026 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 5.03.2026 [DD.MM.YYYY]</h4>
 </div>
