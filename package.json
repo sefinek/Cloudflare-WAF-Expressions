@@ -22,10 +22,10 @@
     "axios": "^1.15.0",
     "axios-retry": "^4.5.0",
     "cron": "^4.4.0",
-    "simple-git": "^3.35.2"
+    "simple-git": "^3.36.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "globals": "^17.4.0"
+    "globals": "^17.5.0"
   }
 }
