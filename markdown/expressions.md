@@ -230,8 +230,8 @@
 ## 🤖 Part 4 - Block unnecessary bots<div id="part4"></div>
 > **Action:** Block
 ```
+(cf.verified_bot_category in {"Archiver"}) or
 (http.user_agent wildcard "*2ip*") or
-(http.user_agent wildcard "*archive.org_bot*") or
 (http.user_agent wildcard "*awariobot*") or
 (http.user_agent wildcard "*barkrowler*") or
 (http.user_agent wildcard "*blexbot*") or
@@ -366,5 +366,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 10.04.2026 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 14.04.2026 [DD.MM.YYYY]</h4>
 </div>
