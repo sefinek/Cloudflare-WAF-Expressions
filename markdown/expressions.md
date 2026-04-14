@@ -292,7 +292,7 @@
 ## 🌍 Part 5 - Block bots, ASNs and IPs<div id="part5"></div>
 > **Action:** Block
 ```
-(ip.geoip.country eq "T1" and http.host ne "blocklist.sefinek.net") or
+(ip.src.continent eq "T1" and http.host ne "blocklist.sefinek.net") or
 (ip.geoip.asnum in {10630}) or
 (ip.src in {
     5.62.47.232          5.75.225.67          2.189.5.142
