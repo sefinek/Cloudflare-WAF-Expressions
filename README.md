@@ -120,5 +120,5 @@ Your contribution will be appreciated and will help keep this list up-to-date an
 
 
 ## 🔖 GNU GPL v3 License
-Copyright © 2023–2026 [Sefinek](https://sefinek.net)
+Copyright © 2023-2026 [Sefinek](https://sefinek.net)
 
