@@ -219,7 +219,6 @@
 (http.user_agent wildcard "*firefox/79*") or
 (http.user_agent wildcard "*firefox/83*") or
 (http.user_agent wildcard "*firefox/84*") or
-(http.user_agent wildcard "*10_15*") or
 (http.user_agent wildcard "*html5plus*") or
 (http.user_agent wildcard "*msie*") or
 (http.user_agent wildcard "*netfront*") or
@@ -366,5 +365,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 15.04.2026 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 18.04.2026 [DD.MM.YYYY]</h4>
 </div>
