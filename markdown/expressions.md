@@ -366,5 +366,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 18.04.2026 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 26.04.2026 [DD.MM.YYYY]</h4>
 </div>
