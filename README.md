@@ -36,7 +36,7 @@ If you find this repository useful, I would greatly appreciate it if you could g
 ## ✅ Usage
 ### Automatic (highly recommended)<div id="automatic-installation"></div>
 You can use the JavaScript code from this repository to automatically update the rules throughout the day.  
-There's no need to add them manually, as the script takes care of everything for you (;
+There's no need to add them manually, as the script takes care of everything for you. 😉
 
 #### Requirements
 1. [Node.js LTS + npm](https://nodejs.org)
@@ -60,7 +60,7 @@ There's no need to add them manually, as the script takes care of everything for
 4. Open the `.env` file and configure the following variables:
    - Set `NODE_ENV` to `production`
    - Paste your Cloudflare API token in place of `CF_API_TOKEN`
-   - Paste your Cloudflare Account ID in place of `CF_ACCOUNT_ID` (found in the URL: `dash.cloudflare.com/<account_id>/...`) - required for IP blocklist sync via Cloudflare Lists
+   - Set `CF_ACCOUNT_ID` to your Cloudflare Account ID (found in the URL: `dash.cloudflare.com/<account_id>/...`) - required for IP blocklist sync
    - Set `PHP_SUPPORT` to `true` if your website uses PHP ([this will exclude .php blocking rules](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/rules/expressions.md#%EF%B8%8F-firewall-rules-for-cloudflare-waf))
    ```bash
    nano .env

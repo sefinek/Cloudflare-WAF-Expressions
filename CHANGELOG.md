@@ -24,5 +24,6 @@
 - `verifyAndReorderParts` now reuses already-fetched rules when no new rules were created, reducing redundant API calls.
 
 ### Fixed
+- `RULES_UPDATE_CRON` and `GIT_PULL_CRON` env variables were swapped - `RULES_UPDATE_CRON` now correctly controls WAF rule updates, `GIT_PULL_CRON` controls git pull + restart.
 - Wrong rule priority on creation (was offset by 1).
 - Null crash in `verifyAndReorderParts` when a rule had no description.

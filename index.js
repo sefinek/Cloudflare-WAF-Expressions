@@ -22,8 +22,8 @@ if (!CF_ACCOUNT_ID) {
 }
 
 // Cron jobs
-new CronJob(process.env.RULES_UPDATE_CRON || '0 13 * * *', pullAndRestart, null, true); // At 13:00.
-new CronJob(process.env.GIT_PULL_CRON || '0 11,14,16,18,20 * * *', updateWAFRules, null, true); // At minute 0 past hour 11, 14, 16, 18, and 20.
+new CronJob(process.env.GIT_PULL_CRON || '0 13 * * *', pullAndRestart, null, true); // At 13:00.
+new CronJob(process.env.RULES_UPDATE_CRON || '0 11,14,16,18,20 * * *', updateWAFRules, null, true); // At minute 0 past hour 11, 14, 16, 18, and 20.
 
 // Run the job immediately
 void updateWAFRules();
