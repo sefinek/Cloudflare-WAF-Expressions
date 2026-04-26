@@ -8,11 +8,11 @@
 - API token permissions changed - `Zone WAF: Edit` is no longer needed. Required permissions are now: `Account / Account Filter Lists: Edit`, `Zone / Zone: Read`, `Zone / Firewall Services: Edit`.
 
 ### Added
-- **SniffCat IP blocklist support** - the script can now fetch malicious IPs from the SniffCat database.
+- **SniffCat IP blocklist integration** - the script now fetches malicious IPs dynamically from the [SniffCat](https://sniffcat.com) database and merges them with the static `rules/ip-blocklist.txt` on every sync. Requires `SNIFFCAT_API_TOKEN`. Configurable via `SNIFFCAT_CONFIDENCE_MIN` (default: `70`) and `SNIFFCAT_LIMIT` (default: `3000`).
 - **Cloudflare Lists integration** - IP blocklist (`rules/ip-blocklist.txt`) is now synced automatically to a Cloudflare Custom IP List and referenced in WAF rules as `ip.src in $<list_name>`. Configurable via `CF_IP_LIST_NAME`.
 - **Rule ID cache** (`data/rule-ids.json`) - WAF rule and filter IDs are cached locally to avoid fragile name-based matching on every run.
 - **Cleanup tool** (`data/scripts/deleteWAFRules.js`) - removes all custom WAF rules, filters, and the managed IP list from Cloudflare, then clears the local cache. Shows a full preview and requires confirmation before proceeding.
-- New environment variables `CF_ACCOUNT_ID` and `CF_IP_LIST_NAME` (see `.env.default`).
+- New environment variables `CF_ACCOUNT_ID`, `CF_IP_LIST_NAME`, `SNIFFCAT_API_TOKEN`, `SNIFFCAT_CONFIDENCE_MIN`, `SNIFFCAT_LIMIT` (see `.env.default`).
 
 ### Changed
 - **WAF rules restructured** - new names, emojis, and order optimized for Cloudflare's 4096-character limit per rule:
