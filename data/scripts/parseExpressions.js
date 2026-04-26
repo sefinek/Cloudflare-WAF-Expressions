@@ -60,7 +60,7 @@ const parseExpressionsMain = async () => {
 
 	try {
 		// Extract expressions
-		const data = await fs.readFile('markdown/expressions.md', 'utf8');
+		const data = await fs.readFile('rules/expressions.md', 'utf8');
 		const parsed = parseExpressions(data);
 		if (!parsed.length) {
 			log('No code blocks found', 2);

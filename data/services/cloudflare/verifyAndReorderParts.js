@@ -2,12 +2,12 @@ const { axios } = require('../axios.js');
 const fetchWAFCustomRules = require('./fetchWAFRules.js');
 const log = require('../../scripts/log.js');
 
-module.exports = async zoneId => {
+module.exports = async (zoneId, existingRules = null) => {
 	log('Verifying the order of WAF parts for this zone...');
 
 	try {
-		const rules = await fetchWAFCustomRules(zoneId);
-		const userDefinedRules = rules.filter(rule => !rule.description.match(/Part \d+/));
+		const rules = existingRules ?? await fetchWAFCustomRules(zoneId);
+		const userDefinedRules = rules.filter(rule => !rule.description?.match(/Part \d+/));
 		const partRules = rules.filter(rule => rule.description && rule.description.match(/Part \d+/));
 
 		if (userDefinedRules.length === 0 && partRules.length === 0) return log('No rules found to reorder.', 2);

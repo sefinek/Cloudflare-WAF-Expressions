@@ -2,6 +2,8 @@ const { axios, getRequestCount } = require('../axios.js');
 const expressionParser = require('../../scripts/parseExpressions.js');
 const fetchWAFRules = require('./fetchWAFRules.js');
 const verifyAndReorderParts = require('./verifyAndReorderParts.js');
+const syncIPList = require('./syncIPList.js');
+const { load: loadCache, save: saveCache } = require('../ruleCache.js');
 const { pull } = require('../updates.js');
 const log = require('../../scripts/log.js');
 
@@ -27,7 +29,7 @@ const verifyFilterUpdate = async (zoneId, filterId, expression) => {
 
 		if (data.result.expression !== expression) log('Verification failed. Expression mismatch!', 2);
 	} catch (err) {
-		throw new Error(`Filter ${filterId}: Failed to verify - ${JSON.stringify(err.response?.data) || err.stack}`);
+		throw new Error(`Filter ${filterId}: Failed to verify - ${JSON.stringify(err.response?.data)}`, { cause: err });
 	}
 };
 
@@ -42,55 +44,81 @@ const updateFilter = async (zoneId, filterId, expression, oldExpression) => {
 
 		await verifyFilterUpdate(zoneId, filterId, expression);
 	} catch (err) {
-		throw new Error(`Update failed - ${JSON.stringify(err.response?.data) || err.stack}`);
+		throw new Error(`Update failed - ${JSON.stringify(err.response?.data)}`, { cause: err });
 	}
 };
 
-const createNewRule = async (zoneId, description, action, expression, index) => {
+const createNewRule = async (zoneId, description, action, expression, index, zoneCache) => {
 	log(`Creating new WAF rule '${description}' (action ${action}, length: ${expression.length})...`);
 
 	try {
 		const { data } = await axios.post(`/zones/${zoneId}/filters`, [{ expression }]);
 		if (!data.success) throw new Error(`Failed to create filter. ${data?.errors}`);
 
+		const filterId = data.result[0].id;
 		const res = await axios.post(`/zones/${zoneId}/firewall/rules`, [{
-			filter: { id: data.result[0].id },
+			filter: { id: filterId },
 			action,
 			description,
-			priority: (index || 0) + 1,
+			priority: index,
 		}]);
 
 		if (!res.data.success) throw new Error(`Failed to create rule. ${res.data?.errors}`);
+
+		const ruleId = res.data.result[0].id;
+		zoneCache[index] = { ruleId, filterId };
 		log(`WAF rule '${description}' created successfully`, 1);
 	} catch (err) {
-		throw new Error(`Failed to create new rule for zone ${zoneId} - ${JSON.stringify(err.response?.data) || err.stack}`);
+		throw new Error(`Failed to create new rule for zone ${zoneId} - ${JSON.stringify(err.response?.data)}`, { cause: err });
 	}
 };
 
-const updateWAFCustomRulesForZone = async (expressions, zone) => {
+const updateWAFCustomRulesForZone = async (expressions, zone, cache) => {
 	log(`=================== ANALYZING THE ZONE ${zone.name.toUpperCase()} (${zone.id}) ===================`);
+
+	const zoneCache = cache.zones[zone.id] ?? {};
+	let cacheChanged = false;
+	let rulesCreated = false;
 
 	try {
 		const rules = await fetchWAFRules(zone.id);
 
 		for (const [indexStr, block] of Object.entries(expressions)) {
 			const index = parseInt(indexStr);
+			if (isNaN(index)) continue;
 			const { name, action, expressions: part } = block;
-			const matchingRule = rules.find(rule => rule.description && rule.description.includes(`Part ${index}`));
 
-			if (part && matchingRule) {
+			const cached = zoneCache[index];
+			let matchingRule = cached ? rules.find(rule => rule.id === cached.ruleId) : null;
+
+			if (!matchingRule) {
+				matchingRule = rules.find(rule => rule.description && rule.description.includes(`Part ${index}`));
+				if (matchingRule) {
+					if (!cached) log(`» Part ${index}: matched by name - IDs cached for future runs.`);
+					zoneCache[index] = { ruleId: matchingRule.id, filterId: matchingRule.filter.id };
+					cacheChanged = true;
+				}
+			}
+
+			if (matchingRule) {
 				const filterId = matchingRule.filter.id;
 				log(`» Checking '${matchingRule.description}' (${filterId}) [length: ${block.length}]...`);
 				await updateFilter(zone.id, filterId, part, matchingRule.filter.expression);
 			} else if (part) {
-				log(`» No matching rule found for part ${index}`, 2);
-				await createNewRule(zone.id, name, action, part, index);
+				log(`» No matching rule found for part ${index}`);
+				await createNewRule(zone.id, name, action, part, index, zoneCache);
+				cacheChanged = true;
+				rulesCreated = true;
 			}
 		}
 
-		await verifyAndReorderParts(zone.id);
+		await verifyAndReorderParts(zone.id, rulesCreated ? null : rules);
 	} catch (err) {
-		throw new Error(`» Error during update: ${err.message}`);
+		throw new Error('» Error during update - updateWAFCustomRulesForZone()', { cause: err });
+	}
+
+	if (cacheChanged) {
+		cache.zones[zone.id] = zoneCache;
 	}
 };
 
@@ -101,11 +129,16 @@ module.exports = async () => {
 		const expressions = await expressionParser();
 		if (!expressions || !Object.keys(expressions).length) return log('No expressions found.', 3);
 
+		await syncIPList();
+
+		const cache = await loadCache();
 		const zones = await getZones();
+
 		for (const zone of zones) {
-			await updateWAFCustomRulesForZone(expressions, zone);
+			await updateWAFCustomRulesForZone(expressions, zone, cache);
 		}
 
+		await saveCache(cache);
 		log(`Successfully! All API requests: ${getRequestCount()}`, 1);
 	} catch (err) {
 		log(`WAF update failed! ${err.message}`, 3);

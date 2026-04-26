@@ -3,6 +3,9 @@
 By using these WAF expressions, you can effectively block all unnecessary and potentially malicious requests targeting your origin server, thereby enhancing its security.
 If you find this repository useful, I would greatly appreciate it if you could give it a **star** ⭐. Thank you!
 
+> [!WARNING]
+> **v2.0.0 introduces breaking changes.** See [CHANGELOG.md](CHANGELOG.md) for details.
+
 > [!TIP]
 > - Use a [dedicated script](#automatic-installation) to automatically update rules for each zone.
 > - Do you want to report events from Cloudflare WAF to AbuseIPDB? See [Cloudflare-WAF-To-AbuseIPDB](https://github.com/sefinek/Cloudflare-WAF-To-AbuseIPDB).
@@ -12,21 +15,21 @@ If you find this repository useful, I would greatly appreciate it if you could g
 
 
 ## 🛡️ What Can This List Block?
-| Part (1-5)                                                                                                                 | Description                                                                                                                    | Action            |
-|----------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------|:------------------|
-| [Main firewall (I)](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/markdown/expressions.md#part1)         | Blocks data leaks, suspicious referrers, malicious and unusual URL paths, as well as empty or anomalous User-Agents.           | Block             |
-| [Main firewall (II)](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/markdown/expressions.md#part2)        | Blocks suspicious requests, exploits, path traversal, configuration file access attempts, and the use of CLI tools in URLs.    | Block             |
-| [Deprecated browsers, etc.](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/markdown/expressions.md#part3) | Enforces additional verification for outdated browsers, operating systems, and suspicious User-Agents.                         | Managed Challenge |
-| [Block unnecessary bots](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/markdown/expressions.md#part4)    | Blocks unnecessary, harmful bots, scanners, and web scrapers.                                                                  | Block             |
-| [Block bots, ASNs and IPs](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/markdown/expressions.md#part5)  | Blocks traffic from the Tor network, known malicious IP addresses, and autonomous systems (ASNs) linked to botnets or attacks. | Block             |
+| Part (1-5)                                                                                                                                  | Description                                                                                                                 | Action            |
+|---------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------|:------------------|
+| [🔥 Part 1 - Suspicious paths & headers](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/rules/expressions.md#part1)        | Blocks data leaks, suspicious referrers, malicious and unusual URL paths, as well as empty or anomalous User-Agents.        | Block             |
+| [🧨 Part 2 - Malicious extensions & injections](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/rules/expressions.md#part2) | Blocks suspicious requests, exploits, path traversal, configuration file access attempts, and the use of CLI tools in URLs. | Block             |
+| [🤖 Part 3 - Unwanted bots](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/rules/expressions.md#part3)                     | Blocks unnecessary, harmful bots, scanners, and web scrapers.                                                               | Block             |
+| [🦕 Part 4 - Ancient browsers & IP blocklist](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/rules/expressions.md#part4)   | Blocks traffic from the Tor network, known malicious IP addresses, ASNs linked to botnets, and very outdated browsers.      | Block             |
+| [🗑️ Part 5 - Deprecated browsers & CMS](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/rules/expressions.md#part5)        | Enforces additional verification for outdated browsers (Chrome 73-122, Firefox 62-118), old OS versions, and CMS scanners.  | Managed Challenge |
 
 > [!IMPORTANT]  
 > It is also recommended to **disable** the `Bot Fight Mode` feature in the `Security` tab.  
 > Although this feature helps detect and block automated bot traffic, it can inadvertently block safe, legitimate bots as well, which is not our intention.
 
 <div align="center">
-   <h3>>> <a href="markdown/expressions.md">View Main Expressions</a> <<</h3>
-   <h3>>> <a href="markdown/cache.md">View Expressions for Caching</a> <<</h3>
+   <h3>>> <a href="rules/expressions.md">View Main Expressions</a> <<</h3>
+   <h3>>> <a href="rules/cache.md">View Expressions for Caching</a> <<</h3>
 </div>
 
 
@@ -56,8 +59,9 @@ There's no need to add them manually, as the script takes care of everything for
    ```
 4. Open the `.env` file and configure the following variables:
    - Set `NODE_ENV` to `production`
-   - Paste your Cloudflare token in place of `CF_API_TOKEN`
-   - Set `PHP_SUPPORT` to `true` if your website uses PHP ([this will exclude .php blocking rules](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/markdown/expressions.md#%EF%B8%8F-firewall-rules-for-cloudflare-waf))
+   - Paste your Cloudflare API token in place of `CF_API_TOKEN`
+   - Paste your Cloudflare Account ID in place of `CF_ACCOUNT_ID` (found in the URL: `dash.cloudflare.com/<account_id>/...`) - required for IP blocklist sync via Cloudflare Lists
+   - Set `PHP_SUPPORT` to `true` if your website uses PHP ([this will exclude .php blocking rules](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/rules/expressions.md#%EF%B8%8F-firewall-rules-for-cloudflare-waf))
    ```bash
    nano .env
    ```
@@ -76,7 +80,7 @@ There's no need to add them manually, as the script takes care of everything for
 2. Select the domain where you want to add the expressions.
 3. Click on the `Security` tab, then choose `WAF` from the dropdown menu.
 4. In the `Custom rules` tab, click the `Create rule` button.
-5. Copy the expressions from the [markdown/expressions.md](markdown/expressions.md) file.
+5. Copy the expressions from the [rules/expressions.md](rules/expressions.md) file.
 6. Click `Edit expression` and paste the copied expressions.
 7. Click `Deploy` to save the changes. Repeat this process for the remaining parts of the expressions, ensuring you select the appropriate action (Block or Managed Challenge) as specified in the file.
 8. Done! The expressions are now active and will start blocking unwanted traffic to your origin server. Make sure your website functions correctly, and visit this repository periodically for the latest updates.
@@ -112,6 +116,17 @@ Keep in mind that there are many more measures available to mitigate DDoS attack
 1. Make sure that your server's IP address has not been leaked.
 2. Your server should accept only requests coming from Cloudflare. Accessing your website directly, bypassing Cloudflare, should not be possible.
 3. Configure rate limits on your server to reduce its load during a DDoS attack.
+
+
+## 🗑️ Cleanup Tool
+To remove all WAF rules, filters, and the IP blocklist from Cloudflare (e.g. before a fresh install), run:
+```bash
+node data/scripts/deleteWAFRules.js
+```
+The script will list everything it found and ask for confirmation before deleting anything. It also clears the local rule ID cache (`data/rule-ids.json`).
+
+> [!WARNING]
+> This operation is irreversible. All custom WAF rules and the managed IP list will be permanently deleted from your Cloudflare account.
 
 
 ## 🤝 Pull requests

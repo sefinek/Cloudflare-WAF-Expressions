@@ -8,13 +8,17 @@ const log = require('./data/scripts/log.js');
 log(`Author: ${author} | https://github.com/sefinek/Cloudflare-WAF-Expressions (v${version})`);
 
 // Validate environment variables
-const { NODE_ENV, CF_API_TOKEN } = process.env;
+const { NODE_ENV, CF_API_TOKEN, CF_ACCOUNT_ID } = process.env;
 if (NODE_ENV !== 'production' && NODE_ENV !== 'development') {
 	log('NODE_ENV is not set (process.env.NODE_ENV)', 2);
 }
 
 if (!CF_API_TOKEN || typeof CF_API_TOKEN !== 'string' || CF_API_TOKEN.trim() === '' || CF_API_TOKEN.length !== 40) {
 	throw new Error('Missing or invalid Cloudflare API token (process.env.CF_API_TOKEN)');
+}
+
+if (!CF_ACCOUNT_ID) {
+	log('CF_ACCOUNT_ID is not set — IP list sync (rules/ip-blocklist.txt) will be skipped', 2);
 }
 
 // Cron jobs
