@@ -141,6 +141,9 @@ module.exports = async () => {
 		await saveCache(cache);
 		log(`Successfully! All API requests: ${getRequestCount()}`, 1);
 	} catch (err) {
-		log(`WAF update failed! ${err.message}`, 3);
+		let cause = err;
+		while (cause.cause) cause = cause.cause;
+		const detail = cause.response?.data ? JSON.stringify(cause.response.data) : null;
+		log(`WAF update failed! ${err.message}${detail ? ` - ${detail}` : ` - ${cause.message}`}`, 3);
 	}
 };

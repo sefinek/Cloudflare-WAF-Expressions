@@ -51,7 +51,7 @@ const getAllListItems = async listId => {
 	let cursor = null;
 
 	do {
-		const params = cursor ? { cursor } : {};
+		const params = cursor ? { cursor, per_page: 500 } : { per_page: 500 };
 		const { data } = await axios.get(`/accounts/${CF_ACCOUNT_ID}/rules/lists/${listId}/items`, { params });
 		if (!data.success) throw new Error(`Failed to fetch list items: ${JSON.stringify(data.errors)}`);
 
