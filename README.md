@@ -24,8 +24,8 @@ If you find this repository useful, I would greatly appreciate it if you could g
 | [🗑️ Part 5 - Deprecated browsers & CMS](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/rules/expressions.md#part5)        | Enforces additional verification for outdated browsers (Chrome 73-122, Firefox 62-118), old OS versions, and CMS scanners.  | Managed Challenge |
 
 > [!IMPORTANT]  
-> It is also recommended to **disable** the `Bot Fight Mode` feature in the `Security` tab.  
-> Although this feature helps detect and block automated bot traffic, it can inadvertently block safe, legitimate bots as well, which is not our intention.
+> It is recommended to **disable** `Bot Fight Mode` in the `Security` tab.  
+> Part 3 already controls which bots are blocked. Bot Fight Mode runs in parallel and may conflict with your rules.
 
 <div align="center">
    <h3>>> <a href="rules/expressions.md">View Main Expressions</a> <<</h3>
