@@ -14,7 +14,7 @@ const executeCmd = cmd => new Promise((resolve, reject) => {
 	});
 });
 
-const CMD_1 = 'npm install --omit=dev';
+const CMD_1 = 'npm ci --omit=dev';
 const CMD_2 = (() => {
 	if (!ecosystem.apps?.[0]?.name) throw new Error('Missing app name in ecosystem config');
 	return `pm2 restart ${ecosystem.apps[0].name}`;
