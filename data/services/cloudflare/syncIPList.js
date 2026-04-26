@@ -1,6 +1,7 @@
 const fs = require('node:fs/promises');
 const { axios } = require('../axios.js');
 const { load: loadCache, save: saveCache } = require('../ruleCache.js');
+const fetchSniffCatIPs = require('../sniffcat.js');
 const log = require('../../scripts/log.js');
 
 const { CF_ACCOUNT_ID } = process.env;
@@ -63,22 +64,31 @@ const getAllListItems = async listId => {
 
 const readIPs = async () => {
 	const content = await fs.readFile('rules/ip-blocklist.txt', 'utf8');
-	return content
+	const staticIPs = content
 		.split('\n')
 		.map(line => line.trim())
 		.filter(line => line && !line.startsWith('#'));
+
+	const sniffcatIPs = await fetchSniffCatIPs();
+	const merged = [...new Set([...staticIPs, ...sniffcatIPs])].sort();
+	const dupes = staticIPs.length + sniffcatIPs.length - merged.length;
+
+	log(`Desired list: ${merged.length} unique IPs (${staticIPs.length} static + ${sniffcatIPs.length} SniffCat${dupes > 0 ? `, ${dupes} duplicates removed` : ''})`);
+	return merged;
 };
 
 module.exports = async () => {
 	if (!CF_ACCOUNT_ID) {
-		log('CF_ACCOUNT_ID not set — skipping IP list sync', 2);
+		log('CF_ACCOUNT_ID not set - skipping IP list sync', 2);
 		return;
 	}
 
-	log('Syncing IP blocklist with Cloudflare Lists...');
+	log(`Syncing IP list '${LIST_NAME}' with Cloudflare...`);
 
 	const cache = await loadCache();
 	const desiredIPs = new Set(await readIPs());
+
+	log(`Fetching current state of CF list '${LIST_NAME}' (this may take a moment)...`);
 	const listId = await getOrCreateList(cache);
 	const currentItems = await getAllListItems(listId);
 
@@ -88,20 +98,17 @@ module.exports = async () => {
 		.filter(item => !desiredIPs.has(item.ip))
 		.map(item => ({ id: item.id }));
 
+	log(`CF list: ${currentItems.length} IPs | diff: +${toAdd.length} to add / -${toDelete.length} to remove`);
+
 	if (toDelete.length > 0) {
-		log(`Removing ${toDelete.length} IP(s) from list...`);
-		const { data } = await axios.delete(`/accounts/${CF_ACCOUNT_ID}/rules/lists/${listId}/items`, {
-			data: { items: toDelete },
-		});
+		log(`Removing ${toDelete.length} stale IP(s) (no longer in desired list)...`);
+		const { data } = await axios.delete(`/accounts/${CF_ACCOUNT_ID}/rules/lists/${listId}/items`, { data: { items: toDelete } });
 		if (!data.success) throw new Error(`Failed to delete items: ${JSON.stringify(data.errors)}`);
 	}
 
 	if (toAdd.length > 0) {
-		log(`Adding ${toAdd.length} IP(s) to list...`);
-		const { data } = await axios.post(
-			`/accounts/${CF_ACCOUNT_ID}/rules/lists/${listId}/items`,
-			toAdd.map(ip => ({ ip }))
-		);
+		log(`Adding ${toAdd.length} new IP(s)...`);
+		const { data } = await axios.post(`/accounts/${CF_ACCOUNT_ID}/rules/lists/${listId}/items`, toAdd.map(ip => ({ ip })));
 		if (!data.success) throw new Error(`Failed to add items: ${JSON.stringify(data.errors)}`);
 	}
 
