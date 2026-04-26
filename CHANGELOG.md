@@ -8,6 +8,7 @@
 - API token permissions changed - `Zone WAF: Edit` is no longer needed. Required permissions are now: `Account / Account Filter Lists: Edit`, `Zone / Zone: Read`, `Zone / Firewall Services: Edit`.
 
 ### Added
+- **SniffCat IP blocklist support** - the script can now fetch malicious IPs from the SniffCat database.
 - **Cloudflare Lists integration** - IP blocklist (`rules/ip-blocklist.txt`) is now synced automatically to a Cloudflare Custom IP List and referenced in WAF rules as `ip.src in $<list_name>`. Configurable via `CF_IP_LIST_NAME`.
 - **Rule ID cache** (`data/rule-ids.json`) - WAF rule and filter IDs are cached locally to avoid fragile name-based matching on every run.
 - **Cleanup tool** (`data/scripts/deleteWAFRules.js`) - removes all custom WAF rules, filters, and the managed IP list from Cloudflare, then clears the local cache. Shows a full preview and requires confirmation before proceeding.
