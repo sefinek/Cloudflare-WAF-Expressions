@@ -3,12 +3,21 @@ const { axios } = require('../axios.js');
 const { load: loadCache, save: saveCache } = require('../ruleCache.js');
 const fetchSniffCatIPs = require('../sniffcat.js');
 const log = require('../../scripts/log.js');
+const { version } = require('../../../package.json');
 
-const { CF_ACCOUNT_ID } = process.env;
+const { CF_ACCOUNT_ID, SNIFFCAT_API_TOKEN } = process.env;
 const LIST_NAME = process.env.CF_IP_LIST_NAME || 'sefinek_cf_waf';
+const LIST_DESCRIPTION = `Managed by Cloudflare-WAF-Expressions v${version} (https://github.com/sefinek/Cloudflare-WAF-Expressions). Sources: rules/ip-blocklist.txt${SNIFFCAT_API_TOKEN ? ', SniffCat' : ''}. Do not edit manually - any changes will be overwritten on the next sync.`;
 
 const getOrCreateList = async cache => {
-	if (cache.ipListId) return cache.ipListId;
+	if (cache.ipListId) {
+		if (cache.ipListDescription !== LIST_DESCRIPTION) {
+			await axios.put(`/accounts/${CF_ACCOUNT_ID}/rules/lists/${cache.ipListId}`, { description: LIST_DESCRIPTION });
+			cache.ipListDescription = LIST_DESCRIPTION;
+			log('IP list description updated', 1);
+		}
+		return cache.ipListId;
+	}
 
 	const { data } = await axios.get(`/accounts/${CF_ACCOUNT_ID}/rules/lists`);
 	if (!data.success) throw new Error(`Failed to fetch lists: ${JSON.stringify(data.errors)}`);
@@ -16,23 +25,25 @@ const getOrCreateList = async cache => {
 	const existing = data.result.find(l => l.name === LIST_NAME);
 	if (existing) {
 		cache.ipListId = existing.id;
+		if (existing.description !== LIST_DESCRIPTION) {
+			await axios.put(`/accounts/${CF_ACCOUNT_ID}/rules/lists/${existing.id}`, { description: LIST_DESCRIPTION });
+			log('IP list description updated', 1);
+		}
+		cache.ipListDescription = LIST_DESCRIPTION;
 		return existing.id;
 	}
 
 	const existingIPLists = data.result.filter(l => l.kind === 'ip');
 
 	log(`Creating new IP list '${LIST_NAME}'...`);
+	let created;
 	try {
-		const { data: created } = await axios.post(`/accounts/${CF_ACCOUNT_ID}/rules/lists`, {
+		const res = await axios.post(`/accounts/${CF_ACCOUNT_ID}/rules/lists`, {
 			name: LIST_NAME,
 			kind: 'ip',
-			description: 'WAF IP blocklist managed by Cloudflare-WAF-Expressions',
+			description: LIST_DESCRIPTION,
 		});
-		if (!created.success) throw new Error(`Failed to create list: ${JSON.stringify(created.errors)}`);
-
-		cache.ipListId = created.result.id;
-		log(`Created IP list '${LIST_NAME}' (id: ${created.result.id})`, 1);
-		return created.result.id;
+		created = res.data;
 	} catch (err) {
 		const cfErrors = err.response?.data?.errors;
 		if (cfErrors?.some(e => e.code === 10019)) {
@@ -44,6 +55,13 @@ const getOrCreateList = async cache => {
 		}
 		throw new Error(`Failed to create list ${LIST_NAME}! ${cfErrors ? JSON.stringify(cfErrors) : err.message}`, { cause: err });
 	}
+
+	if (!created.success) throw new Error(`Failed to create list: ${JSON.stringify(created.errors)}`);
+
+	cache.ipListId = created.result.id;
+	cache.ipListDescription = LIST_DESCRIPTION;
+	log(`Created IP list '${LIST_NAME}' (id: ${created.result.id})`, 1);
+	return created.result.id;
 };
 
 const getAllListItems = async listId => {
@@ -63,13 +81,15 @@ const getAllListItems = async listId => {
 };
 
 const readIPs = async () => {
-	const content = await fs.readFile('rules/ip-blocklist.txt', 'utf8');
+	const [content, sniffcatIPs] = await Promise.all([
+		fs.readFile('rules/ip-blocklist.txt', 'utf8'),
+		fetchSniffCatIPs(),
+	]);
+
 	const staticIPs = content
 		.split('\n')
 		.map(line => line.trim())
 		.filter(line => line && !line.startsWith('#'));
-
-	const sniffcatIPs = await fetchSniffCatIPs();
 	const merged = [...new Set([...staticIPs, ...sniffcatIPs])].sort();
 	const dupes = staticIPs.length + sniffcatIPs.length - merged.length;
 
@@ -86,10 +106,10 @@ module.exports = async () => {
 	log(`Syncing IP list '${LIST_NAME}' with Cloudflare...`);
 
 	const cache = await loadCache();
-	const desiredIPs = new Set(await readIPs());
-
-	log(`Fetching current state of CF list '${LIST_NAME}' (this may take a moment)...`);
-	const listId = await getOrCreateList(cache);
+	const [desiredIPs, listId] = await Promise.all([
+		readIPs().then(ips => new Set(ips)),
+		getOrCreateList(cache),
+	]);
 	const currentItems = await getAllListItems(listId);
 
 	const currentMap = new Map(currentItems.map(item => [item.ip, item.id]));

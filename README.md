@@ -59,13 +59,16 @@ There's no need to add them manually, as the script takes care of everything for
    ```
 4. Open the `.env` file and configure the following variables:
    - Set `NODE_ENV` to `production`
-   - Paste your Cloudflare API token in place of `CF_API_TOKEN`
-   - Set `CF_ACCOUNT_ID` to your Cloudflare Account ID (found in the URL: `dash.cloudflare.com/<account_id>/...`) - required for IP blocklist sync
-   - Set `PHP_SUPPORT` to `true` if your website uses PHP ([this will exclude .php blocking rules](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/rules/expressions.md#%EF%B8%8F-firewall-rules-for-cloudflare-waf))
+   - Paste your Cloudflare API token in place of `CF_API_TOKEN` (required permissions are shown in the screenshot below)
+     ![brave_JDyTDLnUFonD.png](data/images/brave_JDyTDLnUFonD.png)
+   - Set `CF_ACCOUNT_ID` to your Cloudflare Account ID (usually 32 characters, found in the URL: `dash.cloudflare.com/<account_id>/...`) - required for IP list sync
+   - Set `CF_IP_LIST_NAME` to a custom name for the managed IP list, or leave the default (`sefinek_cf_waf`)
+     ![brave_9c1jIPBu.png](data/images/brave_9c1jIPBu.png)
+   - Set `PHP_SUPPORT` to `true` if your website uses PHP (removes the Managed Challenge rule for `.php` files)
+   - Set `SNIFFCAT_API_TOKEN` to include dynamic malicious IPs from [SniffCat](https://sniffcat.com) (optional, but highly recommended)
    ```bash
    nano .env
    ```
-   ![brave_JDyTDLnUFonD.png](data/images/brave_JDyTDLnUFonD.png)
 5. Run the script 24/7 using PM2:
    ```bash
    pm2 start && pm2 save
@@ -76,6 +79,9 @@ There's no need to add them manually, as the script takes care of everything for
    ```
 
 ### Manually
+> [!CAUTION]
+> This method is not recommended. WAF expressions and IP blocklists should be kept up to date at all times to remain effective against new threats. Updating them manually is error-prone and easy to forget. Use the [automatic method](#automatic-installation) instead.
+
 1. Log in to your [Cloudflare](https://dash.cloudflare.com) account.
 2. Select the domain where you want to add the expressions.
 3. Click on the `Security` tab, then choose `WAF` from the dropdown menu.
@@ -84,6 +90,16 @@ There's no need to add them manually, as the script takes care of everything for
 6. Click `Edit expression` and paste the copied expressions.
 7. Click `Deploy` to save the changes. Repeat this process for the remaining parts of the expressions, ensuring you select the appropriate action (Block or Managed Challenge) as specified in the file.
 8. Done! The expressions are now active and will start blocking unwanted traffic to your origin server. Make sure your website functions correctly, and visit this repository periodically for the latest updates.
+
+#### IP Blocklist (Part 4)
+Part 4 references a Cloudflare Custom IP List (`ip.src in $sefinek_cf_waf`). To set it up manually:
+1. Go to your Cloudflare dashboard and navigate to **Manage account > Configurations > Lists**.
+2. Click **Create list**, set the **Identifier** to `sefinek_cf_waf` (cannot be changed later), and confirm.
+3. Open the newly created list, add the IP addresses from [`rules/ip-blocklist.txt`](rules/ip-blocklist.txt), and save.
+4. Part 4 will now block all IPs from that list.
+
+> [!NOTE]
+> Cloudflare allows only 1 custom IP list per account (up to 10,000 entries). Remember to update it periodically as new entries are added to [`rules/ip-blocklist.txt`](rules/ip-blocklist.txt). The automatic method handles this for you.
 
 
 ## 🔥 DDoS Protection (Additional Security Measures)

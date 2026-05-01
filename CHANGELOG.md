@@ -4,11 +4,13 @@
 
 ### Fixed
 - `CF_IP_LIST_NAME` was not applied to WAF expressions - the list name in `expressions.md` was hardcoded and the env variable was ignored. The correct name is now injected automatically at parse time.
+- `axios.js`: missing optional chaining on `err.response.data` in the `onRetry` callback, could cause a `TypeError` crash on network errors (`ECONNABORTED`, `ENOTFOUND`).
 
 ### Changed
 - Renamed default IP list from `sefinek_waf` to `sefinek_cf_waf` for consistency.
 - Rewrote `.env.default` - descriptions are now more accurate and detailed.
 - `CF_IP_LIST_NAME` now has a default value (`sefinek_cf_waf`) instead of being empty.
+- Removed `CF_API_TOKEN` length validation - Cloudflare API tokens do not have a fixed length (e.g. may be 53 characters despite previously being 40).
 
 
 ## [v2.0.0] - 2026-04-26

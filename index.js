@@ -13,7 +13,7 @@ if (NODE_ENV !== 'production' && NODE_ENV !== 'development') {
 	log('NODE_ENV is not set (process.env.NODE_ENV)', 2);
 }
 
-if (!CF_API_TOKEN || typeof CF_API_TOKEN !== 'string' || CF_API_TOKEN.trim() === '' || CF_API_TOKEN.length !== 40) {
+if (!CF_API_TOKEN || typeof CF_API_TOKEN !== 'string' || CF_API_TOKEN.trim() === '') {
 	throw new Error('Missing or invalid Cloudflare API token (process.env.CF_API_TOKEN)');
 }
 
