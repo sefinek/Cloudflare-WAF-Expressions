@@ -11,7 +11,7 @@ If you find this repository useful, I would greatly appreciate it if you could g
 > - Do you want to report events from Cloudflare WAF to AbuseIPDB? See [Cloudflare-WAF-To-AbuseIPDB](https://github.com/sefinek/Cloudflare-WAF-To-AbuseIPDB).
 > - Join my [Discord server](https://discord.gg/53DBjTuzgZ) if you need help or want to receive notifications about important updates.
 
-<img src="data/images/brave_7GZjqAdswro2.png" alt="Cloudflare Web Application Firewall [WAF] Rules"> 
+<img src="data/images/waf-custom-rules.png" alt="Cloudflare Web Application Firewall [WAF] Rules"> 
 
 
 ## 🛡️ What Can This List Block?
@@ -60,10 +60,10 @@ There's no need to add them manually, as the script takes care of everything for
 4. Open the `.env` file and configure the following variables:
    - Set `NODE_ENV` to `production`
    - Paste your Cloudflare API token in place of `CF_API_TOKEN` (required permissions are shown in the screenshot below)
-     ![brave_JDyTDLnUFonD.png](data/images/brave_JDyTDLnUFonD.png)
+     ![Required API token permissions](data/images/api-token-permissions.png)
    - Set `CF_ACCOUNT_ID` to your Cloudflare Account ID (usually 32 characters, found in the URL: `dash.cloudflare.com/<account_id>/...`) - required for IP list sync
    - Set `CF_IP_LIST_NAME` to a custom name for the managed IP list, or leave the default (`sefinek_cf_waf`)
-     ![brave_9c1jIPBu.png](data/images/brave_9c1jIPBu.png)
+     ![Cloudflare IP list with synced entries](data/images/cloudflare-ip-list.png)
    - Set `PHP_SUPPORT` to `true` if your website uses PHP (removes the Managed Challenge rule for `.php` files)
    - Set `SNIFFCAT_API_TOKEN` to include dynamic malicious IPs from [SniffCat](https://sniffcat.com) (optional, but highly recommended)
    ```bash
