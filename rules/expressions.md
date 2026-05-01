@@ -243,7 +243,7 @@
 (http.user_agent wildcard "*trident/") or
 (ip.src.continent eq "T1" and http.host ne "blocklist.sefinek.net") or
 (ip.geoip.asnum in {10630}) or
-(ip.src in $sefinek_waf)
+(ip.src in $sefinek_cf_waf)
 ```
 
 ## 🗑️ Part 5 - Deprecated browsers & CMS<div id="part5"></div>

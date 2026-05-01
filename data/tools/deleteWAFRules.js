@@ -3,13 +3,13 @@ const readline = require('node:readline/promises');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const { axios } = require('../services/axios.js');
-const log = require('./log.js');
+const log = require('../scripts/log.js');
 
 const { CF_API_TOKEN, CF_ACCOUNT_ID } = process.env;
 if (!CF_API_TOKEN) throw new Error('CF_API_TOKEN is missing. Check the .env file.');
 
 const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
-const ask = q => rl.question(q).then(a => a.trim().toLowerCase() === 'y');
+const ask = q => rl.question(q).then(a => ['y', 'yes'].includes(a.trim().toLowerCase()));
 
 const getZones = async () => {
 	log('Fetching zones...');
@@ -47,33 +47,33 @@ const getIPLists = async () => {
 		}
 
 		const ipLists = await getIPLists();
+		if (toDelete.length === 0 && ipLists.length === 0) return log('Nothing to delete.', 1);
 
-		if (toDelete.length === 0 && ipLists.length === 0) {
-			return log('Nothing to delete.', 1);
-		}
-
-		log('The following will be deleted:');
+		log('WARNING! This operation is IRREVERSIBLE. The following will be permanently deleted:', 3);
 		for (const { zone, partRules } of toDelete) {
-			log(`  Zone: ${zone.name}`);
-			for (const r of partRules) log(`    - ${r.description} (rule: ${r.id})`);
+			log(`Zone: ${zone.name}`);
+			for (const r of partRules) log(`  - ${r.description} (rule: ${r.id})`);
 		}
 		if (ipLists.length > 0) {
-			log('  IP lists:');
-			for (const l of ipLists) log(`    - ${l.name} (${l.id})`);
+			log('IP lists:');
+			for (const l of ipLists) log(`  - ${l.name} (${l.id})`);
 		}
 
-		if (!await ask('\nProceed? [y/N] ')) return log('Aborted.', 2);
+		if (!await ask('\n> Proceed? [Yes/no] ')) return log('Aborted.', 2);
 
 		const cfDelete = async (url, ids) => {
 			const qs = ids ? '?' + ids.map(id => `id=${id}`).join('&') : '';
+
+			let res;
 			try {
-				const { data } = await axios.delete(`${url}${qs}`);
-				if (!data.success) throw new Error(JSON.stringify(data.errors));
+				res = await axios.delete(`${url}${qs}`);
 			} catch (err) {
 				const cfResponse = err.response?.data;
 				if (cfResponse) log(JSON.stringify(cfResponse), 3);
 				throw new Error(`DELETE ${url} failed: ${err.message}`, { cause: err });
 			}
+
+			if (!res.data.success) throw new Error(`DELETE ${url} failed: ${JSON.stringify(res.data.errors)}`);
 		};
 
 		for (const { zone, partRules } of toDelete) {
@@ -87,7 +87,6 @@ const getIPLists = async () => {
 		for (const l of ipLists) {
 			log(`Deleting IP list '${l.name}'...`);
 			await cfDelete(`/accounts/${CF_ACCOUNT_ID}/rules/lists/${l.id}`);
-			log(`IP list '${l.name}' deleted`, 1);
 		}
 
 		try {

@@ -44,6 +44,11 @@ const updateFilter = async (zoneId, filterId, expression, oldExpression) => {
 
 		await verifyFilterUpdate(zoneId, filterId, expression);
 	} catch (err) {
+		const cfErrors = err.response?.data?.errors;
+		if (cfErrors?.some(e => e.code === 10030)) {
+			log('Unknown IP list referenced in WAF expression. The list may have been deleted or CF_IP_LIST_NAME has changed.', 2);
+			log('To fix this, run: node data/tools/deleteWAFRules.js', 2);
+		}
 		throw new Error(`Update failed - ${JSON.stringify(err.response?.data)}`, { cause: err });
 	}
 };

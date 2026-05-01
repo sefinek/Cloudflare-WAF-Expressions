@@ -121,12 +121,12 @@ Keep in mind that there are many more measures available to mitigate DDoS attack
 ## 🗑️ Cleanup Tool
 To remove all WAF rules, filters, and the IP blocklist from Cloudflare (e.g. before a fresh install), run:
 ```bash
-node data/scripts/deleteWAFRules.js
+node data/tools/deleteWAFRules.js
 ```
 The script will list everything it found and ask for confirmation before deleting anything. It also clears the local rule ID cache (`data/rule-ids.json`).
 
 > [!WARNING]
-> This operation is irreversible. All custom WAF rules and the managed IP list will be permanently deleted from your Cloudflare account.
+> This operation is irreversible! All custom WAF rules and the managed IP list will be permanently deleted from your Cloudflare account.
 
 
 ## 🤝 Pull requests
