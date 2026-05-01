@@ -49,7 +49,7 @@ const getIPLists = async () => {
 		const ipLists = await getIPLists();
 		if (toDelete.length === 0 && ipLists.length === 0) return log('Nothing to delete.', 1);
 
-		log('WARNING! This operation is IRREVERSIBLE. The following will be permanently deleted:', 3);
+		log('WARNING! This operation is IRREVERSIBLE. The following will be permanently deleted:', 2);
 		for (const { zone, partRules } of toDelete) {
 			log(`Zone: ${zone.name}`);
 			for (const r of partRules) log(`  - ${r.description} (rule: ${r.id})`);
