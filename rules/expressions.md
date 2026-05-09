@@ -255,6 +255,7 @@
 (http.request.uri.path wildcard "*/wp-content*") or
 (http.request.uri.path wildcard "*/wp-includes*") or
 (http.user_agent contains "Windows NT 5" and not http.user_agent contains "(via ggpht.com GoogleImageProxy)") or
+(http.user_agent contains "*intel mac os x 10_15*") or
 (http.user_agent wildcard "*chrome/101*") or
 (http.user_agent wildcard "*chrome/103*") or
 (http.user_agent wildcard "*chrome/104*") or
@@ -265,6 +266,8 @@
 (http.user_agent wildcard "*chrome/119*" and not ip.geoip.asnum eq 14618) or
 (http.user_agent wildcard "*chrome/120*") or
 (http.user_agent wildcard "*chrome/122*") or
+(http.user_agent wildcard "*chrome/123*") or
+(http.user_agent wildcard "*chrome/124*") or
 (http.user_agent wildcard "*chrome/73*") or
 (http.user_agent wildcard "*chrome/74*" and not http.user_agent contains "Better Uptime Bot") or
 (http.user_agent wildcard "*chrome/77*") or
@@ -298,5 +301,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 26.04.2026 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 9.05.2026 [DD.MM.YYYY]</h4>
 </div>
