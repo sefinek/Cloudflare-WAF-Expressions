@@ -1,17 +1,27 @@
 <div align="center"><h1>☁️ Cloudflare Web Application Firewall Rules</h1></div>
 
-By using these WAF expressions, you can effectively block all unnecessary and potentially malicious requests targeting your origin server, thereby enhancing its security.
+By using these WAF expressions, you can effectively block most unnecessary and potentially malicious requests targeting your origin server, thereby enhancing its security.
+No Pro account or higher plan is required - everything works fine on the free Cloudflare plan.
 If you find this repository useful, I would greatly appreciate it if you could give it a **star** ⭐. Thank you!
-
-> [!WARNING]
-> **v2.0.0 introduces breaking changes.** See [CHANGELOG.md](CHANGELOG.md) for details.
 
 > [!TIP]
 > - Use a [dedicated script](#automatic-installation) to automatically update rules for each zone.
-> - Do you want to report events from Cloudflare WAF to AbuseIPDB? See [Cloudflare-WAF-To-AbuseIPDB](https://github.com/sefinek/Cloudflare-WAF-To-AbuseIPDB).
+> - Want to report Cloudflare WAF events to a public abuse database? See [Cloudflare-WAF-To-SniffCat](https://github.com/SniffCatDB/Cloudflare-WAF-To-SniffCat).
 > - Join my [Discord server](https://discord.gg/53DBjTuzgZ) if you need help or want to receive notifications about important updates.
 
 <img src="data/images/waf-custom-rules.png" alt="Cloudflare Web Application Firewall [WAF] Rules"> 
+
+
+## 🐈 SniffCat integration
+The script supports [SniffCat](https://sniffcat.com) - a service that provides a dynamic list of known malicious IP addresses.
+When `SNIFFCAT_API_TOKEN` is set, the script fetches IPs from the SniffCat API on every sync and merges them with the static `rules/ip-blocklist.txt` before uploading to Cloudflare Lists.
+This significantly extends the IP blocklist without any manual effort.
+
+The integration can be controlled via two optional environment variables:
+- `SNIFFCAT_CONFIDENCE_MIN` - minimum confidence level (0-100) required to include an IP. Default: `78`.
+- `SNIFFCAT_LIMIT` - maximum number of IPs fetched per sync. Default: `3000`. Cloudflare allows up to 10,000 entries per list.
+
+Without `SNIFFCAT_API_TOKEN`, the integration is skipped and only the static blocklist is used.
 
 
 ## 🛡️ What Can This List Block?
@@ -61,7 +71,7 @@ There's no need to add them manually, as the script takes care of everything for
    - Set `NODE_ENV` to `production`
    - Paste your Cloudflare API token in place of `CF_API_TOKEN` (required permissions are shown in the screenshot below)
      ![Required API token permissions](data/images/api-token-permissions.png)
-   - Set `CF_ACCOUNT_ID` to your Cloudflare Account ID (usually 32 characters, found in the URL: `dash.cloudflare.com/<account_id>/...`) - required for IP list sync
+   - Set `CF_ACCOUNT_ID` to your Cloudflare Account ID (usually 32 characters, found in the URL: `dash.cloudflare.com/<account_id>/configurations/lists`) - required for IP list sync
    - Set `CF_IP_LIST_NAME` to a custom name for the managed IP list, or leave the default (`sefinek_cf_waf`)
      ![Cloudflare IP list with synced entries](data/images/cloudflare-ip-list.png)
    - Set `PHP_SUPPORT` to `true` if your website uses PHP (removes the Managed Challenge rule for `.php` files)
@@ -99,7 +109,7 @@ Part 4 references a Cloudflare Custom IP List (`ip.src in $sefinek_cf_waf`). To 
 4. Part 4 will now block all IPs from that list.
 
 > [!NOTE]
-> Cloudflare allows only 1 custom IP list per account (up to 10,000 entries). Remember to update it periodically as new entries are added to [`rules/ip-blocklist.txt`](rules/ip-blocklist.txt). The automatic method handles this for you.
+> On the free Cloudflare plan, you can have only 1 custom IP list per account (up to 10,000 entries). Paid plans allow more. Remember to update it regularly as new entries are added to [`rules/ip-blocklist.txt`](rules/ip-blocklist.txt). The automatic method handles this for you.
 
 
 ## 🔥 DDoS Protection (Additional Security Measures)

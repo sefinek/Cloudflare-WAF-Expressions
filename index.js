@@ -18,12 +18,12 @@ if (!CF_API_TOKEN || typeof CF_API_TOKEN !== 'string' || CF_API_TOKEN.trim() ===
 }
 
 if (!CF_ACCOUNT_ID) {
-	log('CF_ACCOUNT_ID is not set — IP list sync (rules/ip-blocklist.txt) will be skipped', 2);
+	log('CF_ACCOUNT_ID is not set - IP list sync (rules/ip-blocklist.txt) will be skipped', 2);
 }
 
 // Cron jobs
-new CronJob(process.env.GIT_PULL_CRON || '0 13 * * *', pullAndRestart, null, true); // At 13:00.
-new CronJob(process.env.RULES_UPDATE_CRON || '0 11,14,16,18,20 * * *', updateWAFRules, null, true); // At minute 0 past hour 11, 14, 16, 18, and 20.
+new CronJob(process.env.GIT_PULL_CRON || '30 8 * * *', pullAndRestart, null, true); // At 8:30.
+new CronJob(process.env.RULES_UPDATE_CRON || '0 9,15,18,22 * * *', updateWAFRules, null, true); // At 9:00, 15:00, 18:00 and 22:00.
 
 // Run the job immediately
 void updateWAFRules();

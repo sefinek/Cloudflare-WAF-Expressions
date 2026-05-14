@@ -1,5 +1,15 @@
 # Changelog
 
+## [v2.0.2] - 2026-05-14
+
+### Fixed
+- Removed redundant `verifyFilterUpdate` call after each filter PUT - the extra GET request was doubling API usage per updated rule and likely contributing to Cloudflare rate limiting (HTTP 429, code 10040).
+
+### Changed
+- Default `RULES_UPDATE_CRON` changed from `0 11,14,16,18,20 * * *` to `0 9,15,18,22 * * *` - 4 runs per day with better spacing to reduce API pressure.
+- Default `GIT_PULL_CRON` changed from `0 13 * * *` to `30 8 * * *` - runs 30 minutes before the first WAF update, ensuring code is up to date before the 9:00 sync.
+
+
 ## [v2.0.1] - 2026-05-01
 
 ### Fixed

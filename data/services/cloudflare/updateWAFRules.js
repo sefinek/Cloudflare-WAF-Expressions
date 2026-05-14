@@ -21,18 +21,6 @@ const getZones = async () => {
 	return zones;
 };
 
-const verifyFilterUpdate = async (zoneId, filterId, expression) => {
-	try {
-		log('Verifying if the update was completed successfully...');
-		const { data } = await axios.get(`/zones/${zoneId}/filters/${filterId}`);
-		if (!data.success) throw new Error(`Verification failed. ${data?.errors}`);
-
-		if (data.result.expression !== expression) log('Verification failed. Expression mismatch!', 2);
-	} catch (err) {
-		throw new Error(`Filter ${filterId}: Failed to verify - ${JSON.stringify(err.response?.data)}`, { cause: err });
-	}
-};
-
 const updateFilter = async (zoneId, filterId, expression, oldExpression) => {
 	if (oldExpression === expression) return log('Rule is already up-to-date', 1);
 
@@ -41,8 +29,6 @@ const updateFilter = async (zoneId, filterId, expression, oldExpression) => {
 
 		const { data } = await axios.put(`/zones/${zoneId}/filters/${filterId}`, { id: filterId, expression });
 		if (!data.success) throw new Error(`Update failed. Details: ${data?.errors}`);
-
-		await verifyFilterUpdate(zoneId, filterId, expression);
 	} catch (err) {
 		const cfErrors = err.response?.data?.errors;
 		if (cfErrors?.some(e => e.code === 10030)) {
@@ -122,9 +108,7 @@ const updateWAFCustomRulesForZone = async (expressions, zone, cache) => {
 		throw new Error('» Error during update - updateWAFCustomRulesForZone()', { cause: err });
 	}
 
-	if (cacheChanged) {
-		cache.zones[zone.id] = zoneCache;
-	}
+	if (cacheChanged) cache.zones[zone.id] = zoneCache;
 };
 
 module.exports = async () => {
