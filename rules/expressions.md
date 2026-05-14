@@ -242,7 +242,7 @@
 (http.user_agent wildcard "*symbianos*") or
 (http.user_agent wildcard "*trident/") or
 (ip.src.continent eq "T1" and http.host ne "blocklist.sefinek.net") or
-(ip.geoip.asnum in {10630}) or
+(ip.geoip.asnum in {10630 46851}) or
 (ip.src in $sefinek_cf_waf)
 ```
 
@@ -301,5 +301,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 13.05.2026 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 14.05.2026 [DD.MM.YYYY]</h4>
 </div>
