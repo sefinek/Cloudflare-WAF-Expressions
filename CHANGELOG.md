@@ -1,5 +1,11 @@
 # Changelog
 
+## [v2.1.0] - 2026-05-22
+
+### Added
+- New `WORDPRESS_SUPPORT` environment variable - when set to `true`, Managed Challenge rules for `/wp-content` and `/wp-includes` paths are removed, allowing WordPress themes, plugins, CSS, images and JS to load correctly. The `/wp-admin` rule remains active.
+
+
 ## [v2.0.2] - 2026-05-14
 
 ### Fixed

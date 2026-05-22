@@ -28,12 +28,18 @@ const parseExpressions = text => {
 
 		let cleaned = restored.trim();
 
-		// Filter out PHP-related rules if PHP_SUPPORT is enabled
+		// Filter out PHP-related and WordPress static asset rules based on environment flags
 		const phpSupport = process.env.PHP_SUPPORT || 'false';
 		if (phpSupport.toLowerCase() === 'true') {
-			// Remove PHP blocking expressions with proper parenthesis matching
 			cleaned = cleaned.replace(/\s*\(\s*http\.request\.uri\.path\s+(?:wildcard|contains|eq)\s+"[^"]*\.php[^"]*"(?:\s+and\s+[^)]+)?\s*\)\s*(?:or|$)/gi, '');
+		}
 
+		const wpSupport = process.env.WORDPRESS_SUPPORT || 'false';
+		if (wpSupport.toLowerCase() === 'true') {
+			cleaned = cleaned.replace(/\s*\(\s*http\.request\.uri\.path\s+wildcard\s+"[^"]*\/wp-(?:content|includes)[^"]*"\s*\)\s*(?:or|$)/gi, '');
+		}
+
+		if (phpSupport.toLowerCase() === 'true' || wpSupport.toLowerCase() === 'true') {
 			// Clean up remaining logical operators
 			cleaned = cleaned.replace(/^\s*(?:or|and)\s+/i, ''); // Remove leading operators
 			cleaned = cleaned.replace(/\s+(?:or|and)\s*$/i, ''); // Remove trailing operators
@@ -54,9 +60,13 @@ const parseExpressions = text => {
 };
 
 const parseExpressionsMain = async () => {
-	// Validate PHP_SUPPORT environment variable
+	// Validate environment variables
 	const phpSupport = process.env.PHP_SUPPORT || 'false';
 	if (!['true', 'false'].includes(phpSupport)) log('Invalid PHP_SUPPORT value. Must be "true" or "false"', 2);
+
+	const wpSupport = process.env.WORDPRESS_SUPPORT || 'false';
+	if (!['true', 'false'].includes(wpSupport)) log('Invalid WORDPRESS_SUPPORT value. Must be "true" or "false"', 2);
+	if (wpSupport.toLowerCase() === 'true' && phpSupport.toLowerCase() !== 'true') log('WORDPRESS_SUPPORT=true but PHP_SUPPORT is not enabled - WordPress requires PHP; set PHP_SUPPORT=true to avoid broken functionality', 2);
 
 	try {
 		// Extract expressions
@@ -89,7 +99,7 @@ const parseExpressionsMain = async () => {
 			blocks: parsed.length,
 		};
 
-		log(`Parsed ${result._meta.blocks} expression blocks (rules version: ${result._meta.version}, length: ${result._meta.totalLength} characters); PHP support: ${phpSupport === 'true' ? 'Enabled' : 'Disabled'}`, 1);
+		log(`Parsed ${result._meta.blocks} expression blocks (rules version: ${result._meta.version}, length: ${result._meta.totalLength} characters); PHP support: ${phpSupport === 'true' ? 'Enabled' : 'Disabled'}; WordPress support: ${wpSupport === 'true' ? 'Enabled' : 'Disabled'}`, 1);
 		return Object.keys(result).length ? result : null;
 	} catch (err) {
 		log(`Error reading the file: ${err.message}`, 3);
@@ -105,6 +115,7 @@ if (require.main === module) {
 	(async () => {
 		// Test 1: basic parsing with PHP_SUPPORT disabled
 		process.env.PHP_SUPPORT = 'false';
+		process.env.WORDPRESS_SUPPORT = 'false';
 		process.env.CF_IP_LIST_NAME = 'sefinek_cf_waf';
 		const r1 = await parseExpressionsMain();
 		assert('Test 1 - PHP_SUPPORT=false: parses successfully', r1 !== null);
@@ -130,5 +141,22 @@ if (require.main === module) {
 		const allExpressions5 = Object.values(r5).filter(b => b?.expressions).map(b => b.expressions).join(' ');
 		assert('Test 5 - CF_IP_LIST_NAME injected into expressions', allExpressions5.includes('$test_list_123'));
 		assert('Test 5 - CF_IP_LIST_NAME: old name absent', !allExpressions5.includes('$sefinek_cf_waf'));
+
+		// Test 6: wp-content and wp-includes rules removed when WORDPRESS_SUPPORT=true
+		process.env.PHP_SUPPORT = 'true';
+		process.env.WORDPRESS_SUPPORT = 'true';
+		process.env.CF_IP_LIST_NAME = 'sefinek_cf_waf';
+		const r6 = await parseExpressionsMain();
+		const allExpressions6 = Object.values(r6).filter(b => b?.expressions).map(b => b.expressions).join(' ');
+		assert('Test 6 - WORDPRESS_SUPPORT=true: wp-content rule removed', !allExpressions6.includes('/wp-content'));
+		assert('Test 6 - WORDPRESS_SUPPORT=true: wp-includes rule removed', !allExpressions6.includes('/wp-includes'));
+		assert('Test 6 - WORDPRESS_SUPPORT=true: wp-admin rule kept', allExpressions6.includes('/wp-admin'));
+
+		// Test 7: wp-content and wp-includes rules present when WORDPRESS_SUPPORT=false
+		process.env.WORDPRESS_SUPPORT = 'false';
+		const r7 = await parseExpressionsMain();
+		const allExpressions7 = Object.values(r7).filter(b => b?.expressions).map(b => b.expressions).join(' ');
+		assert('Test 7 - WORDPRESS_SUPPORT=false: wp-content rule present', allExpressions7.includes('/wp-content'));
+		assert('Test 7 - WORDPRESS_SUPPORT=false: wp-includes rule present', allExpressions7.includes('/wp-includes'));
 	})();
 }
