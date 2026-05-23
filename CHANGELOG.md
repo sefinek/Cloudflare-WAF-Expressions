@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.1.1] - 2026-05-23
+
+### Fixed
+- Zone fetching (`/zones`) did not handle pagination - with more than 20 domains, some zones were skipped and WAF rules were not applied to them.
+
+### Changed
+- Zone summary log now includes more details: active zone count, number of accounts, and plans. Warnings for paused, partial, and dev mode zones are shown only when they occur.
+
+
 ## [v2.1.0] - 2026-05-22
 
 ### Added

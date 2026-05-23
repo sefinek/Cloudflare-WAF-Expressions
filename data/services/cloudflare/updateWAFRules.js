@@ -13,11 +13,32 @@ if (!CF_API_TOKEN) throw new Error('CF_API_TOKEN is missing. Check the .env file
 const getZones = async () => {
 	log('Retrieving all zones from your Cloudflare account...');
 
-	const { data } = await axios.get('/zones');
-	if (!data.success) throw new Error(`Failed to fetch zones. ${JSON.stringify(data?.errors)}`);
+	const zones = [];
+	let page = 1;
 
-	const zones = data.result;
-	log(`Successfully retrieved ${zones.length} zone(s): ${zones.map(zone => zone.name).join(', ')}`, 1);
+	while (true) {
+		const { data } = await axios.get('/zones', { params: { page, per_page: 1000 } });
+		if (!data.success) throw new Error(`Failed to fetch zones. ${JSON.stringify(data?.errors)}`);
+
+		zones.push(...data.result);
+
+		if (page >= data.result_info.total_pages) break;
+		page++;
+	}
+
+	const active = zones.filter(z => z.status === 'active').length;
+	const paused = zones.filter(z => z.paused).length;
+	const partial = zones.filter(z => z.type === 'partial').length;
+	const devMode = zones.filter(z => z.development_mode > 0).length;
+	const accounts = new Set(zones.map(z => z.account?.id)).size;
+	const plans = [...new Set(zones.map(z => z.plan?.name).filter(Boolean))].join(', ');
+	const warnings = [
+		paused > 0 && `${paused} paused (!)`,
+		partial > 0 && `${partial} partial (!)`,
+		devMode > 0 && `${devMode} dev mode (!)`,
+	].filter(Boolean);
+	const parts = [`${active} active`, ...warnings, `${accounts} account(s)`, `plans: ${plans || 'N/A'}`];
+	log(`Successfully retrieved ${zones.length} zone(s): ${parts.join(', ')}`, 1);
 	return zones;
 };
 
