@@ -1,5 +1,15 @@
 # Changelog
 
+## [v2.2.0] - 2026-05-26
+
+### Added
+- `rules/my-lists/ip-blocklist.txt` - custom IP blocklist, merged automatically with the built-in list and SniffCat on every sync. The folder is excluded from git.
+- `EXCLUDED_ZONES` - comma-separated list of domains to skip during WAF rule updates. Excluded zones are shown in the log when retrieving zones.
+
+### Changed
+- `CF_IP_LIST_NAME` renamed to `CF_IP_BLOCKLIST_NAME`. The old name still works as a fallback - updating the variable is recommended.
+
+
 ## [v2.1.1] - 2026-05-23
 
 ### Fixed

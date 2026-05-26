@@ -10,7 +10,7 @@ const log = require('../../scripts/log.js');
 const { CF_API_TOKEN } = process.env;
 if (!CF_API_TOKEN) throw new Error('CF_API_TOKEN is missing. Check the .env file.');
 
-const getZones = async () => {
+const getZones = async (excludedNames = []) => {
 	log('Retrieving all zones from your Cloudflare account...');
 
 	const zones = [];
@@ -37,7 +37,8 @@ const getZones = async () => {
 		partial > 0 && `${partial} partial (!)`,
 		devMode > 0 && `${devMode} dev mode (!)`,
 	].filter(Boolean);
-	const parts = [`${active} active`, ...warnings, `${accounts} account(s)`, `plans: ${plans || 'N/A'}`];
+	const excluded = excludedNames.length > 0 && `${excludedNames.length} excluded: ${excludedNames.join(', ')}`;
+	const parts = [`${active} active`, ...warnings, `${accounts} account(s)`, `plans: ${plans || 'N/A'}`, ...(excluded ? [excluded] : [])];
 	log(`Successfully retrieved ${zones.length} zone(s): ${parts.join(', ')}`, 1);
 	return zones;
 };
@@ -53,7 +54,7 @@ const updateFilter = async (zoneId, filterId, expression, oldExpression) => {
 	} catch (err) {
 		const cfErrors = err.response?.data?.errors;
 		if (cfErrors?.some(e => e.code === 10030)) {
-			log('Unknown IP list referenced in WAF expression. The list may have been deleted or CF_IP_LIST_NAME has changed.', 2);
+			log('Unknown IP list referenced in WAF expression. The list may have been deleted or CF_IP_BLOCKLIST_NAME has changed.', 2);
 			log('To fix this, run: node data/tools/deleteWAFRules.js', 2);
 		}
 		throw new Error(`Update failed - ${JSON.stringify(err.response?.data)}`, { cause: err });
@@ -142,9 +143,11 @@ module.exports = async () => {
 		await syncIPList();
 
 		const cache = await loadCache();
-		const zones = await getZones();
+		const excludedZones = (process.env.EXCLUDED_ZONES || '').split(',').map(s => s.trim()).filter(Boolean);
+		const zones = await getZones(excludedZones);
+		const filteredZones = excludedZones.length ? zones.filter(z => !excludedZones.includes(z.name)) : zones;
 
-		for (const zone of zones) {
+		for (const zone of filteredZones) {
 			await updateWAFCustomRulesForZone(expressions, zone, cache);
 		}
 

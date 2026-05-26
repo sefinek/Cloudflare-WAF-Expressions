@@ -72,7 +72,7 @@ There's no need to add them manually, as the script takes care of everything for
    - Paste your Cloudflare API token in place of `CF_API_TOKEN` (required permissions are shown in the screenshot below)
      ![Required API token permissions](data/images/api-token-permissions.png)
    - Set `CF_ACCOUNT_ID` to your Cloudflare Account ID (usually 32 characters, found in the URL: `dash.cloudflare.com/<account_id>/configurations/lists`) - required for IP list sync
-   - Set `CF_IP_LIST_NAME` to a custom name for the managed IP list, or leave the default (`sefinek_cf_waf`)
+   - Set `CF_IP_BLOCKLIST_NAME` to a custom name for the managed IP list, or leave the default (`sefinek_cf_waf`)
      ![Cloudflare IP list with synced entries](data/images/cloudflare-ip-list.png)
    - Set `PHP_SUPPORT` to `true` if your website uses PHP (removes the Managed Challenge rule for `.php` files)
    - Set `WORDPRESS_SUPPORT` to `true` if your website runs WordPress (removes the Managed Challenge rules for `/wp-content` and `/wp-includes` paths so themes, plugins, CSS and images load correctly; also set `PHP_SUPPORT=true`)

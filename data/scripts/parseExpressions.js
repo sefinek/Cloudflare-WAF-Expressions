@@ -73,7 +73,7 @@ const parseExpressionsMain = async () => {
 		let data = await fs.readFile('rules/expressions.md', 'utf8');
 
 		// Replace hardcoded IP list name with the configured one
-		const listName = process.env.CF_IP_LIST_NAME || 'sefinek_cf_waf';
+		const listName = process.env.CF_IP_BLOCKLIST_NAME || process.env.CF_IP_LIST_NAME || 'sefinek_cf_waf';
 		data = data.replace(/ip\.src in \$\w+/g, `ip.src in $${listName}`);
 
 		const parsed = parseExpressions(data);
@@ -116,7 +116,7 @@ if (require.main === module) {
 		// Test 1: basic parsing with PHP_SUPPORT disabled
 		process.env.PHP_SUPPORT = 'false';
 		process.env.WORDPRESS_SUPPORT = 'false';
-		process.env.CF_IP_LIST_NAME = 'sefinek_cf_waf';
+		process.env.CF_IP_BLOCKLIST_NAME = 'sefinek_cf_waf';
 		const r1 = await parseExpressionsMain();
 		assert('Test 1 - PHP_SUPPORT=false: parses successfully', r1 !== null);
 
@@ -135,17 +135,17 @@ if (require.main === module) {
 		const allExpressions4 = Object.values(r4).filter(b => b?.expressions).map(b => b.expressions).join(' ');
 		assert('Test 4 - PHP_SUPPORT=false: .php rule present', allExpressions4.includes('.php'));
 
-		// Test 5: CF_IP_LIST_NAME is injected into expressions
-		process.env.CF_IP_LIST_NAME = 'test_list_123';
+		// Test 5: CF_IP_BLOCKLIST_NAME is injected into expressions
+		process.env.CF_IP_BLOCKLIST_NAME = 'test_list_123';
 		const r5 = await parseExpressionsMain();
 		const allExpressions5 = Object.values(r5).filter(b => b?.expressions).map(b => b.expressions).join(' ');
-		assert('Test 5 - CF_IP_LIST_NAME injected into expressions', allExpressions5.includes('$test_list_123'));
-		assert('Test 5 - CF_IP_LIST_NAME: old name absent', !allExpressions5.includes('$sefinek_cf_waf'));
+		assert('Test 5 - CF_IP_BLOCKLIST_NAME injected into expressions', allExpressions5.includes('$test_list_123'));
+		assert('Test 5 - CF_IP_BLOCKLIST_NAME: old name absent', !allExpressions5.includes('$sefinek_cf_waf'));
 
 		// Test 6: wp-content and wp-includes rules removed when WORDPRESS_SUPPORT=true
 		process.env.PHP_SUPPORT = 'true';
 		process.env.WORDPRESS_SUPPORT = 'true';
-		process.env.CF_IP_LIST_NAME = 'sefinek_cf_waf';
+		process.env.CF_IP_BLOCKLIST_NAME = 'sefinek_cf_waf';
 		const r6 = await parseExpressionsMain();
 		const allExpressions6 = Object.values(r6).filter(b => b?.expressions).map(b => b.expressions).join(' ');
 		assert('Test 6 - WORDPRESS_SUPPORT=true: wp-content rule removed', !allExpressions6.includes('/wp-content'));

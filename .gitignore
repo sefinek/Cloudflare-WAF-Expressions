@@ -1,3 +1,4 @@
 node_modules
 .env
 data/rule-ids.json
+rules/my-lists

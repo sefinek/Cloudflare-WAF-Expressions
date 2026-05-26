@@ -6,8 +6,8 @@ const log = require('../../scripts/log.js');
 const { version } = require('../../../package.json');
 
 const { CF_ACCOUNT_ID, SNIFFCAT_API_TOKEN } = process.env;
-const LIST_NAME = process.env.CF_IP_LIST_NAME || 'sefinek_cf_waf';
-const LIST_DESCRIPTION = `Managed by Cloudflare-WAF-Expressions v${version} (https://github.com/sefinek/Cloudflare-WAF-Expressions). Sources: rules/ip-blocklist.txt${SNIFFCAT_API_TOKEN ? ', SniffCat' : ''}. Do not edit manually - any changes will be overwritten on the next sync.`;
+const LIST_NAME = process.env.CF_IP_BLOCKLIST_NAME || process.env.CF_IP_LIST_NAME || 'sefinek_cf_waf';
+const LIST_DESCRIPTION = `Managed by Cloudflare-WAF-Expressions v${version} (https://github.com/sefinek/Cloudflare-WAF-Expressions). Sources: rules/ip-blocklist.txt, rules/my-lists/ip-blocklist.txt${SNIFFCAT_API_TOKEN ? ', SniffCat' : ''}. Do not edit manually - any changes will be overwritten on the next sync.`;
 
 const getOrCreateList = async cache => {
 	if (cache.ipListId) {
@@ -49,7 +49,7 @@ const getOrCreateList = async cache => {
 		if (cfErrors?.some(e => e.code === 10019)) {
 			const listsUrl = `https://dash.cloudflare.com/${CF_ACCOUNT_ID}/configurations/lists`;
 			const hint = existingIPLists.length > 0
-				? `Set CF_IP_LIST_NAME=${existingIPLists[0].name} in .env to reuse the existing list, or delete it at: ${listsUrl}`
+				? `Set CF_IP_BLOCKLIST_NAME=${existingIPLists[0].name} in .env to reuse the existing list, or delete it at: ${listsUrl}`
 				: `Delete an existing list from the Cloudflare dashboard and re-run: ${listsUrl}`;
 			throw new Error(`List limit reached. ${hint}`, { cause: err });
 		}
@@ -80,20 +80,28 @@ const getAllListItems = async listId => {
 	return items;
 };
 
+const readIPsFromFile = async filePath => {
+	try {
+		const content = await fs.readFile(filePath, 'utf8');
+		return content.split('\n').map(line => line.trim()).filter(line => line && !line.startsWith('#'));
+	} catch (err) {
+		if (err.code === 'ENOENT') return [];
+		throw err;
+	}
+};
+
 const readIPs = async () => {
-	const [content, sniffcatIPs] = await Promise.all([
-		fs.readFile('rules/ip-blocklist.txt', 'utf8'),
+	const [builtinIPs, userIPs, sniffcatIPs] = await Promise.all([
+		readIPsFromFile('rules/ip-blocklist.txt'),
+		readIPsFromFile('rules/my-lists/ip-blocklist.txt'),
 		fetchSniffCatIPs(),
 	]);
 
-	const staticIPs = content
-		.split('\n')
-		.map(line => line.trim())
-		.filter(line => line && !line.startsWith('#'));
-	const merged = [...new Set([...staticIPs, ...sniffcatIPs])].sort();
-	const dupes = staticIPs.length + sniffcatIPs.length - merged.length;
+	const merged = [...new Set([...builtinIPs, ...userIPs, ...sniffcatIPs])].sort();
+	const totalRaw = builtinIPs.length + userIPs.length + sniffcatIPs.length;
+	const dupes = totalRaw - merged.length;
 
-	log(`Desired list: ${merged.length} unique IPs (${staticIPs.length} static + ${sniffcatIPs.length} SniffCat${dupes > 0 ? `, ${dupes} duplicates removed` : ''})`);
+	log(`Desired list: ${merged.length} unique IPs (${builtinIPs.length} built-in + ${userIPs.length} custom + ${sniffcatIPs.length} SniffCat${dupes > 0 ? `, ${dupes} duplicates removed` : ''})`);
 	return merged;
 };
 
