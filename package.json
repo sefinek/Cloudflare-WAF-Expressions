@@ -1,6 +1,6 @@
 {
   "name": "cf-waf-expressions",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "homepage": "https://github.com/sefinek/Cloudflare-WAF-Expressions#readme",
   "bugs": {
     "url": "https://github.com/sefinek/Cloudflare-WAF-Expressions/issues"
@@ -15,7 +15,7 @@
   "scripts": {
     "m": "ncu -u && npm install && npm update",
     "pull": "git pull origin main",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "update": "npm run pull && npm ci --omit=dev && pm2 restart cf-waf"
   },
   "dependencies": {
@@ -26,6 +26,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "globals": "^17.6.0"
+    "@types/jest": "^30.0.0",
+    "globals": "^17.6.0",
+    "jest": "^30.4.2"
   }
 }

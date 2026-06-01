@@ -1,5 +1,16 @@
 # Changelog
 
+## [v2.3.0] - 2026-06-01
+
+### Added
+- Blocking for backup and archive extensions: `.bak`, `.old`, `.orig`, `.swp`, `.gz`, `.tgz`, `.tar`, `.bz2`, `.xz`, `.7z`. Archives excluded on `cdn.` hosts.
+- One-time post-sync notice to verify the site loads correctly.
+- Jest test suite (`test/`). Run with `npm test`.
+
+### Fixed
+- Part 2 extension rules were matching `.ext` anywhere in the path, causing false-positive 403s on content-hashed assets (e.g. `/_next/static/chunks/11.shudcv6pi8.css`). Extensions are now anchored to the end of the path.
+
+
 ## [v2.2.0] - 2026-05-26
 
 ### Added

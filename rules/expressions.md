@@ -94,13 +94,23 @@
   starts_with(http.host, "cdn.") or
   http.host eq "blocklist.sefinek.net"
 ) or
-(http.request.uri.path wildcard "*.env*") or
-(http.request.uri.path wildcard "*.log*" and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
-(http.request.uri.path wildcard "*.py*") or
-(http.request.uri.path wildcard "*.sh*" and http.host ne "cdn.sefinek.net") or
-(http.request.uri.path wildcard "*.sql*") or
-(http.request.uri.path wildcard "*.yaml*") or
-(http.request.uri.path wildcard "*.yml*") or
+(http.request.uri.path wildcard "*/.env*") or
+(http.request.uri.path wildcard "*.7z" and not http.host contains "cdn.") or
+(http.request.uri.path wildcard "*.bak") or
+(http.request.uri.path wildcard "*.bz2" and not http.host contains "cdn.") or
+(http.request.uri.path wildcard "*.gz" and not http.host contains "cdn.") or
+(http.request.uri.path wildcard "*.log" and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
+(http.request.uri.path wildcard "*.old") or
+(http.request.uri.path wildcard "*.orig") or
+(http.request.uri.path wildcard "*.py") or
+(http.request.uri.path wildcard "*.sh" and not http.host contains "cdn.") or
+(http.request.uri.path wildcard "*.sql") or
+(http.request.uri.path wildcard "*.swp") or
+(http.request.uri.path wildcard "*.tar" and not http.host contains "cdn.") or
+(http.request.uri.path wildcard "*.tgz" and not http.host contains "cdn.") or
+(http.request.uri.path wildcard "*.xz" and not http.host contains "cdn.") or
+(http.request.uri.path wildcard "*.yaml" and not http.host contains "cdn.") or
+(http.request.uri.path wildcard "*.yml" and not http.host contains "cdn.") or
 (http.request.uri.path wildcard "*auth.json*") or
 (http.request.uri.path wildcard "*conf.*") or
 (http.request.uri.path wildcard "*crlfinjection*") or
@@ -301,5 +311,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 22.05.2026 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 01.06.2026 [DD.MM.YYYY]</h4>
 </div>

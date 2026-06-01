@@ -151,8 +151,13 @@ module.exports = async () => {
 			await updateWAFCustomRulesForZone(expressions, zone, cache);
 		}
 
+		const showVerifyNotice = !cache.verifyNoticeShown;
+		if (showVerifyNotice) cache.verifyNoticeShown = true;
+
 		await saveCache(cache);
 		log(`Successfully! All API requests: ${getRequestCount()}`, 1);
+
+		if (showVerifyNotice) log(`Open your website${filteredZones.length === 1 ? '' : 's'} in a browser and confirm everything loads correctly. If any pages or static files are wrongly blocked (HTTP 403), report it at: https://github.com/sefinek/Cloudflare-WAF-Expressions/issues`, 1);
 	} catch (err) {
 		let cause = err;
 		while (cause.cause) cause = cause.cause;
