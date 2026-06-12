@@ -1,5 +1,14 @@
 # Changelog
 
+## [v2.3.1] - 2026-06-12
+
+### Added
+- Added automatic creation of the `rules/my-lists/ip-blocklist.txt` file if it doesn't exist.
+
+### Fixed
+- Fixed known issues in the rules.
+
+
 ## [v2.3.0] - 2026-06-01
 
 ### Added
