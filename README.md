@@ -68,23 +68,23 @@ There's no need to add them manually, as the script takes care of everything for
    cp .env.default .env
    ```
 4. Open the `.env` file and configure the following variables:
-    - Set `NODE_ENV` to `production`
-    - Paste your Account API token (Account → Manage account → Account API tokens) in place of `CF_API_TOKEN`. The token needs the following permissions:
-        * `Entire Account`
-            1. **Rules & Configuration → Account Rule Lists** - Read & Edit
-        * `All Domains or Specified Domains`
-            1. **DNS & Zones → Zone** - Read
-            2. **App Security → Zone WAF Rules** - Read & Edit
-              ![Where to create the Account API token](data/images/api-token-location.png)
-              ![Required API token permissions](data/images/api-token-permissions.png)
+   - Set `NODE_ENV` to `production`
+   - Paste your Account API token (Account → Manage account → Account API tokens) in place of `CF_API_TOKEN`. The token needs the following permissions:
+      * `Entire Account`
+         1. **Rules & Configuration → Account Rule Lists** - Read & Edit
+      * `All Domains or Specified Domains`
+         1. **DNS & Zones → Zone** - Read
+         2. **App Security → Zone WAF Rules** - Read & Edit
+            ![Where to create the Account API token](data/images/api-token-location.png)
+            ![Required API token permissions](data/images/api-token-permissions.png)
    > [!NOTE]
    > Rules are deployed as WAF custom rules via the Rulesets API. The legacy Firewall Rules API was deprecated on 2025-06-15 and no longer accepts modifications. An old token may stop working if you use [User API Tokens](https://developers.cloudflare.com/fundamentals/api/get-started/create-token). Migrating to [Account API tokens](https://developers.cloudflare.com/fundamentals/api/get-started/account-owned-tokens) is highly recommended.
-    - Set `CF_ACCOUNT_ID` to your Cloudflare Account ID (32 characters, found in the URL: `dash.cloudflare.com/<account_id>/configurations/lists`) - required for IP list synchronization
-    - Set `CF_IP_BLOCKLIST_NAME` to a custom name for the managed IP list, or leave the default (`sefinek_cf_waf`)
-      ![Cloudflare IP list with synced entries](data/images/cloudflare-ip-list.png)
-    - Set `PHP_SUPPORT` to `true` if your website uses PHP (removes the Managed Challenge rule for `.php` files)
-    - Set `WORDPRESS_SUPPORT` to `true` if your website runs WordPress (removes the Managed Challenge rules for `/wp-content` and `/wp-includes` paths so themes, plugins, CSS and images load correctly; also set `PHP_SUPPORT=true`)
-    - Set `SNIFFCAT_API_TOKEN` to include dynamic malicious IPs from [SniffCat](https://sniffcat.com) (optional, but highly recommended)
+   - Set `CF_ACCOUNT_ID` to your Cloudflare Account ID (32 characters, found in the URL: `dash.cloudflare.com/<account_id>/configurations/lists`) - required for IP list synchronization
+   - Set `CF_IP_BLOCKLIST_NAME` to a custom name for the managed IP list, or leave the default (`sefinek_cf_waf`)
+     ![Cloudflare IP list with synced entries](data/images/cloudflare-ip-list.png)
+   - Set `PHP_SUPPORT` to `true` if your website uses PHP (removes the Managed Challenge rule for `.php` files)
+   - Set `WORDPRESS_SUPPORT` to `true` if your website runs WordPress (removes the Managed Challenge rules for `/wp-content` and `/wp-includes` paths so themes, plugins, CSS and images load correctly; also set `PHP_SUPPORT=true`)
+   - Set `SNIFFCAT_API_TOKEN` to include dynamic malicious IPs from [SniffCat](https://sniffcat.com) (optional, but highly recommended)
    ```bash
    nano .env
    ```
@@ -136,16 +136,16 @@ Keep in mind that there are many more measures available to mitigate DDoS attack
 #### Security > Rate limiting rules > Create rule
 1. **Rule name:** Default rate limit
 2. Expression: `(starts_with(http.request.uri.path, "/"))`
-    - **Field:** URI Path
-    - **Operator:** starts with
-    - **Value:** /
+   - **Field:** URI Path
+   - **Operator:** starts with
+   - **Value:** /
 3. When rate exceeds…
-    - **Requests:** 200 (you should adjust this value yourself based on your website's traffic)
-    - **Period:** 10 seconds
+   - **Requests:** 200 (you should adjust this value yourself based on your website's traffic)
+   - **Period:** 10 seconds
 4. Then take action…
-    - **Choose action:** Block
+   - **Choose action:** Block
 5. For duration…
-    - **Duration:** 10 seconds
+   - **Duration:** 10 seconds
 
 ### 3: Good to Know
 1. Make sure that your server's IP address has not been leaked.
