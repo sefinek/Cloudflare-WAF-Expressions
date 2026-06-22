@@ -70,13 +70,8 @@ There's no need to add them manually, as the script takes care of everything for
 4. Open the `.env` file and configure the following variables:
    - Set `NODE_ENV` to `production`
    - Paste your Account API token (Account → Manage account → Account API tokens) in place of `CF_API_TOKEN`. The token needs the following permissions:
-      * `Entire Account`
-         1. **Rules & Configuration → Account Rule Lists** - Read & Edit
-      * `All Domains or Specified Domains`
-         1. **DNS & Zones → Zone** - Read
-         2. **App Security → Zone WAF Rules** - Read & Edit
-            ![Where to create the Account API token](data/images/api-token-location.png)
-            ![Required API token permissions](data/images/api-token-permissions.png)
+     ![Where to create the Account API token](data/images/api-token-location.png)
+     ![Required API token permissions](data/images/api-token-permissions.png)
    > [!NOTE]
    > Rules are deployed as WAF custom rules via the Rulesets API. The legacy Firewall Rules API was deprecated on 2025-06-15 and no longer accepts modifications. An old token may stop working if you use [User API Tokens](https://developers.cloudflare.com/fundamentals/api/get-started/create-token). Migrating to [Account API tokens](https://developers.cloudflare.com/fundamentals/api/get-started/account-owned-tokens) is highly recommended.
    - Set `CF_ACCOUNT_ID` to your Cloudflare Account ID (32 characters, found in the URL: `dash.cloudflare.com/<account_id>/configurations/lists`) - required for IP list synchronization
