@@ -7,7 +7,7 @@ const git = simpleGit();
 const pull = async () => {
 	try {
 		if (process.env.NODE_ENV === 'production') {
-			log('Resetting local repository to HEAD (--hard)...', 0);
+			log('Resetting local repository to HEAD (--hard)...');
 			await git.reset(['--hard']);
 		}
 

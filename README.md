@@ -69,9 +69,17 @@ There's no need to add them manually, as the script takes care of everything for
    ```
 4. Open the `.env` file and configure the following variables:
    - Set `NODE_ENV` to `production`
-   - Paste your Cloudflare API token in place of `CF_API_TOKEN` (required permissions are shown in the screenshot below)
+   - Paste your Account API token (Account > Manage account > Account API tokens) in place of `CF_API_TOKEN`. The token needs the following permissions:
+     ##### Entire Account
+     - **Rules & Configuration → Account Rule Lists** - Read & Edit
+     ##### All Domains or Specified Domains
+     - **DNS & Zones → Zone** - Read
+     - **App Security → Zone WAF Rules** - Read & Edit
+     ![Where to create the Account API token](data/images/api-token-location.png)
      ![Required API token permissions](data/images/api-token-permissions.png)
-   - Set `CF_ACCOUNT_ID` to your Cloudflare Account ID (usually 32 characters, found in the URL: `dash.cloudflare.com/<account_id>/configurations/lists`) - required for IP list sync
+   > [!NOTE]
+   > Rules are deployed as WAF custom rules via the Rulesets API. The legacy Firewall Rules API was deprecated on 2025-06-15 and no longer accepts modifications. An old token may stop working if you use [User API Tokens](https://developers.cloudflare.com/fundamentals/api/get-started/create-token). Migrating to [Account API tokens](https://developers.cloudflare.com/fundamentals/api/get-started/account-owned-tokens) is highly recommended.
+   - Set `CF_ACCOUNT_ID` to your Cloudflare Account ID (32 characters, found in the URL: `dash.cloudflare.com/<account_id>/configurations/lists`) - required for IP list synchronization
    - Set `CF_IP_BLOCKLIST_NAME` to a custom name for the managed IP list, or leave the default (`sefinek_cf_waf`)
      ![Cloudflare IP list with synced entries](data/images/cloudflare-ip-list.png)
    - Set `PHP_SUPPORT` to `true` if your website uses PHP (removes the Managed Challenge rule for `.php` files)
@@ -146,7 +154,7 @@ Keep in mind that there are many more measures available to mitigate DDoS attack
 
 
 ## 🗑️ Cleanup Tool
-To remove all WAF rules, filters, and the IP blocklist from Cloudflare (e.g. before a fresh install), run:
+To remove all WAF custom rules and the IP blocklist from Cloudflare (e.g. before a fresh install), run:
 ```bash
 node data/tools/deleteWAFRules.js
 ```

@@ -1,5 +1,16 @@
 # Changelog
 
+
+## [v3.0.0] - 2026-06-22
+
+> [!WARNING]
+> Your Cloudflare API token now requires the **Zone WAF → Edit** permission - the old **Firewall Services** permission may no longer be sufficient. Migrating to an [Account API token](https://developers.cloudflare.com/fundamentals/api/get-started/account-owned-tokens) (`cfat_` prefix) is recommended. See the README for the full list of permissions.
+
+### Changed
+- **WAF rule management has been moved from the deprecated Firewall Rules API to the Rulesets API (WAF custom rules).** Cloudflare put the old API into maintenance mode (error 10020, `firewallrules.api.maintenance_mode`), causing rule updates to fail on affected accounts. Your existing rules (`Part N`) are detected and reused automatically - no manual steps needed. [#5](https://github.com/sefinek/Cloudflare-WAF-Expressions/issues/5)
+- Fewer API requests per run: one read and at most one write per zone.
+
+
 ## [v2.3.1] - 2026-06-12
 
 ### Added
