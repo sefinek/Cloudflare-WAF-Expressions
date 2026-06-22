@@ -70,9 +70,9 @@ There's no need to add them manually, as the script takes care of everything for
 4. Open the `.env` file and configure the following variables:
     - Set `NODE_ENV` to `production`
     - Paste your Account API token (Account → Manage account → Account API tokens) in place of `CF_API_TOKEN`. The token needs the following permissions:
-        * **Entire Account**
+        * `Entire Account`
             - **Rules & Configuration → Account Rule Lists** - Read & Edit
-        * **All Domains or Specified Domains**
+        * `All Domains or Specified Domains`
             - **DNS & Zones → Zone** - Read
             - **App Security → Zone WAF Rules** - Read & Edit
               ![Where to create the Account API token](data/images/api-token-location.png)
