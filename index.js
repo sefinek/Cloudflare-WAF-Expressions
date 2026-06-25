@@ -14,7 +14,7 @@ if (NODE_ENV !== 'production' && NODE_ENV !== 'development') {
 }
 
 if (!CF_API_TOKEN || typeof CF_API_TOKEN !== 'string' || CF_API_TOKEN.trim() === '') {
-	throw new Error('Missing or invalid Cloudflare API token (process.env.CF_API_TOKEN)');
+	throw new Error('Missing or invalid Account API token (process.env.CF_API_TOKEN)');
 }
 
 if (!CF_ACCOUNT_ID) {

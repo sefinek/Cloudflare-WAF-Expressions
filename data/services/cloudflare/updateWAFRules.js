@@ -1,10 +1,9 @@
 const { axios, getRequestCount } = require('../axios.js');
 const expressionParser = require('../../scripts/parseExpressions.js');
-const fetchWAFRules = require('./fetchWAFRules.js');
-const verifyAndReorderParts = require('./verifyAndReorderParts.js');
 const syncIPList = require('./syncIPList.js');
 const { load: loadCache, save: saveCache } = require('../ruleCache.js');
 const { pull } = require('../updates.js');
+const { PHASE, PART_REGEX, passthroughRule } = require('./wafRuleset.js');
 const log = require('../../scripts/log.js');
 
 const { CF_API_TOKEN } = process.env;
@@ -43,94 +42,73 @@ const getZones = async (excludedNames = []) => {
 	return zones;
 };
 
-const updateFilter = async (zoneId, filterId, expression, oldExpression) => {
-	if (oldExpression === expression) return log('Rule is already up-to-date', 1);
-
+const getEntrypoint = async zoneId => {
 	try {
-		log('Discrepancy detected, updating the rule...');
-
-		const { data } = await axios.put(`/zones/${zoneId}/filters/${filterId}`, { id: filterId, expression });
-		if (!data.success) throw new Error(`Update failed. Details: ${data?.errors}`);
+		const { data } = await axios.get(`/zones/${zoneId}/rulesets/phases/${PHASE}/entrypoint`);
+		if (!data.success) throw new Error(`Failed to fetch ruleset. ${JSON.stringify(data?.errors)}`);
+		return data.result;
 	} catch (err) {
-		const cfErrors = err.response?.data?.errors;
-		if (cfErrors?.some(e => e.code === 10030)) {
-			log('Unknown IP list referenced in WAF expression. The list may have been deleted or CF_IP_BLOCKLIST_NAME has changed.', 2);
-			log('To fix this, run: node data/tools/deleteWAFRules.js', 2);
-		}
-		throw new Error(`Update failed - ${JSON.stringify(err.response?.data)}`, { cause: err });
+		if (err.response?.status === 404) return null;
+		throw new Error(`Failed to fetch ruleset for zone ${zoneId} - ${JSON.stringify(err.response?.data)}`, { cause: err });
 	}
 };
 
-const createNewRule = async (zoneId, description, action, expression, index, zoneCache) => {
-	log(`Creating new WAF rule '${description}' (action ${action}, length: ${expression.length})...`);
+const normalize = rules => JSON.stringify(rules.map(r => ({
+	action: r.action,
+	expression: r.expression,
+	description: r.description,
+	enabled: r.enabled !== false,
+})));
 
-	try {
-		const { data } = await axios.post(`/zones/${zoneId}/filters`, [{ expression }]);
-		if (!data.success) throw new Error(`Failed to create filter. ${data?.errors}`);
-
-		const filterId = data.result[0].id;
-		const res = await axios.post(`/zones/${zoneId}/firewall/rules`, [{
-			filter: { id: filterId },
-			action,
-			description,
-			priority: index,
-		}]);
-
-		if (!res.data.success) throw new Error(`Failed to create rule. ${res.data?.errors}`);
-
-		const ruleId = res.data.result[0].id;
-		zoneCache[index] = { ruleId, filterId };
-		log(`WAF rule '${description}' created successfully`, 1);
-	} catch (err) {
-		throw new Error(`Failed to create new rule for zone ${zoneId} - ${JSON.stringify(err.response?.data)}`, { cause: err });
-	}
-};
-
-const updateWAFCustomRulesForZone = async (expressions, zone, cache) => {
+const updateWAFCustomRulesForZone = async (expressions, zone) => {
 	log(`=================== ANALYZING THE ZONE ${zone.name.toUpperCase()} (${zone.id}) ===================`);
 
-	const zoneCache = cache.zones[zone.id] ?? {};
-	let cacheChanged = false;
-	let rulesCreated = false;
-
 	try {
-		const rules = await fetchWAFRules(zone.id);
+		const entrypoint = await getEntrypoint(zone.id);
+		const current = entrypoint?.rules ?? [];
 
+		const userRules = current.filter(r => !PART_REGEX.test(r.description || ''));
+		const existingPartRules = current.filter(r => PART_REGEX.test(r.description || ''));
+
+		const partRules = [];
 		for (const [indexStr, block] of Object.entries(expressions)) {
 			const index = parseInt(indexStr);
 			if (isNaN(index)) continue;
+
 			const { name, action, expressions: part } = block;
-
-			const cached = zoneCache[index];
-			let matchingRule = cached ? rules.find(rule => rule.id === cached.ruleId) : null;
-
-			if (!matchingRule) {
-				matchingRule = rules.find(rule => rule.description && rule.description.includes(`Part ${index}`));
-				if (matchingRule) {
-					if (!cached) log(`» Part ${index}: matched by name - IDs cached for future runs.`);
-					zoneCache[index] = { ruleId: matchingRule.id, filterId: matchingRule.filter.id };
-					cacheChanged = true;
-				}
+			if (!part) {
+				log(`» No expression for part ${index}, skipping`);
+				continue;
 			}
 
-			if (matchingRule) {
-				const filterId = matchingRule.filter.id;
-				log(`» Checking '${matchingRule.description}' (${filterId}) [length: ${block.length}]...`);
-				await updateFilter(zone.id, filterId, part, matchingRule.filter.expression);
-			} else if (part) {
-				log(`» No matching rule found for part ${index}`);
-				await createNewRule(zone.id, name, action, part, index, zoneCache);
-				cacheChanged = true;
-				rulesCreated = true;
-			}
+			const match = existingPartRules.find(r => r.description?.includes(`Part ${index}`));
+			partRules.push({
+				...(match?.id ? { id: match.id } : {}),
+				action,
+				expression: part,
+				description: name,
+				enabled: true,
+			});
 		}
 
-		await verifyAndReorderParts(zone.id, rulesCreated ? null : rules);
+		const desired = [...userRules.map(passthroughRule), ...partRules];
+
+		if (normalize(current) === normalize(desired)) return log('All rules are already up-to-date', 1);
+
+		log(`Writing ruleset: ${partRules.length} managed part rule(s), ${userRules.length} user rule(s) preserved...`);
+
+		const { data } = await axios.put(`/zones/${zone.id}/rulesets/phases/${PHASE}/entrypoint`, { rules: desired });
+		if (!data.success) throw new Error(`Update failed. ${JSON.stringify(data?.errors)}`);
+
+		log('Ruleset updated successfully', 1);
 	} catch (err) {
+		const cfErrors = err.cause?.response?.data?.errors ?? err.response?.data?.errors;
+		if (cfErrors?.some(e => e.message?.includes('could not find list') || e.message?.includes('does not exist'))) {
+			log('Unknown IP list referenced in WAF expression. The list may have been deleted or CF_IP_BLOCKLIST_NAME has changed.', 2);
+			log('To fix this, run: node data/tools/deleteWAFRules.js', 2);
+		}
 		throw new Error('» Error during update - updateWAFCustomRulesForZone()', { cause: err });
 	}
-
-	if (cacheChanged) cache.zones[zone.id] = zoneCache;
 };
 
 module.exports = async () => {
@@ -148,7 +126,7 @@ module.exports = async () => {
 		const filteredZones = excludedZones.length ? zones.filter(z => !excludedZones.includes(z.name)) : zones;
 
 		for (const zone of filteredZones) {
-			await updateWAFCustomRulesForZone(expressions, zone, cache);
+			await updateWAFCustomRulesForZone(expressions, zone);
 		}
 
 		const showVerifyNotice = !cache.verifyNoticeShown;
@@ -157,7 +135,7 @@ module.exports = async () => {
 		await saveCache(cache);
 		log(`Successfully! All API requests: ${getRequestCount()}`, 1);
 
-		if (showVerifyNotice) log(`Open your website${filteredZones.length === 1 ? '' : 's'} in a browser and confirm everything loads correctly. If any pages or static files are wrongly blocked (HTTP 403), report it at: https://github.com/sefinek/Cloudflare-WAF-Expressions/issues`, 1);
+		if (showVerifyNotice) log(`IMPORTANT! Open your website${filteredZones.length === 1 ? '' : 's'} in a browser and confirm everything loads correctly. If any pages or static files are wrongly blocked (HTTP 403), report it at: https://github.com/sefinek/Cloudflare-WAF-Expressions/issues`);
 	} catch (err) {
 		let cause = err;
 		while (cause.cause) cause = cause.cause;
