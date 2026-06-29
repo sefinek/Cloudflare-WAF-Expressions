@@ -4,6 +4,8 @@ const syncIPList = require('./syncIPList.js');
 const { load: loadCache, save: saveCache } = require('../ruleCache.js');
 const { pull } = require('../updates.js');
 const { PHASE, PART_REGEX, passthroughRule } = require('./wafRuleset.js');
+const parseAllowlist = require('../../scripts/parseAllowlist.js');
+const ensureUserLists = require('../../scripts/ensureUserLists.js');
 const log = require('../../scripts/log.js');
 
 const { CF_API_TOKEN } = process.env;
@@ -60,8 +62,21 @@ const normalize = rules => JSON.stringify(rules.map(r => ({
 	enabled: r.enabled !== false,
 })));
 
-const updateWAFCustomRulesForZone = async (expressions, zone) => {
+const buildAllowlistExpression = (entries, zone) => {
+	const applicable = entries.filter(e => {
+		if (!e.zone) return true;
+		const matches = e.zone === zone.name || e.zone === zone.id;
+		return e.exclude ? !matches : matches;
+	});
+	if (!applicable.length) return null;
+	return applicable.length === 1
+		? applicable[0].expression
+		: applicable.map(e => `(${e.expression})`).join(' or ');
+};
+
+const updateWAFCustomRulesForZone = async (expressions, allowlistEntries, zone) => {
 	log(`=================== ANALYZING THE ZONE ${zone.name.toUpperCase()} (${zone.id}) ===================`);
+	const allowlistExpression = buildAllowlistExpression(allowlistEntries, zone);
 
 	try {
 		const entrypoint = await getEntrypoint(zone.id);
@@ -81,21 +96,29 @@ const updateWAFCustomRulesForZone = async (expressions, zone) => {
 				continue;
 			}
 
+			const expression = allowlistExpression
+				? `not (${allowlistExpression}) and (${part})`
+				: part;
+
 			const match = existingPartRules.find(r => r.description?.includes(`Part ${index}`));
 			partRules.push({
 				...(match?.id ? { id: match.id } : {}),
 				action,
-				expression: part,
+				expression,
 				description: name,
 				enabled: true,
 			});
 		}
 
-		const desired = [...userRules.map(passthroughRule), ...partRules];
+		const desired = [
+			...userRules.map(passthroughRule),
+			...partRules,
+		];
 
 		if (normalize(current) === normalize(desired)) return log('All rules are already up-to-date', 1);
 
-		log(`Writing ruleset: ${partRules.length} managed part rule(s), ${userRules.length} user rule(s) preserved...`);
+		const allowlistStatus = allowlistExpression ? `allowlist active (${allowlistExpression.length} chars)` : 'no allowlist';
+		log(`Writing ruleset: ${partRules.length} managed part rule(s), ${userRules.length} user rule(s) preserved, ${allowlistStatus}...`);
 
 		const { data } = await axios.put(`/zones/${zone.id}/rulesets/phases/${PHASE}/entrypoint`, { rules: desired });
 		if (!data.success) throw new Error(`Update failed. ${JSON.stringify(data?.errors)}`);
@@ -113,9 +136,10 @@ const updateWAFCustomRulesForZone = async (expressions, zone) => {
 
 module.exports = async () => {
 	await pull();
+	await ensureUserLists();
 
 	try {
-		const expressions = await expressionParser();
+		const [expressions, allowlistEntries] = await Promise.all([expressionParser(), parseAllowlist()]);
 		if (!expressions || !Object.keys(expressions).length) return log('No expressions found.', 3);
 
 		await syncIPList();
@@ -126,7 +150,7 @@ module.exports = async () => {
 		const filteredZones = excludedZones.length ? zones.filter(z => !excludedZones.includes(z.name)) : zones;
 
 		for (const zone of filteredZones) {
-			await updateWAFCustomRulesForZone(expressions, zone);
+			await updateWAFCustomRulesForZone(expressions, allowlistEntries, zone);
 		}
 
 		const showVerifyNotice = !cache.verifyNoticeShown;

@@ -1,5 +1,4 @@
 const fs = require('node:fs/promises');
-const path = require('node:path');
 const { axios } = require('../axios.js');
 const { load: loadCache, save: saveCache } = require('../ruleCache.js');
 const fetchSniffCatIPs = require('../sniffcat.js');
@@ -8,15 +7,6 @@ const { version } = require('../../../package.json');
 
 const { CF_ACCOUNT_ID, SNIFFCAT_API_TOKEN } = process.env;
 const USER_IP_LIST_PATH = 'rules/my-lists/ip-blocklist.txt';
-const USER_IP_LIST_TEMPLATE = `# Add your own IP addresses here, one per line. Both IPv4 and IPv6 are supported.
-# This file is yours — it will never be overwritten by git pulls or project updates.
-# It is merged with the built-in rules/ip-blocklist.txt automatically on every sync.
-#
-# Examples:
-#   203.0.113.42
-#   198.51.100.0/24
-#   2001:db8::1
-`;
 const LIST_NAME = process.env.CF_IP_BLOCKLIST_NAME || process.env.CF_IP_LIST_NAME || 'sefinek_cf_waf';
 const LIST_DESCRIPTION = `Managed by Cloudflare-WAF-Expressions v${version} (https://github.com/sefinek/Cloudflare-WAF-Expressions). Sources: rules/ip-blocklist.txt, rules/my-lists/ip-blocklist.txt${SNIFFCAT_API_TOKEN ? ', SniffCat' : ''}. Do not edit manually - any changes will be overwritten on the next sync.`;
 
@@ -101,20 +91,7 @@ const readIPsFromFile = async filePath => {
 	}
 };
 
-const ensureUserIPList = async () => {
-	try {
-		await fs.access(USER_IP_LIST_PATH);
-	} catch (err) {
-		if (err.code !== 'ENOENT') throw err;
-		await fs.mkdir(path.dirname(USER_IP_LIST_PATH), { recursive: true });
-		await fs.writeFile(USER_IP_LIST_PATH, USER_IP_LIST_TEMPLATE);
-		log(`Created ${USER_IP_LIST_PATH}`, 1);
-	}
-};
-
 const readIPs = async () => {
-	await ensureUserIPList();
-
 	const [builtinIPs, userIPs, sniffcatIPs] = await Promise.all([
 		readIPsFromFile('rules/ip-blocklist.txt'),
 		readIPsFromFile(USER_IP_LIST_PATH),
