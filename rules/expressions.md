@@ -154,6 +154,7 @@
 (http.user_agent wildcard "*barkrowler*") or
 (http.user_agent wildcard "*blexbot*") or
 (http.user_agent wildcard "*bomborabot*") or
+(http.user_agent wildcard "*br-crawler*") or
 (http.user_agent wildcard "*brightbot*") or
 (http.user_agent wildcard "*buck*") or
 (http.user_agent wildcard "*bvbot*") or
@@ -198,13 +199,13 @@
 (http.user_agent wildcard "*serpstatbot*") or
 (http.user_agent wildcard "*sqlmap*") or
 (http.user_agent wildcard "*thinkbot*") or
+(http.user_agent wildcard "*tlm-audit-scanner*") or
 (http.user_agent wildcard "*trendictionbot*") or
 (http.user_agent wildcard "*ttd-content*") or
 (http.user_agent wildcard "*voluumdsp*") or
 (http.user_agent wildcard "*wc-test-dev-bot*") or
 (http.user_agent wildcard "*webtechbot*") or
 (http.user_agent wildcard "*whatcms*") or
-(http.user_agent wildcard "*br-crawler*") or
 (http.user_agent wildcard "*zgrab*")
 ```
 
@@ -310,5 +311,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 25.06.2026 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 8.07.2026 [DD.MM.YYYY]</h4>
 </div>
