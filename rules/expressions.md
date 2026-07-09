@@ -12,7 +12,6 @@
 ## 🔥 Part 1 - Suspicious paths & headers<div id="part1"></div>
 > **Action:** Block
 ```
-(cf.waf.credential_check.password_leaked) or
 (http.referer eq "binance.com") or
 (http.referer eq "bing.com") or
 (http.referer eq "google.com") or
@@ -29,17 +28,12 @@
 (http.request.uri.path wildcard "*/.*" and not starts_with(http.request.uri.path, "/.well-known/")) or
 (http.request.uri.path wildcard "*//*") or
 (http.request.uri.path wildcard "*/actuator*") or
-(http.request.uri.path wildcard "*/cms*") or
-(http.request.uri.path wildcard "*/credentials*") or
 (http.request.uri.path wildcard "*/dbadmin*") or
-(http.request.uri.path wildcard "*/debug*") or
-(http.request.uri.path wildcard "*/env*") or
-(http.request.uri.path wildcard "*/etc*") or
+(http.request.uri.path wildcard "*/etc/passwd*") or
+(http.request.uri.path wildcard "*/etc/shadow*") or
 (http.request.uri.path wildcard "*/login.action*") or
 (http.request.uri.path wildcard "*/phpmyadmin*") or
-(http.request.uri.path wildcard "*/readme*") or
 (http.request.uri.path wildcard "*/sito*") or
-(http.request.uri.path wildcard "*/ssh*") or
 (http.request.uri.path wildcard "*/user.action*") or
 (http.request.uri.path wildcard "*/webdav*") or
 (http.request.uri.path wildcard "*/~adm*") or
@@ -66,12 +60,12 @@
 (http.request.uri.query wildcard "*.env*") or
 (http.request.uri.query wildcard "*etc/passwd*") or
 (http.user_agent contains "   ") or
-(http.user_agent eq "" and not http.host contains "api." and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
+(http.user_agent eq "" and not http.host contains "api." and not starts_with(http.host, "api-") and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.user_agent eq "Mozilla/5.0 (Windows NT 10.0; Win64; x64)") or
 (http.user_agent eq "Mozilla/5.0") or
-(http.user_agent wildcard "*embeddedbrowser*" and not http.host contains "api." and not http.host contains "cdn.") or
-(http.user_agent wildcard "*go-http-client*" and not http.host contains "api." and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
-(http.user_agent wildcard "*headless*" and not http.host contains "api." and not http.host contains "cdn.") or
+(http.user_agent wildcard "*embeddedbrowser*" and not http.host contains "api." and not starts_with(http.host, "api-") and not http.host contains "cdn.") or
+(http.user_agent wildcard "*go-http-client*" and not http.host contains "api." and not starts_with(http.host, "api-") and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
+(http.user_agent wildcard "*headless*" and not http.host contains "api." and not starts_with(http.host, "api-") and not http.host contains "cdn.") or
 (http.user_agent wildcard "*mozilla/4*") or
 (http.user_agent wildcard "*private_keys*") or
 (http.user_agent wildcard "*windows 11*")
@@ -90,6 +84,7 @@
   http.user_agent contains "wget"
 ) and not (
   starts_with(http.host, "api.") or
+  starts_with(http.host, "api-") or
   starts_with(http.host, "cdn.") or
   http.host eq "blocklist.sefinek.net"
 ) or
@@ -121,7 +116,8 @@
 (http.request.uri.path wildcard "*phpsysinfo*") or
 (http.request.uri.path wildcard "*settings.local*") or
 (http.request.uri.path wildcard "*settings.prod*") or
-(http.request.uri.path wildcard "*wget*") or
+(http.request.uri.path wildcard "*wget%20*") or
+(http.request.uri.path wildcard "*wget+*") or
 (http.request.uri.query contains "%00") or
 (http.request.uri.query contains "%0A") or
 (http.request.uri.query contains "%0D") or
@@ -133,13 +129,15 @@
 (http.request.uri.query contains "squelette=../") or
 (http.request.uri.query wildcard "*auto_prepend_file*") or
 (http.request.uri.query wildcard "*crlfinjection*") or
-(http.request.uri.query wildcard "*curl*") or
+(http.request.uri.query wildcard "*curl%20*") or
+(http.request.uri.query wildcard "*curl+*") or
 (http.request.uri.query wildcard "*ed25519*") or
 (http.request.uri.query wildcard "*file://*") or
 (http.request.uri.query wildcard "*php://*") or
 (http.request.uri.query wildcard "*secrets.json*") or
 (http.request.uri.query wildcard "*set-cookie:*") or
-(http.request.uri.query wildcard "*wget*") or
+(http.request.uri.query wildcard "*wget%20*") or
+(http.request.uri.query wildcard "*wget+*") or
 (http.request.uri.query wildcard "*formfinder*") or
 (http.user_agent wildcard "*\"*") or
 (http.user_agent wildcard "*alittle client*")
@@ -259,13 +257,13 @@
 ## 🗑️ Part 5 - Deprecated browsers & CMS<div id="part5"></div>
 > **Action:** Managed Challenge
 ```
+(cf.waf.credential_check.password_leaked) or
 (http.referer contains "http://" and not http.referer contains "localhost" and not http.referer contains "127.0.0.1") or
 (http.request.uri.path wildcard "*.php*") or
 (http.request.uri.path wildcard "*/wp-admin*") or
 (http.request.uri.path wildcard "*/wp-content*") or
 (http.request.uri.path wildcard "*/wp-includes*") or
 (http.user_agent contains "Windows NT 5" and not http.user_agent contains "(via ggpht.com GoogleImageProxy)") or
-(http.user_agent wildcard "*10_15*" and not (http.user_agent contains "Chrome/14" and not http.user_agent contains "Chrome/14.")) or
 (http.user_agent wildcard "*chrome/101*") or
 (http.user_agent wildcard "*chrome/103*") or
 (http.user_agent wildcard "*chrome/104*") or
@@ -311,5 +309,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 8.07.2026 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 10.07.2026 [DD.MM.YYYY]</h4>
 </div>
