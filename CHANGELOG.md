@@ -1,7 +1,7 @@
 # Changelog
 
 ## [v3.1.1] - 2026-07-13
-- One of the largest regular expression updates. Fixed numerous issues that were causing false positives.
+- Significantly improved the regular expressions, resolving numerous false-positive issues.
 
 
 ## [v3.1.0] - 2026-06-29
