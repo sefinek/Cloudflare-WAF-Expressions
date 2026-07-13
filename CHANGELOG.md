@@ -1,5 +1,9 @@
 # Changelog
 
+## [v3.1.1] - 2026-07-13
+- One of the largest regular expression updates. Fixed numerous issues that were causing false positives.
+
+
 ## [v3.1.0] - 2026-06-29
 - Added `rules/my-lists/allowlist.txt`. Defines WAF expressions excluded from all managed rules (Part 1-5). Supports per-zone targeting via `[zone.com]` and `[!zone.com]` prefixes.
 - On first run, if `rules/my-lists/` files are missing, an info box is printed and the files are created automatically.
