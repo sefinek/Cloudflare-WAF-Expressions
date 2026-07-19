@@ -82,7 +82,7 @@
 
 ### Changed
 - Renamed default IP list from `sefinek_waf` to `sefinek_cf_waf` for consistency.
-- Rewrote `.env.default` - descriptions are now more accurate and detailed.
+- Rewrote `.env.example` - descriptions are now more accurate and detailed.
 - `CF_IP_LIST_NAME` now has a default value (`sefinek_cf_waf`) instead of being empty.
 - Removed `CF_API_TOKEN` length validation - Cloudflare API tokens do not have a fixed length (e.g. may be 53 characters despite previously being 40).
 
@@ -99,7 +99,7 @@
 - **Cloudflare Lists integration** - IP blocklist (`rules/ip-blocklist.txt`) is now synced automatically to a Cloudflare Custom IP List and referenced in WAF rules as `ip.src in $<list_name>`. Configurable via `CF_IP_LIST_NAME`.
 - **Rule ID cache** (`data/rule-ids.json`) - WAF rule and filter IDs are cached locally to avoid fragile name-based matching on every run.
 - **Cleanup tool** (`data/scripts/deleteWAFRules.js`) - removes all custom WAF rules, filters, and the managed IP list from Cloudflare, then clears the local cache. Shows a full preview and requires confirmation before proceeding.
-- New environment variables `CF_ACCOUNT_ID`, `CF_IP_LIST_NAME`, `SNIFFCAT_API_TOKEN`, `SNIFFCAT_CONFIDENCE_MIN`, `SNIFFCAT_LIMIT` (see `.env.default`).
+- New environment variables `CF_ACCOUNT_ID`, `CF_IP_LIST_NAME`, `SNIFFCAT_API_TOKEN`, `SNIFFCAT_CONFIDENCE_MIN`, `SNIFFCAT_LIMIT` (see `.env.example`).
 
 ### Changed
 - **WAF rules restructured** - new names, emojis, and order optimized for Cloudflare's 4096-character limit per rule:

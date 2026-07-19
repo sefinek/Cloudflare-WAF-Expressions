@@ -63,9 +63,9 @@ There's no need to add them manually, as the script takes care of everything for
    ```bash
    cd cf-expressions && npm install
    ```
-3. Copy the `.env.default` file and rename it to `.env`:
+3. Copy the `.env.example` file and rename it to `.env`:
    ```bash
-   cp .env.default .env
+   cp .env.example .env
    ```
 4. Open the `.env` file and configure the following variables:
    - Set `NODE_ENV` to `production`
