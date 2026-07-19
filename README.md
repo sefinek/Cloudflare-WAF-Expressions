@@ -118,38 +118,6 @@ Part 4 references a Cloudflare Custom IP List (`ip.src in $sefinek_cf_waf`). To 
 > On the free Cloudflare plan, you can have only 1 custom IP list per account (up to 10,000 entries). Paid plans allow more. Remember to update it regularly as new entries are added to [`rules/ip-blocklist.txt`](rules/ip-blocklist.txt). The automatic method handles this for you.
 
 
-## 🔥 DDoS Protection (Additional Security Measures)
-Cloudflare offers many settings that need to be configured manually according to your preferences.
-In this tutorial, we will enable only those that will safeguard your server from DDoS attacks.
-Keep in mind that there are many more measures available to mitigate DDoS attacks.
-
-### 1: Creating DDoS L7 Ruleset
-#### Security > DDoS > Deploy a DDoS override
-1. **Override name:** DDoS L7 ruleset
-2. **Ruleset action:** Block
-3. **Ruleset sensitivity:** Default
-
-### 2: Rate Limits
-#### Security > Rate limiting rules > Create rule
-1. **Rule name:** Default rate limit
-2. Expression: `(starts_with(http.request.uri.path, "/"))`
-   - **Field:** URI Path
-   - **Operator:** starts with
-   - **Value:** /
-3. When rate exceeds…
-   - **Requests:** 200 (you should adjust this value yourself based on your website's traffic)
-   - **Period:** 10 seconds
-4. Then take action…
-   - **Choose action:** Block
-5. For duration…
-   - **Duration:** 10 seconds
-
-### 3: Good to Know
-1. Make sure that your server's IP address has not been leaked.
-2. Your server should accept only requests coming from Cloudflare. Accessing your website directly, bypassing Cloudflare, should not be possible.
-3. Configure rate limits on your server to reduce its load during a DDoS attack.
-
-
 ## 🗑️ Cleanup Tool
 To remove all WAF custom rules and the IP blocklist from Cloudflare (e.g. before a fresh install), run:
 ```bash
