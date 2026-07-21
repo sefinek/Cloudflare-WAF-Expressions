@@ -121,6 +121,7 @@
 (http.request.uri.path wildcard "*settings.prod*") or
 (http.request.uri.path wildcard "*wget%20*") or
 (http.request.uri.path wildcard "*wget+*") or
+(http.request.uri.path wildcard "*env.js*") or
 (http.request.uri.query contains "%00") or
 (http.request.uri.query contains "%0A") or
 (http.request.uri.query contains "%0D") or
