@@ -53,6 +53,7 @@
 (http.request.uri.path wildcard "*sftp*") or
 (http.request.uri.path wildcard "*wlwmanifest*") or
 (http.request.uri.path wildcard "*www-sql*") or
+(http.request.uri.path wildcard "*id_ed25519*") or
 (http.request.uri.path wildcard "*_all_dbs*") or
 (http.request.uri.path wildcard "*_debugbar*") or
 (http.request.uri.path wildcard "*~ftp*") or
@@ -309,5 +310,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 10.07.2026 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 21.07.2026 [DD.MM.YYYY]</h4>
 </div>
