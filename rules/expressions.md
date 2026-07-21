@@ -100,6 +100,8 @@
 (http.request.uri.path wildcard "*.py") or
 (http.request.uri.path wildcard "*.sh" and not http.host contains "cdn.") or
 (http.request.uri.path wildcard "*.sql") or
+(http.request.uri.path wildcard "*.pem") or
+(http.request.uri.path wildcard "*.key") or
 (http.request.uri.path wildcard "*.swp") or
 (http.request.uri.path wildcard "*.tar" and not http.host contains "cdn.") or
 (http.request.uri.path wildcard "*.tgz" and not http.host contains "cdn.") or
