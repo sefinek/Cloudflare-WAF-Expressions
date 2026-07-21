@@ -89,31 +89,35 @@
   starts_with(http.host, "cdn.") or
   http.host eq "blocklist.sefinek.net"
 ) or
-(http.request.uri.path wildcard "*/.env*") or
 (http.request.uri.path wildcard "*.7z" and not http.host contains "cdn.") or
 (http.request.uri.path wildcard "*.bak") or
 (http.request.uri.path wildcard "*.bz2" and not http.host contains "cdn.") or
 (http.request.uri.path wildcard "*.gz" and not http.host contains "cdn.") or
+(http.request.uri.path wildcard "*.key") or
 (http.request.uri.path wildcard "*.log" and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.request.uri.path wildcard "*.old") or
 (http.request.uri.path wildcard "*.orig") or
+(http.request.uri.path wildcard "*.pem") or
 (http.request.uri.path wildcard "*.py") or
 (http.request.uri.path wildcard "*.sh" and not http.host contains "cdn.") or
 (http.request.uri.path wildcard "*.sql") or
-(http.request.uri.path wildcard "*.pem") or
-(http.request.uri.path wildcard "*.key") or
 (http.request.uri.path wildcard "*.swp") or
 (http.request.uri.path wildcard "*.tar" and not http.host contains "cdn.") or
 (http.request.uri.path wildcard "*.tgz" and not http.host contains "cdn.") or
 (http.request.uri.path wildcard "*.xz" and not http.host contains "cdn.") or
 (http.request.uri.path wildcard "*.yaml" and not http.host contains "cdn.") or
 (http.request.uri.path wildcard "*.yml" and not http.host contains "cdn.") or
+(http.request.uri.path wildcard "*/.env*") or
 (http.request.uri.path wildcard "*auth.json*") or
 (http.request.uri.path wildcard "*conf.*") or
 (http.request.uri.path wildcard "*crlfinjection*") or
 (http.request.uri.path wildcard "*curl%20*") or
 (http.request.uri.path wildcard "*curl+*") or
+(http.request.uri.path wildcard "*env.js*") or
 (http.request.uri.path wildcard "*fancyupload*") or
+(http.request.uri.path wildcard "*id_dsa*") or
+(http.request.uri.path wildcard "*id_ecdsa*") or
+(http.request.uri.path wildcard "*key.json*") or
 (http.request.uri.path wildcard "*php.ini*") or
 (http.request.uri.path wildcard "*phpinfo*") or
 (http.request.uri.path wildcard "*phpsysinfo*") or
@@ -121,13 +125,12 @@
 (http.request.uri.path wildcard "*settings.prod*") or
 (http.request.uri.path wildcard "*wget%20*") or
 (http.request.uri.path wildcard "*wget+*") or
-(http.request.uri.path wildcard "*env.js*") or
 (http.request.uri.query contains "%00") or
 (http.request.uri.query contains "%0A") or
 (http.request.uri.query contains "%0D") or
 (http.request.uri.query contains "%2e%2e") or
 (http.request.uri.query contains "..%2f") or
-(http.request.uri.query contains "..%5c") or
+(http.request.uri.query contains "..%5c") or`
 (http.request.uri.query contains "../") or
 (http.request.uri.query contains "..\\") or
 (http.request.uri.query contains "squelette=../") or
@@ -137,14 +140,14 @@
 (http.request.uri.query wildcard "*curl+*") or
 (http.request.uri.query wildcard "*ed25519*") or
 (http.request.uri.query wildcard "*file://*") or
+(http.request.uri.query wildcard "*formfinder*") or
 (http.request.uri.query wildcard "*php://*") or
 (http.request.uri.query wildcard "*secrets.json*") or
 (http.request.uri.query wildcard "*set-cookie:*") or
 (http.request.uri.query wildcard "*wget%20*") or
 (http.request.uri.query wildcard "*wget+*") or
-(http.request.uri.query wildcard "*formfinder*") or
-(http.user_agent wildcard "*\"*") or
-(http.user_agent wildcard "*alittle client*")
+(http.user_agent wildcard "*alittle client*") or
+(http.user_agent wildcard "*\"*")
 ```
 
 ## 🤖 Part 3 - Unwanted bots<div id="part3"></div>
