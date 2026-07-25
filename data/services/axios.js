@@ -20,9 +20,7 @@ const api = axios.create({
 axiosRetry(api, {
 	retries: 3,
 	retryDelay: retryCount => retryCount * 7000,
-	retryCondition: error => {
-		return error.code === 'ECONNABORTED' || error.code === 'ENOTFOUND' || (error.response && error.response.status >= 500);
-	},
+	retryCondition: error => error.code === 'ECONNABORTED' || error.code === 'ENOTFOUND' || (error.response && error.response.status >= 500),
 	onRetry: (retryCount, err, requestConfig) => {
 		const status = err.response?.status ? `Status ${err.response.status}` : (err.code || err.message || 'Unknown error');
 		log(`${status} - retry #${retryCount} for ${requestConfig.url}\n${err.response?.data ? JSON.stringify(err.response.data) : err.message}`, 2);

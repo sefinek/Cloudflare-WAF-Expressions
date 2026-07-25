@@ -18,10 +18,10 @@ const pull = async () => {
 		if (changes > 0 || insertions > 0 || deletions > 0) {
 			log(`Updates detected. Changes: ${changes}; Insertions: ${insertions}; Deletions: ${deletions}`);
 			return true;
-		} else {
-			log('No new updates detected', 1);
-			return false;
 		}
+		log('No new updates detected', 1);
+		return false;
+
 	} catch (err) {
 		log(err, 3);
 		return null;
