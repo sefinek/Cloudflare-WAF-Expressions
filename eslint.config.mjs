@@ -2,7 +2,6 @@ import js from '@eslint/js';
 import globals from 'globals';
 
 export default [
-	{ ignores: ['node_modules', '**/*.min.js', '**/*bundle*', 'build/**', 'dist/**', 'services/translations/**'] },
 	js.configs.recommended,
 	{
 		languageOptions: {
@@ -12,6 +11,8 @@ export default [
 			},
 		},
 		rules: {
+			'arrow-body-style': ['warn', 'as-needed'],
+			'arrow-parens': ['warn', 'as-needed'],
 			'arrow-spacing': ['warn', { before: true, after: true }],
 			'comma-dangle': ['warn', { arrays: 'always-multiline', objects: 'always-multiline' }],
 			'comma-spacing': 'warn',
@@ -25,6 +26,7 @@ export default [
 			'max-nested-callbacks': ['error', { max: 4 }],
 			'max-statements-per-line': ['error', { max: 2 }],
 			'no-console': 'off',
+			'no-else-return': 'warn',
 			'no-empty': 'warn',
 			'no-empty-function': 'warn',
 			'no-floating-decimal': 'error',
@@ -37,9 +39,11 @@ export default [
 			'no-unreachable': 'warn',
 			'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
 			'no-use-before-define': ['error', { functions: false, classes: true }],
+			'no-useless-return': 'warn',
 			'no-var': 'error',
 			'object-curly-spacing': ['warn', 'always'],
 			'object-shorthand': 'warn',
+			'prefer-arrow-callback': 'warn',
 			'prefer-const': 'error',
 			'quotes': ['warn', 'single'],
 			'semi': ['warn', 'always'],
