@@ -59,7 +59,7 @@ const parseExpressions = text => {
 	});
 };
 
-const parseExpressionsMain = async () => {
+module.exports = async () => {
 	// Validate environment variables
 	const phpSupport = process.env.PHP_SUPPORT || 'false';
 	if (!['true', 'false'].includes(phpSupport)) log('Invalid PHP_SUPPORT value. Must be "true" or "false"', 2);
@@ -106,5 +106,3 @@ const parseExpressionsMain = async () => {
 		return null;
 	}
 };
-
-module.exports = parseExpressionsMain;
