@@ -1,33 +1,41 @@
 const fs = require('node:fs/promises');
-const { axios } = require('../axios.js');
+const { axiosCf } = require('../axios.js');
 const { load: loadCache, save: saveCache } = require('../ruleCache.js');
 const fetchSniffCatIPs = require('../sniffcat.js');
+const fetchAbuseIPDBIPs = require('../abuseipdb.js');
 const log = require('../../scripts/log.js');
+const pluralize = require('../../scripts/pluralize.js');
 const { version } = require('../../../package.json');
 
-const { CF_ACCOUNT_ID, SNIFFCAT_API_TOKEN } = process.env;
+const { CF_ACCOUNT_ID, SNIFFCAT_API_TOKEN, ABUSEIPDB_API_KEY } = process.env;
 const USER_IP_LIST_PATH = 'rules/my-lists/ip-blocklist.txt';
 const LIST_NAME = process.env.CF_IP_BLOCKLIST_NAME || process.env.CF_IP_LIST_NAME || 'sefinek_cf_waf';
-const LIST_DESCRIPTION = `Managed by Cloudflare-WAF-Expressions v${version} (https://github.com/sefinek/Cloudflare-WAF-Expressions). Sources: rules/ip-blocklist.txt, rules/my-lists/ip-blocklist.txt${SNIFFCAT_API_TOKEN ? ', SniffCat' : ''}. Do not edit manually - any changes will be overwritten on the next sync.`;
+const LIST_SOURCES = [
+	'rules/ip-blocklist.txt',
+	'rules/my-lists/ip-blocklist.txt',
+	...(SNIFFCAT_API_TOKEN ? ['SniffCat'] : []),
+	...(ABUSEIPDB_API_KEY ? ['AbuseIPDB'] : []),
+];
+const LIST_DESCRIPTION = `Managed by Cloudflare-WAF-Expressions v${version} (https://github.com/sefinek/Cloudflare-WAF-Expressions). Sources: ${LIST_SOURCES.join(', ')}. Do not edit manually - any changes will be overwritten on the next sync.`;
 
 const getOrCreateList = async cache => {
 	if (cache.ipListId) {
 		if (cache.ipListDescription !== LIST_DESCRIPTION) {
-			await axios.put(`/accounts/${CF_ACCOUNT_ID}/rules/lists/${cache.ipListId}`, { description: LIST_DESCRIPTION });
+			await axiosCf.put(`/accounts/${CF_ACCOUNT_ID}/rules/lists/${cache.ipListId}`, { description: LIST_DESCRIPTION });
 			cache.ipListDescription = LIST_DESCRIPTION;
 			log('IP list description updated', 1);
 		}
 		return cache.ipListId;
 	}
 
-	const { data } = await axios.get(`/accounts/${CF_ACCOUNT_ID}/rules/lists`);
+	const { data } = await axiosCf.get(`/accounts/${CF_ACCOUNT_ID}/rules/lists`);
 	if (!data.success) throw new Error(`Failed to fetch lists: ${JSON.stringify(data.errors)}`);
 
 	const existing = data.result.find(l => l.name === LIST_NAME);
 	if (existing) {
 		cache.ipListId = existing.id;
 		if (existing.description !== LIST_DESCRIPTION) {
-			await axios.put(`/accounts/${CF_ACCOUNT_ID}/rules/lists/${existing.id}`, { description: LIST_DESCRIPTION });
+			await axiosCf.put(`/accounts/${CF_ACCOUNT_ID}/rules/lists/${existing.id}`, { description: LIST_DESCRIPTION });
 			log('IP list description updated', 1);
 		}
 		cache.ipListDescription = LIST_DESCRIPTION;
@@ -39,7 +47,7 @@ const getOrCreateList = async cache => {
 	log(`Creating new IP list '${LIST_NAME}'...`);
 	let created;
 	try {
-		const res = await axios.post(`/accounts/${CF_ACCOUNT_ID}/rules/lists`, {
+		const res = await axiosCf.post(`/accounts/${CF_ACCOUNT_ID}/rules/lists`, {
 			name: LIST_NAME,
 			kind: 'ip',
 			description: LIST_DESCRIPTION,
@@ -71,7 +79,7 @@ const getAllListItems = async listId => {
 
 	do {
 		const params = cursor ? { cursor, per_page: 500 } : { per_page: 500 };
-		const { data } = await axios.get(`/accounts/${CF_ACCOUNT_ID}/rules/lists/${listId}/items`, { params });
+		const { data } = await axiosCf.get(`/accounts/${CF_ACCOUNT_ID}/rules/lists/${listId}/items`, { params });
 		if (!data.success) throw new Error(`Failed to fetch list items: ${JSON.stringify(data.errors)}`);
 
 		items.push(...data.result);
@@ -92,17 +100,18 @@ const readIPsFromFile = async filePath => {
 };
 
 const readIPs = async () => {
-	const [builtinIPs, userIPs, sniffcatIPs] = await Promise.all([
+	const [builtinIPs, userIPs, sniffcatIPs, abuseIPDBIPs] = await Promise.all([
 		readIPsFromFile('rules/ip-blocklist.txt'),
 		readIPsFromFile(USER_IP_LIST_PATH),
 		fetchSniffCatIPs(),
+		fetchAbuseIPDBIPs(),
 	]);
 
-	const merged = [...new Set([...builtinIPs, ...userIPs, ...sniffcatIPs])].sort();
-	const totalRaw = builtinIPs.length + userIPs.length + sniffcatIPs.length;
+	const merged = [...new Set([...builtinIPs, ...userIPs, ...sniffcatIPs, ...abuseIPDBIPs])].sort();
+	const totalRaw = builtinIPs.length + userIPs.length + sniffcatIPs.length + abuseIPDBIPs.length;
 	const dupes = totalRaw - merged.length;
 
-	log(`Desired list: ${merged.length} unique IPs (${builtinIPs.length} built-in + ${userIPs.length} custom + ${sniffcatIPs.length} SniffCat${dupes > 0 ? `, ${dupes} duplicates removed` : ''})`);
+	log(`Desired list: ${merged.length} unique IPs (${builtinIPs.length} built-in + ${userIPs.length} custom + ${sniffcatIPs.length} SniffCat + ${abuseIPDBIPs.length} AbuseIPDB${dupes > 0 ? `, ${dupes} duplicates removed` : ''})`);
 	return merged;
 };
 
@@ -130,14 +139,14 @@ module.exports = async () => {
 	log(`CF list: ${currentItems.length} IPs | diff: +${toAdd.length} to add / -${toDelete.length} to remove`);
 
 	if (toDelete.length > 0) {
-		log(`Removing ${toDelete.length} stale IP(s) (no longer in desired list)...`);
-		const { data } = await axios.delete(`/accounts/${CF_ACCOUNT_ID}/rules/lists/${listId}/items`, { data: { items: toDelete } });
+		log(`Removing ${toDelete.length} stale ${pluralize(toDelete.length, 'IP')} (no longer in desired list)...`);
+		const { data } = await axiosCf.delete(`/accounts/${CF_ACCOUNT_ID}/rules/lists/${listId}/items`, { data: { items: toDelete } });
 		if (!data.success) throw new Error(`Failed to delete items: ${JSON.stringify(data.errors)}`);
 	}
 
 	if (toAdd.length > 0) {
-		log(`Adding ${toAdd.length} new IP(s)...`);
-		const { data } = await axios.post(`/accounts/${CF_ACCOUNT_ID}/rules/lists/${listId}/items`, toAdd.map(ip => ({ ip })));
+		log(`Adding ${toAdd.length} new ${pluralize(toAdd.length, 'IP')}...`);
+		const { data } = await axiosCf.post(`/accounts/${CF_ACCOUNT_ID}/rules/lists/${listId}/items`, toAdd.map(ip => ({ ip })));
 		if (!data.success) throw new Error(`Failed to add items: ${JSON.stringify(data.errors)}`);
 	}
 

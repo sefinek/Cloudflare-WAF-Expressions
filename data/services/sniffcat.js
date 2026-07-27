@@ -1,21 +1,18 @@
-const axios = require('axios');
+const { axiosSc } = require('./axios.js');
 const log = require('../scripts/log.js');
 
-const CONFIDENCE_MIN = process.env.SNIFFCAT_CONFIDENCE_MIN || '70';
+const CONFIDENCE_MIN = process.env.SNIFFCAT_CONFIDENCE_MIN || '80';
 const LIMIT = process.env.SNIFFCAT_LIMIT || '1000';
 
 module.exports = async () => {
-	const token = process.env.SNIFFCAT_API_TOKEN;
-	if (!token) return [];
+	if (!process.env.SNIFFCAT_API_TOKEN) return [];
 
 	try {
 		log(`Fetching SniffCat blacklist (confidenceMin: ${CONFIDENCE_MIN}, limit: ${LIMIT})...`);
 
-		const { data } = await axios.get('https://api.sniffcat.com/api/v1/blacklist', {
+		const { data } = await axiosSc.get('/api/v1/blacklist', {
 			params: { type: 'txt', confidenceMin: CONFIDENCE_MIN, limit: LIMIT },
-			headers: { 'X-Secret-Token': token },
 			responseType: 'text',
-			timeout: 15000,
 		});
 
 		const ips = data.split('\n').map(line => line.trim()).filter(Boolean);

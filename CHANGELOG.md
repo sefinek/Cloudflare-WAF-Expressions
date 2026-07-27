@@ -1,5 +1,16 @@
 # Changelog
 
+## [v3.2.0] - 2026-07-27
+
+### Added
+- **AbuseIPDB IP integration** - the script now also fetches malicious IPs from [AbuseIPDB](https://www.abuseipdb.com) and merges them with the static blocklist and [SniffCat](https://sniffcat.com) on every sync. Requires `ABUSEIPDB_API_KEY`. Configurable via `ABUSEIPDB_CONFIDENCE_MIN` (default: `75`) and `ABUSEIPDB_LIMIT` (default: `3000`).
+
+### Changed
+- Requests to Cloudflare, SniffCat, and AbuseIPDB now go through separate axios instances with independent request counters; `axios-retry` is now also applied to SniffCat and AbuseIPDB requests.
+- Reorganized `.env.example` into labeled sections (Application, Cloudflare, WAF rule behavior, SniffCat, AbuseIPDB, Scheduling) for easier navigation.
+- Removed most IP addresses from [rules/ip-blocklist.txt](rules/ip-blocklist.txt) that most likely were no longer involved in abusive activity.
+- Improved logging.
+
 ## [v3.1.1] - 2026-07-13
 - Significantly improved the regular expressions, resolving numerous false-positive issues.
 

@@ -1,4 +1,4 @@
-const { axios, getRequestCount } = require('../axios.js');
+const { axiosCf, getRequestCfCount, getRequestScCount, getRequestAbCount } = require('../axios.js');
 const expressionParser = require('../../scripts/parseExpressions.js');
 const syncIPList = require('./syncIPList.js');
 const { load: loadCache, save: saveCache } = require('../ruleCache.js');
@@ -7,6 +7,8 @@ const { PHASE, PART_REGEX, passthroughRule } = require('./wafRuleset.js');
 const parseAllowlist = require('../../scripts/parseAllowlist.js');
 const ensureUserLists = require('../../scripts/ensureUserLists.js');
 const log = require('../../scripts/log.js');
+const pluralize = require('../../scripts/pluralize.js');
+const formatDuration = require('../../scripts/duration.js');
 
 const { CF_API_TOKEN } = process.env;
 if (!CF_API_TOKEN) throw new Error('CF_API_TOKEN is missing. Check the .env file.');
@@ -18,7 +20,7 @@ const getZones = async (excludedNames = []) => {
 	let page = 1;
 
 	while (true) {
-		const { data } = await axios.get('/zones', { params: { page, per_page: 1000 } });
+		const { data } = await axiosCf.get('/zones', { params: { page, per_page: 1000 } });
 		if (!data.success) throw new Error(`Failed to fetch zones. ${JSON.stringify(data?.errors)}`);
 
 		zones.push(...data.result);
@@ -39,14 +41,14 @@ const getZones = async (excludedNames = []) => {
 		devMode > 0 && `${devMode} dev mode (!)`,
 	].filter(Boolean);
 	const excluded = excludedNames.length > 0 && `${excludedNames.length} excluded: ${excludedNames.join(', ')}`;
-	const parts = [`${active} active`, ...warnings, `${accounts} account(s)`, `plans: ${plans || 'N/A'}`, ...(excluded ? [excluded] : [])];
-	log(`Successfully retrieved ${zones.length} zone(s): ${parts.join(', ')}`, 1);
+	const parts = [`${active} active`, ...warnings, `${accounts} ${pluralize(accounts, 'account')}`, `plans: ${plans || 'N/A'}`, ...(excluded ? [excluded] : [])];
+	log(`Successfully retrieved ${zones.length} ${pluralize(zones.length, 'zone')}: ${parts.join(', ')}`, 1);
 	return zones;
 };
 
 const getEntrypoint = async zoneId => {
 	try {
-		const { data } = await axios.get(`/zones/${zoneId}/rulesets/phases/${PHASE}/entrypoint`);
+		const { data } = await axiosCf.get(`/zones/${zoneId}/rulesets/phases/${PHASE}/entrypoint`);
 		if (!data.success) throw new Error(`Failed to fetch ruleset. ${JSON.stringify(data?.errors)}`);
 		return data.result;
 	} catch (err) {
@@ -75,8 +77,8 @@ const buildAllowlistExpression = (entries, zone) => {
 };
 
 const updateWAFCustomRulesForZone = async (expressions, allowlistEntries, zone) => {
-	log(`=================== ANALYZING THE ZONE ${zone.name.toUpperCase()} (${zone.id}) ===================`);
 	const allowlistExpression = buildAllowlistExpression(allowlistEntries, zone);
+	const allowlist = allowlistExpression ? `Active (${allowlistExpression.length} chars)` : 'None';
 
 	try {
 		const entrypoint = await getEntrypoint(zone.id);
@@ -91,11 +93,6 @@ const updateWAFCustomRulesForZone = async (expressions, allowlistEntries, zone) 
 			if (isNaN(index)) continue;
 
 			const { name, action, expressions: part } = block;
-			if (!part) {
-				log(`» No expression for part ${index}, skipping`);
-				continue;
-			}
-
 			const expression = allowlistExpression
 				? `not (${allowlistExpression}) and (${part})`
 				: part;
@@ -115,26 +112,29 @@ const updateWAFCustomRulesForZone = async (expressions, allowlistEntries, zone) 
 			...partRules,
 		];
 
-		if (normalize(current) === normalize(desired)) return log('All rules are already up-to-date', 1);
+		if (normalize(current) === normalize(desired)) return { status: 'Up to date', allowlist, details: '-' };
 
-		const allowlistStatus = allowlistExpression ? `allowlist active (${allowlistExpression.length} chars)` : 'no allowlist';
-		log(`Writing ruleset: ${partRules.length} managed part rule(s), ${userRules.length} user rule(s) preserved, ${allowlistStatus}...`);
-
-		const { data } = await axios.put(`/zones/${zone.id}/rulesets/phases/${PHASE}/entrypoint`, { rules: desired });
+		const { data } = await axiosCf.put(`/zones/${zone.id}/rulesets/phases/${PHASE}/entrypoint`, { rules: desired });
 		if (!data.success) throw new Error(`Update failed. ${JSON.stringify(data?.errors)}`);
 
-		log('Ruleset updated successfully', 1);
+		return {
+			status: 'Updated',
+			allowlist,
+			details: `${partRules.length} managed, ${userRules.length} user ${pluralize(userRules.length, 'rule')} preserved`,
+		};
 	} catch (err) {
 		const cfErrors = err.cause?.response?.data?.errors ?? err.response?.data?.errors;
-		if (cfErrors?.some(e => e.message?.includes('could not find list') || e.message?.includes('does not exist'))) {
-			log('Unknown IP list referenced in WAF expression. The list may have been deleted or CF_IP_BLOCKLIST_NAME has changed.', 2);
-			log('To fix this, run: node data/tools/deleteWAFRules.js', 2);
-		}
-		throw new Error('» Error during update - updateWAFCustomRulesForZone()', { cause: err });
+		const details = cfErrors?.some(e => e.message?.includes('could not find list') || e.message?.includes('does not exist'))
+			? 'Unknown IP list (run: node data/tools/deleteWAFRules.js)'
+			: cfErrors?.length ? cfErrors.map(e => e.message).join('; ') : err.message;
+
+		return { status: 'Error', allowlist, details };
 	}
 };
 
 module.exports = async () => {
+	const start = Date.now();
+
 	await pull();
 	await ensureUserLists();
 
@@ -149,21 +149,36 @@ module.exports = async () => {
 		const zones = await getZones(excludedZones);
 		const filteredZones = excludedZones.length ? zones.filter(z => !excludedZones.includes(z.name)) : zones;
 
+		log(`Analyzing ${pluralize(filteredZones.length, 'zone')}...`);
+
+		const nameWidth = Math.max(...filteredZones.map(z => z.name.length));
+		let failed = 0;
 		for (const zone of filteredZones) {
-			await updateWAFCustomRulesForZone(expressions, allowlistEntries, zone);
+			const result = await updateWAFCustomRulesForZone(expressions, allowlistEntries, zone);
+			if (result.status === 'Error') failed++;
+
+			const detailsSuffix = result.details !== '-' ? ` - ${result.details}` : '';
+			const allowlistSuffix = result.allowlist !== 'None' ? ` [allowlist: ${result.allowlist}]` : '';
+			const type = result.status === 'Error' ? 3 : result.status === 'Updated' ? 1 : 0;
+			log(`${zone.name.padEnd(nameWidth)} : ${result.status}${detailsSuffix}${allowlistSuffix}`, type);
 		}
+
+		if (failed > 0) log(`${failed} ${pluralize(failed, 'zone')} failed to update - see above for details`, 3);
 
 		const showVerifyNotice = !cache.verifyNoticeShown;
 		if (showVerifyNotice) cache.verifyNoticeShown = true;
 
 		await saveCache(cache);
-		log(`Successfully! All API requests: ${getRequestCount()}`, 1);
+		log(`Successfully! API requests - Cloudflare: ${getRequestCfCount()}, SniffCat: ${getRequestScCount()}, AbuseIPDB: ${getRequestAbCount()} - took ${formatDuration(Date.now() - start)}`, 1);
 
-		if (showVerifyNotice) log(`IMPORTANT! Open your website${filteredZones.length === 1 ? '' : 's'} in a browser and confirm everything loads correctly. If any pages or static files are wrongly blocked (HTTP 403), report it at: https://github.com/sefinek/Cloudflare-WAF-Expressions/issues`);
+		if (showVerifyNotice) {
+			const border = '*'.repeat(80);
+			log(`${border}\nNote: open your ${pluralize(filteredZones.length, 'website')} in a browser and check that everything loads correctly. If any page or static file gets wrongly blocked (HTTP 403), you can add an exception for it in rules/my-lists/allowlist.txt to bypass the WAF rules. If, however, you believe this is a genuine false positive that should be fixed in the rules themselves, let us know at: https://github.com/sefinek/Cloudflare-WAF-Expressions/issues\n${border}`);
+		}
 	} catch (err) {
 		let cause = err;
 		while (cause.cause) cause = cause.cause;
 		const detail = cause.response?.data ? JSON.stringify(cause.response.data) : null;
-		log(`WAF update failed! ${err.message}${detail ? ` - ${detail}` : ` - ${cause.message}`}`, 3);
+		log(`WAF update failed! ${err.message}${detail ? ` - ${detail}` : ` - ${cause.message}`} - after ${formatDuration(Date.now() - start)}`, 3);
 	}
 };

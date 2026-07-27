@@ -1,5 +1,6 @@
 const fs = require('node:fs/promises');
 const log = require('./log.js');
+const box = require('./box.js');
 
 const USER_LISTS_DIR = 'rules/my-lists';
 
@@ -46,19 +47,6 @@ const FILES = [
 `,
 	},
 ];
-
-const W = 52;
-const USE_COLOR = !('pm_id' in process.env);
-const CYAN = '\x1b[36m';
-const RESET = '\x1b[0m';
-
-const box = lines => {
-	const top = `╔${'═'.repeat(W + 2)}╗`;
-	const bottom = `╚${'═'.repeat(W + 2)}╝`;
-	const mid = lines.map(l => `║ ${l.padEnd(W)} ║`).join('\n');
-	const frame = `${top}\n${mid}\n${bottom}`;
-	console.log(USE_COLOR ? `${CYAN}${frame}${RESET}` : frame);
-};
 
 module.exports = async () => {
 	await fs.mkdir(USER_LISTS_DIR, { recursive: true });

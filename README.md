@@ -12,16 +12,22 @@ If you find this repository useful, I would greatly appreciate it if you could g
 <img src="data/images/waf-custom-rules.png" alt="Cloudflare Web Application Firewall [WAF] Rules"> 
 
 
-## 🐈 SniffCat integration
-The script supports [SniffCat](https://sniffcat.com) - a service that provides a dynamic list of known malicious IP addresses.
-When `SNIFFCAT_API_TOKEN` is set, the script fetches IPs from the SniffCat API on every sync and merges them with the static `rules/ip-blocklist.txt` before uploading to Cloudflare Lists.
-This significantly extends the IP blocklist without any manual effort.
+## 🛑 SniffCat and AbuseIPDB integrations
+The script supports two external services that provide dynamic lists of known malicious IP addresses: [SniffCat](https://sniffcat.com) and [AbuseIPDB](https://www.abuseipdb.com).
+When you set `SNIFFCAT_API_TOKEN` and/or `ABUSEIPDB_API_KEY`, the script fetches IP addresses from the APIs on every sync and merges them with the static `rules/ip-blocklist.txt` before uploading to Cloudflare Lists.
+This significantly extends the IP blocklist without any manual effort. Both integrations work independently of each other - you can enable one, both, or neither.
 
-The integration can be controlled via two optional environment variables:
-- `SNIFFCAT_CONFIDENCE_MIN` - minimum confidence level (0-100) required to include an IP. Default: `78`.
-- `SNIFFCAT_LIMIT` - maximum number of IPs fetched per sync. Default: `3000`. Cloudflare allows up to 10,000 entries per list.
+Cloudflare allows up to 10,000 entries per list. Each integration can be configured via two optional environment variables:
 
-Without `SNIFFCAT_API_TOKEN`, the integration is skipped and only the static blocklist is used.
+**SniffCat:**
+- `SNIFFCAT_CONFIDENCE_MIN` - minimum confidence level (0-100) required to include an IP address. Default: `80`.
+- `SNIFFCAT_LIMIT` - maximum number of IP addresses fetched per sync. Default: `3000`.
+
+**AbuseIPDB:**
+- `ABUSEIPDB_CONFIDENCE_MIN` - minimum confidence score (0-100) required to include an IP address. Default: `75`.
+- `ABUSEIPDB_LIMIT` - maximum number of IP addresses fetched per sync. Default: `3000`. Cloudflare allows up to 10,000 entries per list.
+
+Without `SNIFFCAT_API_TOKEN` and `ABUSEIPDB_API_KEY`, both integrations are skipped and only the [static list](rules/ip-blocklist.txt) is used.
 
 
 ## 🛡️ What Can This List Block?
@@ -82,6 +88,7 @@ There's no need to add them manually, as the script takes care of everything for
    - Set `PHP_SUPPORT` to `true` if your website uses PHP (removes the Managed Challenge rule for `.php` files)
    - Set `WORDPRESS_SUPPORT` to `true` if your website runs WordPress (removes the Managed Challenge rules for `/wp-content` and `/wp-includes` paths so themes, plugins, CSS and images load correctly; also set `PHP_SUPPORT=true`)
    - Set `SNIFFCAT_API_TOKEN` to include dynamic malicious IPs from [SniffCat](https://sniffcat.com) (optional, but highly recommended)
+   - Set `ABUSEIPDB_API_KEY` to include dynamic malicious IPs from [AbuseIPDB](https://www.abuseipdb.com) (optional, but highly recommended)
    ```bash
    nano .env
    ```

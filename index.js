@@ -4,8 +4,16 @@ const { pullAndRestart } = require('./data/services/updates.js');
 const updateWAFRules = require('./data/services/cloudflare/updateWAFRules.js');
 const { version, author } = require('./package.json');
 const log = require('./data/scripts/log.js');
+const box = require('./data/scripts/box.js');
 
-log(`Author: ${author} | https://github.com/sefinek/Cloudflare-WAF-Expressions (v${version})`);
+const CF_ORANGE = '\x1b[38;5;208m';
+box([
+	'Cloudflare WAF Expressions',
+	`v${version} by ${author.split('<')[0].trim()}`,
+	'',
+	'Automated WAF rules, IP blocklists & Cloudflare Lists sync',
+	'https://github.com/sefinek/Cloudflare-WAF-Expressions',
+], CF_ORANGE);
 
 // Validate environment variables
 const { NODE_ENV, CF_API_TOKEN, CF_ACCOUNT_ID } = process.env;
