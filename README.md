@@ -31,7 +31,7 @@ Without `SNIFFCAT_API_TOKEN`, the integration is skipped and only the static blo
 | [🧨 Part 2 - Malicious extensions & injections](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/rules/expressions.md#part2) | Blocks suspicious requests, exploits, path traversal, configuration file access attempts, and the use of CLI tools in URLs. | Block             |
 | [🤖 Part 3 - Unwanted bots](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/rules/expressions.md#part3)                     | Blocks unnecessary, harmful bots, scanners, and web scrapers.                                                               | Block             |
 | [🦕 Part 4 - Ancient browsers & IP blocklist](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/rules/expressions.md#part4)   | Blocks traffic from the Tor network, known malicious IP addresses, ASNs linked to botnets, and very outdated browsers.      | Block             |
-| [🗑️ Part 5 - Deprecated browsers & CMS](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/rules/expressions.md#part5)        | Enforces additional verification for outdated browsers (Chrome 73-122, Firefox 62-118), old OS versions, and CMS scanners.  | Managed Challenge |
+| [🗑️ Part 5 - Deprecated browsers & CMS](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/rules/expressions.md#part5)         | Enforces additional verification for outdated browsers (Chrome 73-122, Firefox 62-118), old OS versions, and CMS scanners.  | Managed Challenge |
 
 > [!IMPORTANT]  
 > It is recommended to **disable** `Bot Fight Mode` in the `Security` tab.  
