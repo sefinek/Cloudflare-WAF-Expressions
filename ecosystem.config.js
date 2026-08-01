@@ -4,7 +4,7 @@ module.exports = {
 		script: './index.js',
 
 		// Logging configuration
-		log_date_format: 'HH:mm:ss.SSS DD.MM.YYYY',
+		log_date_format: 'HH:mm:ss.SSS M.D.YYYY',
 		merge_logs: true,
 		log_file: '~/logs/other/cf-waf-expressions/combined.log',
 		out_file: '~/logs/other/cf-waf-expressions/out.log',

@@ -1,28 +1,41 @@
-## Cache for CDN and some extensions
+# Cache rules
+`https://dash.cloudflare.com/<ACCOUNT>/<DOMAIN>/caching/rules`  
+Last updated: 8.2.2026 (M.D.YYYY)
+
+## For CDN subdomains and the most popular file extensions
 ```
-(starts_with(http.host, "cdn.")) or
-(starts_with(http.host, "screenshots.")) or
-(http.request.uri.path.extension in {"avi" "avif" "mp3" "mp4" "wav" "jpg" "jpeg" "png" "gif" "ico" "bmp" "webm" "webp" "woff" "woff2"})
+(
+  http.request.method in {"GET" "HEAD"}
+  and
+  (
+    starts_with(http.host, "cdn.")
+    or http.request.uri.path.extension in {
+      "css" "js"
+      "jpg" "jpeg" "png" "webp" "avif" "gif" "svg" "svgz" "ico" "bmp"
+      "woff2" "woff" "ttf" "otf"
+      "pdf"
+      "mp4" "webm" "mkv" "avi"
+      "mp3" "m4a" "ogg" "wav"
+      "zip" "7z" "rar" "tar" "gz"
+    }
+  )
+)
 ```
 
-- Eligible for cache
-- Edge TTL
-    - Ignore cache-control header and use this TTL
-- Browser TTL
-    - Respect origin TTL
-
-
-## Cache default file extensions
+## For a broad range of file extensions
 ```
-(http.request.uri.path.extension in {"7z" "avi" "avif" "apk" "bin" "bmp" "bz2" "class" "css" "csv" "doc" "docx" "dmg" "ejs" "eot" "eps" "exe" "flac" "gif" "gz" "ico" "iso" "jar" "jpg" "jpeg" "js" "mid" "midi" "mkv" "mp3" "mp4" "ogg" "otf" "pdf" "pict" "pls" "png" "ppt" "pptx" "ps" "rar" "svg" "svgz" "swf" "tar" "tif" "tiff" "ttf" "webm" "webp" "woff" "woff2" "xls" "xlsx" "zip" "zst"})
+(
+  http.request.method in {"GET" "HEAD"}
+  and http.request.uri.path.extension in {
+    "css" "js"
+    "jpg" "jpeg" "png" "webp" "avif" "gif" "svg" "svgz" "ico" "bmp"
+    "tif" "tiff" "pict" "eps"
+    "woff2" "woff" "eot" "ttf" "otf"
+    "pdf" "csv" "doc" "docx" "xls" "xlsx" "ppt" "pptx" "ps"
+    "mp4" "webm" "mkv" "avi" "swf"
+    "mp3" "m4a" "ogg" "wav" "flac" "mid" "midi" "pls"
+    "zip" "7z" "rar" "tar" "gz" "bz2" "zst"
+    "apk" "exe" "dmg" "iso" "bin" "jar" "class" "ejs"
+  }
+)
 ```
-
-- Eligible for cache
-
-
-[//]: # (## Bypass cache for blocklist.sefinek.net)
-[//]: # (```js)
-[//]: # (&#40;http.host eq "blocklist.sefinek.net" and http.request.uri.path.extension in {"txt" "conf"}&#41;)
-[//]: # (```)
-[//]: # ()
-[//]: # (- Bypass cache)

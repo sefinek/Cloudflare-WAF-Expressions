@@ -1,6 +1,6 @@
 # Changelog
 
-## [v3.2.0] - 2026-07-27
+## [v3.2.0] - 8.27.2026
 
 ### Added
 - **AbuseIPDB IP integration** - the script now also fetches malicious IPs from [AbuseIPDB](https://www.abuseipdb.com) and merges them with the static blocklist and [SniffCat](https://sniffcat.com) on every sync. Requires `ABUSEIPDB_API_KEY`. Configurable via `ABUSEIPDB_CONFIDENCE_MIN` (default: `75`) and `ABUSEIPDB_LIMIT` (default: `3000`).
@@ -10,17 +10,19 @@
 - Reorganized `.env.example` into labeled sections (Application, Cloudflare, WAF rule behavior, SniffCat, AbuseIPDB, Scheduling) for easier navigation.
 - Removed most IP addresses from [rules/ip-blocklist.txt](rules/ip-blocklist.txt) that most likely were no longer involved in abusive activity.
 - Improved logging.
+- Updated [rules/cache.md](rules/cache.md).
 
-## [v3.1.1] - 2026-07-13
+
+## [v3.1.1] - 7.13.2026
 - Significantly improved the regular expressions, resolving numerous false-positive issues.
 
 
-## [v3.1.0] - 2026-06-29
+## [v3.1.0] - 6.29.2026
 - Added `rules/my-lists/allowlist.txt`. Defines WAF expressions excluded from all managed rules (Part 1-5). Supports per-zone targeting via `[zone.com]` and `[!zone.com]` prefixes.
 - On first run, if `rules/my-lists/` files are missing, an info box is printed and the files are created automatically.
 
 
-## [v3.0.0] - 2026-06-22
+## [v3.0.0] - 6.22.2026
 
 > [!WARNING]
 > Your Cloudflare API token now requires the **Zone WAF → Edit** permission - the old **Firewall Services** permission may no longer be sufficient. Migrating to an [Account API token](https://developers.cloudflare.com/fundamentals/api/get-started/account-owned-tokens) (`cfat_` prefix) is recommended. See the README for the full list of permissions.
@@ -30,7 +32,7 @@
 - Fewer API requests per run: one read and at most one write per zone.
 
 
-## [v2.3.1] - 2026-06-12
+## [v2.3.1] - 6.12.2026
 
 ### Added
 - Added automatic creation of the `rules/my-lists/ip-blocklist.txt` file if it doesn't exist.
@@ -39,7 +41,7 @@
 - Fixed known issues in the rules.
 
 
-## [v2.3.0] - 2026-06-01
+## [v2.3.0] - 6.1.2026
 
 ### Added
 - Blocking for backup and archive extensions: `.bak`, `.old`, `.orig`, `.swp`, `.gz`, `.tgz`, `.tar`, `.bz2`, `.xz`, `.7z`. Archives excluded on `cdn.` hosts.
@@ -50,7 +52,7 @@
 - Part 2 extension rules were matching `.ext` anywhere in the path, causing false-positive 403s on content-hashed assets (e.g. `/_next/static/chunks/11.shudcv6pi8.css`). Extensions are now anchored to the end of the path.
 
 
-## [v2.2.0] - 2026-05-26
+## [v2.2.0] - 5.26.2026
 
 ### Added
 - `rules/my-lists/ip-blocklist.txt` - custom IP blocklist, merged automatically with the built-in list and SniffCat on every sync. The folder is excluded from git.
@@ -60,7 +62,7 @@
 - `CF_IP_LIST_NAME` renamed to `CF_IP_BLOCKLIST_NAME`. The old name still works as a fallback - updating the variable is recommended.
 
 
-## [v2.1.1] - 2026-05-23
+## [v2.1.1] - 5.23.2026
 
 ### Fixed
 - Zone fetching (`/zones`) did not handle pagination - with more than 20 domains, some zones were skipped and WAF rules were not applied to them.
@@ -69,13 +71,13 @@
 - Zone summary log now includes more details: active zone count, number of accounts, and plans. Warnings for paused, partial, and dev mode zones are shown only when they occur.
 
 
-## [v2.1.0] - 2026-05-22
+## [v2.1.0] - 5.22.2026
 
 ### Added
 - New `WORDPRESS_SUPPORT` environment variable - when set to `true`, Managed Challenge rules for `/wp-content` and `/wp-includes` paths are removed, allowing WordPress themes, plugins, CSS, images and JS to load correctly. The `/wp-admin` rule remains active.
 
 
-## [v2.0.2] - 2026-05-14
+## [v2.0.2] - 5.14.2026
 
 ### Fixed
 - Removed redundant `verifyFilterUpdate` call after each filter PUT - the extra GET request was doubling API usage per updated rule and likely contributing to Cloudflare rate limiting (HTTP 429, code 10040).
@@ -85,7 +87,7 @@
 - Default `GIT_PULL_CRON` changed from `0 13 * * *` to `30 8 * * *` - runs 30 minutes before the first WAF update, ensuring code is up to date before the 9:00 sync.
 
 
-## [v2.0.1] - 2026-05-01
+## [v2.0.1] - 5.1.2026
 
 ### Fixed
 - `CF_IP_LIST_NAME` was not applied to WAF expressions - the list name in `expressions.md` was hardcoded and the env variable was ignored. The correct name is now injected automatically at parse time.
@@ -98,7 +100,7 @@
 - Removed `CF_API_TOKEN` length validation - Cloudflare API tokens do not have a fixed length (e.g. may be 53 characters despite previously being 40).
 
 
-## [v2.0.0] - 2026-04-26
+## [v2.0.0] - 4.26.2026
 
 ### Breaking Changes
 - Renamed `markdown/` folder to `rules/` - update any scripts or references pointing to the old path.

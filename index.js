@@ -8,10 +8,9 @@ const box = require('./data/scripts/box.js');
 
 const CF_ORANGE = '\x1b[38;5;208m';
 box([
-	'Cloudflare WAF Expressions',
-	`v${version} by ${author.split('<')[0].trim()}`,
+	'               Cloudflare WAF Expressions',
+	`                   v${version} by ${author.split('<')[0].trim()}`,
 	'',
-	'Automated WAF rules, IP blocklists & Cloudflare Lists sync',
 	'https://github.com/sefinek/Cloudflare-WAF-Expressions',
 ], CF_ORANGE);
 

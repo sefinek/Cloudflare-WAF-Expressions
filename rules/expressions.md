@@ -202,6 +202,7 @@
 (http.user_agent wildcard "*semantic-visions*") or
 (http.user_agent wildcard "*semanticbot*") or
 (http.user_agent wildcard "*serpstatbot*") or
+(http.user_agent wildcard "*shapbot*") or
 (http.user_agent wildcard "*sqlmap*") or
 (http.user_agent wildcard "*thinkbot*") or
 (http.user_agent wildcard "*tlm-audit-scanner*") or
@@ -316,5 +317,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 26.07.2026 [DD.MM.YYYY]</h4>
+    <h4>📥 » Last update: 8.2.2026 (M.D.YYYY)</h4>
 </div>
