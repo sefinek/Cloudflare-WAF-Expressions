@@ -80,7 +80,7 @@ There's no need to add them manually, as the script takes care of everything for
      ![Required API token permissions](data/images/api-token-permissions.png)
 
 > [!NOTE]
-> Rules are deployed as WAF custom rules via the Rulesets API. The legacy Firewall Rules API was deprecated on 6.15.2025 and no longer accepts modifications. An old token may stop working if you use [User API Tokens](https://developers.cloudflare.com/fundamentals/api/get-started/create-token). Migrating to [Account API tokens](https://developers.cloudflare.com/fundamentals/api/get-started/account-owned-tokens) is highly recommended.
+> Rules are deployed as WAF custom rules via the Rulesets API. The legacy Firewall Rules API was deprecated on 15.06.2025 and no longer accepts modifications. An old token may stop working if you use [User API Tokens](https://developers.cloudflare.com/fundamentals/api/get-started/create-token). Migrating to [Account API tokens](https://developers.cloudflare.com/fundamentals/api/get-started/account-owned-tokens) is highly recommended.
 
    - Set `CF_ACCOUNT_ID` to your Cloudflare Account ID (32 characters, found in the URL: `dash.cloudflare.com/<account_id>/configurations/lists`) - required for IP list synchronization
    - Set `CF_IP_BLOCKLIST_NAME` to a custom name for the managed IP list, or leave the default (`sefinek_cf_waf`)

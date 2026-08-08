@@ -317,5 +317,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 8.2.2026 (M.D.YYYY)</h4>
+    <h4>📥 » Last update: 02.08.2026 (DD.MM.YYYY)</h4>
 </div>

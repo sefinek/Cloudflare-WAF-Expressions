@@ -1,6 +1,6 @@
 # Cache rules
 `https://dash.cloudflare.com/<ACCOUNT>/<DOMAIN>/caching/rules`  
-Last updated: 8.2.2026 (M.D.YYYY)
+Last updated: 02.08.2026 (DD.MM.YYYY)
 
 ## For CDN subdomains and the most popular file extensions
 ```
