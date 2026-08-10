@@ -1,5 +1,13 @@
 # Changelog
 
+## [v3.2.2] - 10.08.2026
+- Fixed the IP list sync reporting false success - the script now waits for Cloudflare's asynchronous operation to actually complete.
+- The list item cap (shared account-wide) is now detected automatically based on your plan, instead of being hardcoded.
+- When the cap is exceeded, the sync trims the lowest-confidence AbuseIPDB IPs and logs a warning, instead of silently failing on Cloudflare's end.
+- The list is now recreated automatically if it was deleted manually from the Cloudflare dashboard.
+- Changed default values for `ABUSEIPDB_LIMIT` (8000) and `SNIFFCAT_LIMIT` (2000).
+
+
 ## [v3.2.1] - 10.08.2026
 - Leaving `CF_IP_BLOCKLIST_NAME` empty in `.env` now disables IP list synchronization with Cloudflare entirely.
 - Added a note in `.env.example` that `rules/my-lists/allowlist.txt` and `rules/my-lists/ip-blocklist.txt` are created automatically on the script's first run.
@@ -114,7 +122,7 @@
 - API token permissions changed - `Zone WAF: Edit` is no longer needed. Required permissions are now: `Account / Account Filter Lists: Edit`, `Zone / Zone: Read`, `Zone / Firewall Services: Edit`.
 
 ### Added
-- **SniffCat IP blocklist integration** - the script now fetches malicious IPs dynamically from the [SniffCat](https://sniffcat.com) database and merges them with the static `rules/ip-blocklist.txt` on every sync. Requires `SNIFFCAT_API_TOKEN`. Configurable via `SNIFFCAT_CONFIDENCE_MIN` (default: `78`) and `SNIFFCAT_LIMIT` (default: `3000`).
+- **SniffCat IP blocklist integration** - the script now fetches malicious IPs dynamically from the [SniffCat](https://sniffcat.com) database and merges them with the static `rules/ip-blocklist.txt` on every sync. Requires `SNIFFCAT_API_TOKEN`. Configurable via `SNIFFCAT_CONFIDENCE_MIN` (default: `78`) and `SNIFFCAT_LIMIT` (default: `4000`).
 - **Cloudflare Lists integration** - IP blocklist (`rules/ip-blocklist.txt`) is now synced automatically to a Cloudflare Custom IP List and referenced in WAF rules as `ip.src in $<list_name>`. Configurable via `CF_IP_LIST_NAME`.
 - **Rule ID cache** (`data/rule-ids.json`) - WAF rule and filter IDs are cached locally to avoid fragile name-based matching on every run.
 - **Cleanup tool** (`data/scripts/deleteWAFRules.js`) - removes all custom WAF rules, filters, and the managed IP list from Cloudflare, then clears the local cache. Shows a full preview and requires confirmation before proceeding.

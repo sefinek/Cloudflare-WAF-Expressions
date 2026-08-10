@@ -2,7 +2,7 @@ const { axiosSc } = require('./axios.js');
 const log = require('../scripts/log.js');
 
 const CONFIDENCE_MIN = process.env.SNIFFCAT_CONFIDENCE_MIN || '80';
-const LIMIT = process.env.SNIFFCAT_LIMIT || '1000';
+const LIMIT = process.env.SNIFFCAT_LIMIT || '2000';
 
 module.exports = async () => {
 	if (!process.env.SNIFFCAT_API_TOKEN) return [];
