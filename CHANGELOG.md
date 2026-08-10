@@ -1,6 +1,12 @@
 # Changelog
 
-## [v3.2.0] - 27.08.2026
+## [v3.2.1] - 10.08.2026
+- Leaving `CF_IP_BLOCKLIST_NAME` empty in `.env` now disables IP list synchronization with Cloudflare entirely.
+- Added a note in `.env.example` that `rules/my-lists/allowlist.txt` and `rules/my-lists/ip-blocklist.txt` are created automatically on the script's first run.
+- Other minor fixes.
+
+
+## [v3.2.0] - 27.07.2026
 
 ### Added
 - **AbuseIPDB IP integration** - the script now also fetches malicious IPs from [AbuseIPDB](https://www.abuseipdb.com) and merges them with the static blocklist and [SniffCat](https://sniffcat.com) on every sync. Requires `ABUSEIPDB_API_KEY`. Configurable via `ABUSEIPDB_CONFIDENCE_MIN` (default: `75`) and `ABUSEIPDB_LIMIT` (default: `3000`).

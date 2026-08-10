@@ -116,6 +116,11 @@ const readIPs = async () => {
 };
 
 module.exports = async () => {
+	if (!process.env.CF_IP_BLOCKLIST_NAME || process.env.CF_IP_BLOCKLIST_NAME === '') {
+		log('CF_IP_BLOCKLIST_NAME is empty - skipping IP list sync', 2);
+		return;
+	}
+
 	if (!CF_ACCOUNT_ID) {
 		log('CF_ACCOUNT_ID not set - skipping IP list sync', 2);
 		return;
