@@ -2,7 +2,7 @@ const { axiosAb } = require('./axios.js');
 const log = require('../scripts/log.js');
 
 const CONFIDENCE_MIN = process.env.ABUSEIPDB_CONFIDENCE_MIN || '75';
-const LIMIT = process.env.ABUSEIPDB_LIMIT || '3000';
+const LIMIT = process.env.ABUSEIPDB_LIMIT || '10000';
 
 module.exports = async () => {
 	if (!process.env.ABUSEIPDB_API_KEY) return [];
