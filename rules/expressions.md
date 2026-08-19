@@ -266,6 +266,7 @@
 > **Action:** Managed Challenge
 ```
 (cf.waf.credential_check.password_leaked) or
+(http.referer contains "http://" and not http.referer contains "localhost" and not http.referer contains "127.0.0.1") or
 (http.request.uri.path wildcard "*.php*") or
 (http.request.uri.path wildcard "*/wp-admin*") or
 (http.request.uri.path wildcard "*/wp-content*") or
@@ -316,5 +317,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 19.08.2026 (DD.MM.YYYY)</h4>
+    <h4>📥 » Last update: 02.08.2026 (DD.MM.YYYY)</h4>
 </div>
