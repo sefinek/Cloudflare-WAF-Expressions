@@ -28,7 +28,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@types/jest": "^30.0.0",
-    "globals": "^17.9.0",
+    "globals": "^17.11.0",
     "jest": "^30.4.2"
   },
   "allowScripts": {
