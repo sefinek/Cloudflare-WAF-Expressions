@@ -266,7 +266,7 @@
 > **Action:** Managed Challenge
 ```
 (cf.waf.credential_check.password_leaked) or
-(http.referer contains "http://" and not http.referer contains "localhost" and not http.referer contains "127.0.0.1") or
+(http.referer contains "http://" and not http.referer contains "localhost" and not http.referer contains "127.0.0.1" and not cf.client.bot) or
 (http.request.uri.path wildcard "*.php*") or
 (http.request.uri.path wildcard "*/wp-admin*") or
 (http.request.uri.path wildcard "*/wp-content*") or
