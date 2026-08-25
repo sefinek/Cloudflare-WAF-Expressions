@@ -125,12 +125,12 @@
 (http.request.uri.path wildcard "*settings.prod*") or
 (http.request.uri.path wildcard "*wget%20*") or
 (http.request.uri.path wildcard "*wget+*") or
-(http.request.uri.query contains "%00") or
-(http.request.uri.query contains "%0A") or
-(http.request.uri.query contains "%0D") or
-(http.request.uri.query contains "%2e%2e") or
-(http.request.uri.query contains "..%2f") or
-(http.request.uri.query contains "..%5c") or
+(lower(raw.http.request.uri.query) contains "%00") or
+(lower(raw.http.request.uri.query) contains "%0a") or
+(lower(raw.http.request.uri.query) contains "%0d") or
+(lower(raw.http.request.uri.query) contains "%2e%2e") or
+(lower(raw.http.request.uri.query) contains "..%2f") or
+(lower(raw.http.request.uri.query) contains "..%5c") or
 (http.request.uri.query contains "../") or
 (http.request.uri.query contains "..\\") or
 (http.request.uri.query contains "squelette=../") or
@@ -271,21 +271,20 @@
 (http.request.uri.path wildcard "*/wp-admin*") or
 (http.request.uri.path wildcard "*/wp-content*") or
 (http.request.uri.path wildcard "*/wp-includes*") or
-(http.user_agent contains "Windows NT 5" and not http.user_agent contains "(via ggpht.com GoogleImageProxy)") or
+(http.user_agent contains "Windows NT 5" and not cf.client.bot) or
 (http.user_agent wildcard "*chrome/101*") or
 (http.user_agent wildcard "*chrome/103*") or
 (http.user_agent wildcard "*chrome/104*") or
-(http.user_agent wildcard "*chrome/112*") or
+(http.user_agent wildcard "*chrome/112*" and not cf.client.bot) or
 (http.user_agent wildcard "*chrome/113*") or
 (http.user_agent wildcard "*chrome/114*") or
 (http.user_agent wildcard "*chrome/118*") or
-(http.user_agent wildcard "*chrome/119*" and not ip.geoip.asnum eq 14618) or
+(http.user_agent wildcard "*chrome/119*" and not cf.client.bot) or
 (http.user_agent wildcard "*chrome/120*") or
-(http.user_agent wildcard "*chrome/122*") or
 (http.user_agent wildcard "*chrome/123*") or
 (http.user_agent wildcard "*chrome/124*") or
 (http.user_agent wildcard "*chrome/73*") or
-(http.user_agent wildcard "*chrome/74*" and not http.user_agent contains "Better Uptime Bot") or
+(http.user_agent wildcard "*chrome/74*" and not cf.client.bot) or
 (http.user_agent wildcard "*chrome/77*") or
 (http.user_agent wildcard "*chrome/78*") or
 (http.user_agent wildcard "*chrome/79*") or
@@ -317,5 +316,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 02.08.2026 (DD.MM.YYYY)</h4>
+    <h4>📥 » Last update: 25.08.2026 (DD.MM.YYYY)</h4>
 </div>
