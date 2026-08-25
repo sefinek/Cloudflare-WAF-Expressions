@@ -169,7 +169,7 @@ module.exports = async () => {
 		if (showVerifyNotice) cache.verifyNoticeShown = true;
 
 		await saveCache(cache);
-		log(`Successfully! API requests - Cloudflare: ${getRequestCfCount()}, SniffCat: ${getRequestScCount()}, AbuseIPDB: ${getRequestAbCount()} - took ${formatDuration(Date.now() - start)}`, 1);
+		log(`Successfully! API requests - Cloudflare: ${getRequestCfCount()}; SniffCat: ${getRequestScCount()}; AbuseIPDB: ${getRequestAbCount()}; - took ${formatDuration(Date.now() - start)}`, 1);
 
 		if (showVerifyNotice) {
 			const border = '*'.repeat(80);
