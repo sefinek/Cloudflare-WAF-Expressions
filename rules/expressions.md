@@ -281,8 +281,6 @@
 (http.user_agent wildcard "*chrome/118*") or
 (http.user_agent wildcard "*chrome/119*" and not cf.client.bot) or
 (http.user_agent wildcard "*chrome/120*") or
-(http.user_agent wildcard "*chrome/123*") or
-(http.user_agent wildcard "*chrome/124*") or
 (http.user_agent wildcard "*chrome/73*") or
 (http.user_agent wildcard "*chrome/74*" and not cf.client.bot) or
 (http.user_agent wildcard "*chrome/77*") or
