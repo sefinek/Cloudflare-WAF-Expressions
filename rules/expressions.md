@@ -212,6 +212,7 @@
 (http.user_agent wildcard "*wc-test-dev-bot*") or
 (http.user_agent wildcard "*webtechbot*") or
 (http.user_agent wildcard "*whatcms*") or
+(http.user_agent wildcard "*moe-downloader/*") or
 (http.user_agent wildcard "*zgrab*")
 ```
 
@@ -314,5 +315,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 25.08.2026 (DD.MM.YYYY)</h4>
+    <h4>📥 » Last update: 28.08.2026 (DD.MM.YYYY)</h4>
 </div>
