@@ -188,6 +188,7 @@
 (http.user_agent wildcard "*masscan*") or
 (http.user_agent wildcard "*megaindex*") or
 (http.user_agent wildcard "*mj12bot*") or
+(http.user_agent wildcard "*moe-downloader*") or
 (http.user_agent wildcard "*nimbostratus*") or
 (http.user_agent wildcard "*omgili*") or
 (http.user_agent wildcard "*onalyticabot*") or
@@ -203,6 +204,7 @@
 (http.user_agent wildcard "*semanticbot*") or
 (http.user_agent wildcard "*serpstatbot*") or
 (http.user_agent wildcard "*shapbot*") or
+(http.user_agent wildcard "*sleepbot*") or
 (http.user_agent wildcard "*sqlmap*") or
 (http.user_agent wildcard "*thinkbot*") or
 (http.user_agent wildcard "*tlm-audit-scanner*") or
@@ -212,7 +214,6 @@
 (http.user_agent wildcard "*wc-test-dev-bot*") or
 (http.user_agent wildcard "*webtechbot*") or
 (http.user_agent wildcard "*whatcms*") or
-(http.user_agent wildcard "*moe-downloader/*") or
 (http.user_agent wildcard "*zgrab*")
 ```
 
@@ -315,5 +316,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 28.08.2026 (DD.MM.YYYY)</h4>
+    <h4>📥 » Last update: 5.09.2026 (DD.MM.YYYY)</h4>
 </div>
