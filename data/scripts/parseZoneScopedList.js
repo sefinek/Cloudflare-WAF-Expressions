@@ -1,10 +1,9 @@
 const fs = require('node:fs/promises');
 
-const ALLOWLIST_PATH = 'rules/my-lists/allowlist.txt';
 const ZONE_PREFIX = /^\[(!?)([^\]]+)]\s*/;
 
-module.exports = async () => {
-	const text = await fs.readFile(ALLOWLIST_PATH, 'utf8');
+module.exports = async path => {
+	const text = await fs.readFile(path, 'utf8');
 	const entries = [];
 
 	for (const raw of text.split('\n')) {

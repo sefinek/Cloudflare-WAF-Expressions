@@ -1,6 +1,6 @@
 {
   "name": "cf-waf-expressions",
-  "version": "3.2.2",
+  "version": "3.3.0-beta.0",
   "private": true,
   "homepage": "https://github.com/sefinek/Cloudflare-WAF-Expressions#readme",
   "bugs": {
@@ -23,6 +23,7 @@
     "axios": "^1.20.0",
     "axios-retry": "^4.5.0",
     "cron": "^4.4.0",
+    "nodemailer": "^10.0.0",
     "simple-git": "^3.36.0"
   },
   "devDependencies": {
@@ -30,6 +31,9 @@
     "@types/jest": "^30.0.0",
     "globals": "^17.12.0",
     "jest": "^30.5.1"
+  },
+  "engines": {
+    "node": ">=20.19.0"
   },
   "allowScripts": {
     "unrs-resolver@1.12.2": true,

@@ -3,7 +3,7 @@ const readline = require('node:readline/promises');
 const fs = require('node:fs/promises');
 const path = require('node:path');
 const { axiosCf } = require('../services/axios.js');
-const { PHASE, PART_REGEX, passthroughRule } = require('../services/cloudflare/wafRuleset.js');
+const { PHASE, isManagedDescription, passthroughRule } = require('../services/cloudflare/wafRuleset.js');
 const log = require('../scripts/log.js');
 const pluralize = require('../scripts/pluralize.js');
 
@@ -52,8 +52,8 @@ const getIPLists = async () => {
 		for (const zone of zones) {
 			const entrypoint = await getEntrypoint(zone.id);
 			const rules = entrypoint?.rules ?? [];
-			const partRules = rules.filter(r => r.description && PART_REGEX.test(r.description));
-			if (partRules.length > 0) toDelete.push({ zone, partRules, entrypoint });
+			const managedRules = rules.filter(r => isManagedDescription(r.description || ''));
+			if (managedRules.length > 0) toDelete.push({ zone, managedRules, entrypoint });
 		}
 
 		const ipLists = await getIPLists();
@@ -61,9 +61,9 @@ const getIPLists = async () => {
 
 		console.log();
 		log('WARNING! This operation is IRREVERSIBLE. The following will be permanently deleted:', 2);
-		for (const { zone, partRules } of toDelete) {
+		for (const { zone, managedRules } of toDelete) {
 			log(`Zone: ${zone.name}`);
-			for (const r of partRules) log(`  - ${r.description} (rule: ${r.id})`);
+			for (const r of managedRules) log(`  - ${r.description} (rule: ${r.id})`);
 		}
 		if (ipLists.length > 0) {
 			log('IP lists:');
@@ -85,9 +85,9 @@ const getIPLists = async () => {
 			if (!res.data.success) throw new Error(`DELETE ${url} failed: ${JSON.stringify(res.data.errors)}`);
 		};
 
-		for (const { zone, partRules, entrypoint } of toDelete) {
-			log(`Deleting ${partRules.length} ${pluralize(partRules.length, 'rule')} from zone ${zone.name}...`);
-			const remaining = (entrypoint?.rules ?? []).filter(r => !(r.description && PART_REGEX.test(r.description)));
+		for (const { zone, managedRules, entrypoint } of toDelete) {
+			log(`Deleting ${managedRules.length} ${pluralize(managedRules.length, 'rule')} from zone ${zone.name}...`);
+			const remaining = (entrypoint?.rules ?? []).filter(r => !isManagedDescription(r.description || ''));
 			const { data } = await axiosCf.put(`/zones/${zone.id}/rulesets/phases/${PHASE}/entrypoint`, { rules: remaining.map(passthroughRule) });
 			if (!data.success) throw new Error(`Failed to update ruleset for zone ${zone.name}: ${JSON.stringify(data.errors)}`);
 		}
@@ -106,6 +106,7 @@ const getIPLists = async () => {
 	} catch (err) {
 		log(err.message, 3);
 	} finally {
+		await log.flush();
 		rl.close();
 	}
 })();

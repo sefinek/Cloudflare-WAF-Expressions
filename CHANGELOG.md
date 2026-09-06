@@ -1,5 +1,16 @@
 # Changelog
 
+## [v3.3.0] - 06.09.2026
+1. **`rules/my-lists/blocklist.txt` (BETA)** - list of expressions to always block, synced alongside the managed Part 1-5 rules. On plans with no spare rule slot (e.g. Free), the content is automatically merged into the Part rule with the most spare room instead of creating a separate rule. Supports `[zone.com]` / `[!zone.com]` prefixes, just like `allowlist.txt`.
+2. **Email and Discord notifications** for warnings/errors from the logs, and optionally for successful updates. Entries from a single "batch" (e.g. several zones failing during one sync) are collected and sent as one combined message 30 seconds after the last one, instead of a separate email/webhook per log entry. Configured via `MAILER_*` and `DISCORD_WEBHOOK_URL` in `.env`.
+3. The WAF rule limit per zone is now auto-detected based on the plan (`free`/`lite`: 5, `pro`: 20, `business`: 100, `enterprise`: 1000) and shown in the zone summary log.
+4. `data/scripts/parseAllowlist.js` replaced with the generic `data/scripts/parseZoneScopedList.js`, now used by both the allowlist and the blocklist.
+5. Exceeding the 4096-character limit per expression (Part 1-5 or blocklist) no longer aborts the sync with an error - the affected zone is skipped with a warning logged instead.
+6. File paths in the log (e.g. when creating `rules/my-lists/*`) are now clickable links in terminals that support OSC 8.
+7. Requires Node.js >= 20.19.0 (added to `engines` in `package.json`).
+8. `deleteWAFRules.js` now also detects and removes the blocklist rule, not just Part 1-5.
+
+
 ## [v3.2.2] - 10.08.2026
 - Fixed the IP list sync reporting false success - the script now waits for Cloudflare's asynchronous operation to actually complete.
 - The list item cap (shared account-wide) is now detected automatically based on your plan, instead of being hardcoded.

@@ -227,7 +227,9 @@ module.exports = async () => {
 	if (toAdd.length === 0 && toDelete.length === 0) {
 		log('IP list is already up-to-date', 1);
 	} else {
-		log(`IP list synced: +${toAdd.length} added / -${toDelete.length} removed`, 1);
+		const message = `IP list synced: +${toAdd.length} added / -${toDelete.length} removed`;
+		log(message, 1);
+		log.notify(message);
 	}
 
 	await saveCache(cache);
