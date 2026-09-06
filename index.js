@@ -15,7 +15,7 @@ box([
 ], CF_ORANGE);
 
 // Validate environment variables
-const { NODE_ENV, CF_API_TOKEN, CF_ACCOUNT_ID, MAILER_HOST } = process.env;
+const { NODE_ENV, CF_API_TOKEN, CF_ACCOUNT_ID, MAILER_HOST, DISCORD_WEBHOOK_URL } = process.env;
 if (NODE_ENV !== 'production' && NODE_ENV !== 'development') {
 	log('NODE_ENV is not set (process.env.NODE_ENV)', 2);
 }
@@ -28,8 +28,8 @@ if (!CF_ACCOUNT_ID) {
 	log('CF_ACCOUNT_ID is not set - IP list sync (rules/ip-blocklist.txt) will be skipped', 2);
 }
 
-if (!MAILER_HOST) {
-	log('MAILER_HOST is not set - email alerts for warnings/errors are disabled. Configuring this is highly recommended, otherwise sync failures may go unnoticed.', 2);
+if (!MAILER_HOST && !DISCORD_WEBHOOK_URL) {
+	log('Neither MAILER_HOST nor DISCORD_WEBHOOK_URL is set - alerts for warnings/errors are disabled. Configuring at least one is highly recommended, otherwise sync failures may go unnoticed.', 2);
 }
 
 // Cron jobs
