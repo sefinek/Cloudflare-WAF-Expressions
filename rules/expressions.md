@@ -192,6 +192,7 @@
 (http.user_agent wildcard "*nimbostratus*") or
 (http.user_agent wildcard "*omgili*") or
 (http.user_agent wildcard "*onalyticabot*") or
+(http.user_agent wildcard "*padicat*") or
 (http.user_agent wildcard "*palo alto networks company*") or
 (http.user_agent wildcard "*panscient.com*") or
 (http.user_agent wildcard "*peer39_crawler*") or
@@ -316,5 +317,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 5.09.2026 (DD.MM.YYYY)</h4>
+    <h4>📥 » Last update: 7.09.2026 (DD.MM.YYYY)</h4>
 </div>
