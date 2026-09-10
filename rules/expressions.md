@@ -20,7 +20,6 @@
 (http.referer eq "https://bing.com/") or
 (http.referer eq "https://google.com") or
 (http.referer eq "https://google.com/") or
-(http.request.full_uri eq "https://api.sefinek.net/api/v2/random/animal/cat" and ip.geoip.asnum eq 8075 and http.user_agent eq "python-requests/2.31.0") or
 (http.request.uri.path contains "\\") or
 (http.request.uri.path eq "/backup") or
 (http.request.uri.path eq "/git") or
@@ -167,7 +166,6 @@
 (http.user_agent wildcard "*ccbot*") or
 (http.user_agent wildcard "*checkhost*") or
 (http.user_agent wildcard "*cincraw*") or
-(http.user_agent wildcard "*claudebot*") or
 (http.user_agent wildcard "*clickagy*") or
 (http.user_agent wildcard "*cocolyzebot*") or
 (http.user_agent wildcard "*criteobot*") or
@@ -259,7 +257,7 @@
 (http.user_agent wildcard "*msie*") or
 (http.user_agent wildcard "*netfront*") or
 (http.user_agent wildcard "*symbianos*") or
-(http.user_agent wildcard "*trident/") or
+(http.user_agent wildcard "*trident/*") or
 (ip.src.continent eq "T1" and http.host ne "blocklist.sefinek.net") or
 (ip.geoip.asnum in {10630 46851}) or
 (ip.src in $sefinek_cf_waf)
@@ -270,52 +268,52 @@
 ```
 (cf.waf.credential_check.password_leaked) or
 (http.referer contains "http://" and not http.referer contains "localhost" and not http.referer contains "127.0.0.1" and not cf.client.bot) or
-(http.request.uri.path wildcard "*.php*") or
+(http.request.uri.path wildcard "*.php*" and not cf.client.bot) or
 (http.request.uri.path wildcard "*/wp-admin*") or
-(http.request.uri.path wildcard "*/wp-content*") or
-(http.request.uri.path wildcard "*/wp-includes*") or
+(http.request.uri.path wildcard "*/wp-content*" and not cf.client.bot) or
+(http.request.uri.path wildcard "*/wp-includes*" and not cf.client.bot) or
 (http.user_agent contains "Windows NT 5" and not cf.client.bot) or
-(http.user_agent wildcard "*chrome/101*") or
-(http.user_agent wildcard "*chrome/103*") or
-(http.user_agent wildcard "*chrome/104*") or
+(http.user_agent wildcard "*chrome/101*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/103*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/104*" and not cf.client.bot) or
 (http.user_agent wildcard "*chrome/112*" and not cf.client.bot) or
-(http.user_agent wildcard "*chrome/113*") or
-(http.user_agent wildcard "*chrome/114*") or
-(http.user_agent wildcard "*chrome/118*") or
+(http.user_agent wildcard "*chrome/113*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/114*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/118*" and not cf.client.bot) or
 (http.user_agent wildcard "*chrome/119*" and not cf.client.bot) or
-(http.user_agent wildcard "*chrome/120*") or
-(http.user_agent wildcard "*chrome/73*") or
+(http.user_agent wildcard "*chrome/120*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/73*" and not cf.client.bot) or
 (http.user_agent wildcard "*chrome/74*" and not cf.client.bot) or
-(http.user_agent wildcard "*chrome/77*") or
-(http.user_agent wildcard "*chrome/78*") or
-(http.user_agent wildcard "*chrome/79*") or
-(http.user_agent wildcard "*chrome/80*") or
-(http.user_agent wildcard "*chrome/81*") or
-(http.user_agent wildcard "*chrome/83*") or
-(http.user_agent wildcard "*chrome/84*") or
-(http.user_agent wildcard "*chrome/85*") or
-(http.user_agent wildcard "*chrome/86*") or
-(http.user_agent wildcard "*chrome/87*") or
-(http.user_agent wildcard "*chrome/88*") or
-(http.user_agent wildcard "*chrome/89*") or
-(http.user_agent wildcard "*chrome/91*") or
-(http.user_agent wildcard "*chrome/92*") or
-(http.user_agent wildcard "*chrome/93*") or
-(http.user_agent wildcard "*chrome/94*") or
-(http.user_agent wildcard "*chrome/95*") or
-(http.user_agent wildcard "*chrome/96*") or
-(http.user_agent wildcard "*chrome/97*") or
-(http.user_agent wildcard "*crios/121*") or
-(http.user_agent wildcard "*firefox/114*") or
-(http.user_agent wildcard "*firefox/118*") or
-(http.user_agent wildcard "*firefox/62*") or
-(http.user_agent wildcard "*firefox/76*") or
-(http.user_agent wildcard "*firefox/77*") or
-(http.user_agent wildcard "*firefox/79*") or
-(http.user_agent wildcard "*firefox/83*") or
-(http.user_agent wildcard "*firefox/84*")
+(http.user_agent wildcard "*chrome/77*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/78*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/79*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/80*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/81*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/83*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/84*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/85*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/86*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/87*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/88*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/89*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/91*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/92*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/93*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/94*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/95*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/96*" and not cf.client.bot) or
+(http.user_agent wildcard "*chrome/97*" and not cf.client.bot) or
+(http.user_agent wildcard "*crios/121*" and not cf.client.bot) or
+(http.user_agent wildcard "*firefox/114*" and not cf.client.bot) or
+(http.user_agent wildcard "*firefox/118*" and not cf.client.bot) or
+(http.user_agent wildcard "*firefox/62*" and not cf.client.bot) or
+(http.user_agent wildcard "*firefox/76*" and not cf.client.bot) or
+(http.user_agent wildcard "*firefox/77*" and not cf.client.bot) or
+(http.user_agent wildcard "*firefox/79*" and not cf.client.bot) or
+(http.user_agent wildcard "*firefox/83*" and not cf.client.bot) or
+(http.user_agent wildcard "*firefox/84*" and not cf.client.bot)
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 7.09.2026 (DD.MM.YYYY)</h4>
+    <h4>📥 » Last update: 10.09.2026 (DD.MM.YYYY)</h4>
 </div>

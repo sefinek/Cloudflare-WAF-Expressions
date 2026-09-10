@@ -36,7 +36,7 @@ const parseExpressions = text => {
 
 		const wpSupport = process.env.WORDPRESS_SUPPORT || 'false';
 		if (wpSupport.toLowerCase() === 'true') {
-			cleaned = cleaned.replace(/\s*\(\s*http\.request\.uri\.path\s+wildcard\s+"[^"]*\/wp-(?:content|includes)[^"]*"\s*\)\s*(?:or|$)/gi, '');
+			cleaned = cleaned.replace(/\s*\(\s*http\.request\.uri\.path\s+wildcard\s+"[^"]*\/wp-(?:content|includes)[^"]*"(?:\s+and\s+[^)]+)?\s*\)\s*(?:or|$)/gi, '');
 		}
 
 		if (phpSupport.toLowerCase() === 'true' || wpSupport.toLowerCase() === 'true') {
