@@ -10,7 +10,7 @@ Last updated: 17.09.2026 (DD.MM.YYYY)
   (
     starts_with(http.host, "cdn.")
     or http.request.uri.path.extension in {
-      "css" "js"
+      "html" "css" "js"
       "jpg" "jpeg" "png" "webp" "avif" "gif" "svg" "svgz" "ico" "bmp"
       "woff2" "woff" "ttf" "otf"
       "pdf" "csv"
@@ -27,7 +27,7 @@ Last updated: 17.09.2026 (DD.MM.YYYY)
 (
   http.request.method in {"GET" "HEAD"}
   and http.request.uri.path.extension in {
-    "css" "js"
+    "html" "css" "js"
     "jpg" "jpeg" "png" "webp" "avif" "gif" "svg" "svgz" "ico" "bmp"
     "tif" "tiff" "pict" "eps"
     "woff2" "woff" "eot" "ttf" "otf"
