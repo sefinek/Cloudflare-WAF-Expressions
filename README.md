@@ -39,9 +39,6 @@ Without `SNIFFCAT_API_TOKEN` and `ABUSEIPDB_API_KEY`, both integrations are skip
 | [🦕 Part 4 - Ancient browsers & IP blocklist](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/rules/expressions.md#part4)   | Blocks traffic from the Tor network, known malicious IP addresses, ASNs linked to botnets, and very outdated browsers.      | Block             |
 | [🗑️ Part 5 - Deprecated browsers & CMS](https://github.com/sefinek/Cloudflare-WAF-Expressions/blob/main/rules/expressions.md#part5)         | Enforces additional verification for outdated browsers (Chrome 73-122, Firefox 62-118), old OS versions, and CMS scanners.  | Managed Challenge |
 
-> [!IMPORTANT]  
-> It is recommended to **disable** `Bot Fight Mode` in the `Security` tab.  
-> Part 3 already controls which bots are blocked. Bot Fight Mode runs in parallel and may conflict with your rules.
 
 <div align="center">
    <h3>>> <a href="rules/expressions.md">View Main Expressions</a> <<</h3>
