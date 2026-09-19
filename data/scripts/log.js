@@ -11,41 +11,64 @@ const LEVELS = {
 const RESET = '\x1b[0m';
 
 const FLUSH_DELAY_MS = 30000;
-let pending = [];
+// Independent per-channel queues + retry state, so a failure on one channel (e.g. Discord webhook down)
+// never causes a re-send to a channel that already succeeded (e.g. duplicate emails).
+let mailQueue = [];
+let discordQueue = [];
 let flushTimer = null;
+// Tracks the in-progress flush so a shutdown signal awaits the already-dispatched network requests
+// instead of racing them - calling flushNow() again while one is in flight just returns the same promise.
+let inFlight = null;
 
 function scheduleFlush() {
 	if (flushTimer) clearTimeout(flushTimer);
-	flushTimer = setTimeout(flushNow, FLUSH_DELAY_MS);
+	flushTimer = setTimeout(() => flushNow().catch(() => undefined), FLUSH_DELAY_MS);
 }
 
 function flushNow() {
+	if (inFlight) return inFlight;
+
 	if (flushTimer) {
 		clearTimeout(flushTimer);
 		flushTimer = null;
 	}
-	if (!pending.length) return Promise.resolve();
+	if (!mailQueue.length && !discordQueue.length) return Promise.resolve();
 
-	const alerts = pending;
-	pending = [];
-	return Promise.allSettled([
-		sendAlertEmail(alerts),
-		sendDiscordAlert(alerts),
+	const mailBatch = mailQueue;
+	const discordBatch = discordQueue;
+	mailQueue = [];
+	discordQueue = [];
+
+	inFlight = Promise.allSettled([
+		mailBatch.length ? sendAlertEmail(mailBatch) : Promise.resolve(),
+		discordBatch.length ? sendDiscordAlert(discordBatch) : Promise.resolve(),
 	]).then(([emailResult, discordResult]) => {
-		if (emailResult.status === 'rejected') console.error(`[X] Failed to send alert email: ${emailResult.reason?.message}`);
-		if (discordResult.status === 'rejected') console.error(`[X] Failed to send Discord alert: ${discordResult.reason?.message}`);
-
-		// Retry failed alerts on the next flush instead of dropping them
-		if (emailResult.status === 'rejected' || discordResult.status === 'rejected') {
-			pending = alerts.concat(pending);
-			scheduleFlush();
+		if (emailResult.status === 'rejected') {
+			console.error(`[X] Failed to send alert email: ${emailResult.reason?.message}`);
+			mailQueue = mailBatch.concat(mailQueue);
 		}
+		if (discordResult.status === 'rejected') {
+			console.error(`[X] Failed to send Discord alert: ${discordResult.reason?.message}`);
+			discordQueue = discordBatch.concat(discordQueue);
+		}
+	}).finally(() => {
+		inFlight = null;
+		if (mailQueue.length || discordQueue.length) scheduleFlush();
 	});
+
+	return inFlight;
 }
 
-// pm2 restart/stop sends SIGTERM; without this, alerts queued in the 30s flush window are lost
+// pm2 restart/stop sends SIGTERM; without this, alerts queued in the 30s flush window are lost.
+// Flushed twice: the first call waits out any flush already in flight, the second sends whatever
+// was queued (or arrived) while waiting - a single call could miss either case.
+async function shutdownFlush() {
+	await flushNow().catch(() => undefined);
+	await flushNow().catch(() => undefined);
+}
+
 for (const signal of ['SIGTERM', 'SIGINT']) {
-	process.once(signal, () => flushNow().finally(() => process.exit(0)));
+	process.once(signal, () => shutdownFlush().finally(() => process.exit(0)));
 }
 
 module.exports = (msg, type = 0) => {
@@ -56,15 +79,19 @@ module.exports = (msg, type = 0) => {
 	console[method](output);
 
 	if (type === 2 || type === 3) {
-		pending.push({ type, msg: String(msg) });
+		const alert = { type, msg: String(msg) };
+		mailQueue.push(alert);
+		discordQueue.push(alert);
 		scheduleFlush();
 	}
 };
 
 module.exports.notify = msg => {
-	pending.push({ type: 1, msg: String(msg) });
+	const alert = { type: 1, msg: String(msg) };
+	mailQueue.push(alert);
+	discordQueue.push(alert);
 	scheduleFlush();
 };
 
 // Lets short-lived CLI tools flush pending alerts immediately instead of waiting out the 30s batch delay
-module.exports.flush = flushNow;
+module.exports.flush = shutdownFlush;

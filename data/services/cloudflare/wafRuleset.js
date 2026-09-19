@@ -16,7 +16,7 @@ const RULE_CAPS = { free: 5, lite: 5, pro: 20, business: 100, enterprise: 1000 }
 const warnedPlans = new Set();
 const getRuleCap = zone => {
 	const legacyId = zone.plan?.legacy_id;
-	if (legacyId in RULE_CAPS) return RULE_CAPS[legacyId];
+	if (Object.hasOwn(RULE_CAPS, legacyId)) return RULE_CAPS[legacyId];
 
 	if (!warnedPlans.has(legacyId)) {
 		warnedPlans.add(legacyId);

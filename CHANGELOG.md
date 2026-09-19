@@ -1,5 +1,12 @@
 # Changelog
 
+## [v3.3.1] - 19.09.2026
+- Added `MAILER_FROM` - a sender address separate from `MAILER_AUTH_USER`. [#9](https://github.com/sefinek/Cloudflare-WAF-Expressions/issues/9)
+- Fixed a Part 1-5 rule exceeding the 4096-character limit no longer failing the whole zone - the rule is skipped with a warning, the rest of the zone still updates.
+- Fixed duplicate email/Discord alerts on a partial send failure.
+- Fixed a shutdown race condition (SIGTERM/SIGINT) that could drop an alert being sent at that moment.
+
+
 ## [v3.3.0] - 06.09.2026
 1. **`rules/my-lists/blocklist.txt` (BETA)** - list of expressions to always block, synced alongside the managed Part 1-5 rules. On plans with no spare rule slot (e.g. Free), the content is automatically merged into the Part rule with the most spare room instead of creating a separate rule. Supports `[zone.com]` / `[!zone.com]` prefixes, just like `allowlist.txt`.
 2. **Email and Discord notifications** for warnings/errors from the logs, and optionally for successful updates. Entries from a single "batch" (e.g. several zones failing during one sync) are collected and sent as one combined message 30 seconds after the last one, instead of a separate email/webhook per log entry. Configured via `MAILER_*` and `DISCORD_WEBHOOK_URL` in `.env`.

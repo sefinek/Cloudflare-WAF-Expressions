@@ -94,6 +94,7 @@ const updateWAFCustomRulesForZone = async (expressions, allowlistEntries, blockl
 
 	const blocklistExpression = buildZoneExpression(blocklistEntries, zone);
 	let blocklist = 'None';
+	let parts = 'OK';
 
 	try {
 		const entrypoint = await getEntrypoint(zone.id);
@@ -103,17 +104,22 @@ const updateWAFCustomRulesForZone = async (expressions, allowlistEntries, blockl
 		const existingManagedRules = current.filter(r => isManagedDescription(r.description || ''));
 
 		const partRules = [];
+		const skippedParts = [];
 		for (const [indexStr, block] of Object.entries(expressions)) {
 			const index = parseInt(indexStr);
 			if (isNaN(index)) continue;
 
 			const { name, action, expressions: part } = block;
 			const expression = wrap(part);
+			const match = existingManagedRules.find(r => isPartDescription(r.description, index));
+
 			if (expression.length > MAX_EXPRESSION_LENGTH) {
-				throw new Error(`"${name}" for ${zone.name} is ${expression.length} characters, exceeding the ${MAX_EXPRESSION_LENGTH}-character limit per rule${allowlistExpression ? ' (inflated by rules/my-lists/allowlist.txt entries)' : ''}. Trim rules/expressions.md${allowlistExpression ? ' or rules/my-lists/allowlist.txt' : ''} to fit.`);
+				skippedParts.push(name);
+				log(`"${name}" for ${zone.name} is ${expression.length} characters, exceeding the ${MAX_EXPRESSION_LENGTH}-character limit per rule${allowlistExpression ? ' (inflated by rules/my-lists/allowlist.txt entries)' : ''}. Skipping this rule for this zone (keeping its previous state) - trim rules/expressions.md${allowlistExpression ? ' or rules/my-lists/allowlist.txt' : ''} to fit.`, 2);
+				if (match) partRules.push(passthroughRule(match));
+				continue;
 			}
 
-			const match = existingManagedRules.find(r => isPartDescription(r.description, index));
 			partRules.push({
 				...(match?.id ? { id: match.id } : {}),
 				action,
@@ -122,6 +128,7 @@ const updateWAFCustomRulesForZone = async (expressions, allowlistEntries, blockl
 				enabled: true,
 			});
 		}
+		if (skippedParts.length) parts = `Skipped (${skippedParts.join(', ')})`;
 
 		if (blocklistExpression) {
 			const ruleCap = getRuleCap(zone);
@@ -169,7 +176,7 @@ const updateWAFCustomRulesForZone = async (expressions, allowlistEntries, blockl
 			...partRules,
 		];
 
-		if (normalize(current) === normalize(desired)) return { status: 'Up to date', allowlist, blocklist, details: '-' };
+		if (normalize(current) === normalize(desired)) return { status: 'Up to date', allowlist, blocklist, parts, details: '-' };
 
 		const { data } = await axiosCf.put(`/zones/${zone.id}/rulesets/phases/${PHASE}/entrypoint`, { rules: desired });
 		if (!data.success) throw new Error(`Update failed. ${JSON.stringify(data?.errors)}`);
@@ -178,6 +185,7 @@ const updateWAFCustomRulesForZone = async (expressions, allowlistEntries, blockl
 			status: 'Updated',
 			allowlist,
 			blocklist,
+			parts,
 			details: `${partRules.length} managed, ${userRules.length} user ${pluralize(userRules.length, 'rule')} preserved`,
 		};
 	} catch (err) {
@@ -186,7 +194,7 @@ const updateWAFCustomRulesForZone = async (expressions, allowlistEntries, blockl
 			? 'Unknown IP list (run: node data/tools/deleteWAFRules.js)'
 			: cfErrors?.length ? cfErrors.map(e => e.message).join('; ') : err.message;
 
-		return { status: 'Error', allowlist, blocklist, details };
+		return { status: 'Error', allowlist, blocklist, parts, details };
 	}
 };
 
@@ -220,8 +228,10 @@ module.exports = async () => {
 			const detailsSuffix = result.details !== '-' ? ` - ${result.details}` : '';
 			const allowlistSuffix = result.allowlist !== 'None' ? ` [allowlist: ${result.allowlist}]` : '';
 			const blocklistSuffix = result.blocklist !== 'None' ? ` [blocklist: ${result.blocklist}]` : '';
-			const type = result.status === 'Error' ? 3 : result.blocklist.startsWith('Skipped') ? 2 : result.status === 'Updated' ? 1 : 0;
-			const message = `${zone.name.padEnd(nameWidth)} : ${result.status}${detailsSuffix}${allowlistSuffix}${blocklistSuffix}`;
+			const partsSuffix = result.parts !== 'OK' ? ` [parts: ${result.parts}]` : '';
+			const hasWarning = result.blocklist.startsWith('Skipped') || result.parts.startsWith('Skipped');
+			const type = result.status === 'Error' ? 3 : hasWarning ? 2 : result.status === 'Updated' ? 1 : 0;
+			const message = `${zone.name.padEnd(nameWidth)} : ${result.status}${detailsSuffix}${allowlistSuffix}${blocklistSuffix}${partsSuffix}`;
 			log(message, type);
 
 			if (type === 1) log.notify(message);

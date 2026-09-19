@@ -5,6 +5,7 @@ const { name, version } = require('../../package.json');
 const REPO_URL = 'https://github.com/sefinek/Cloudflare-WAF-Expressions';
 const { MAILER_HOST, MAILER_PORT, MAILER_AUTH_USER, MAILER_AUTH_PASSWD, MAILER_FROM, MAILER_TO } = process.env;
 const NOTIFY_ON_UPDATE = (process.env.NOTIFY_ON_UPDATE_MAILER || 'false').toLowerCase() === 'true';
+const BODY_LIMIT = 20000;
 
 let transporter = null;
 const getTransporter = () => {
@@ -32,7 +33,9 @@ module.exports = async allAlerts => {
 	const { summary } = alertSummary(alerts);
 	const subject = `[${name}] ${summary}`;
 	const label = a => a.type === 3 ? 'ERROR' : a.type === 2 ? 'WARN' : 'UPDATE';
-	const text = `${alerts.map(a => `[${label(a)}] ${a.msg}`).join('\n')}\n\n${name} v${version} - ${REPO_URL}`;
+	let body = alerts.map(a => `[${label(a)}] ${a.msg}`).join('\n');
+	if (body.length > BODY_LIMIT) body = `${body.slice(0, BODY_LIMIT - 3)}...`;
+	const text = `${body}\n\n${name} v${version} - ${REPO_URL}`;
 
 	try {
 		await transport.sendMail({ from, to, subject, text });
