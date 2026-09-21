@@ -113,14 +113,20 @@ test('contains no duplicate top-level conditions across blocks', () => {
 	expect(new Set(conditions).size).toBe(conditions.length);
 });
 
-test('keeps comparison values sorted within each field and operator group', () => {
+test('keeps comparison values sorted within each logical scope, field and operator group', () => {
 	for (const [, block] of MD.matchAll(/```\r?\n([\s\S]*?)```/g)) {
 		const groups = new Map();
+		const scopes = [0];
+		let nextScope = 0;
 		for (const line of block.split('\n')) {
+			// Multiline groups have their own shared conditions and sorting order.
+			if (line.trim().startsWith(')')) scopes.pop();
+			if (line.trim() === '(' || line.trim().endsWith('(')) scopes.push(++nextScope);
 			const match = line.trim().match(/^\(?((?:url_decode\([^)]*\)|lower\([^)]*\)|http\.[\w.]+) (?:eq|contains|wildcard)) ("(?:\\.|[^"\\])*")/);
 			if (!match) continue;
-			if (!groups.has(match[1])) groups.set(match[1], []);
-			groups.get(match[1]).push(JSON.parse(match[2]));
+			const key = `${scopes.at(-1)}:${match[1]}`;
+			if (!groups.has(key)) groups.set(key, []);
+			groups.get(key).push(JSON.parse(match[2]));
 		}
 		for (const values of groups.values()) expect(values).toEqual([...values].sort());
 	}

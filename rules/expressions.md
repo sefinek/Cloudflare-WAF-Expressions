@@ -85,24 +85,26 @@
   starts_with(http.host, "cdn.") or
   http.host eq "blocklist.sefinek.net"
 ) or
-(url_decode(http.request.uri.path, "r") wildcard "*.7z" and not http.host contains "cdn.") or
+(
+  (url_decode(http.request.uri.path, "r") wildcard "*.7z") or
+  (url_decode(http.request.uri.path, "r") wildcard "*.bz2") or
+  (url_decode(http.request.uri.path, "r") wildcard "*.gz") or
+  (url_decode(http.request.uri.path, "r") wildcard "*.log" and http.host ne "blocklist.sefinek.net") or
+  (url_decode(http.request.uri.path, "r") wildcard "*.sh") or
+  (url_decode(http.request.uri.path, "r") wildcard "*.tar") or
+  (url_decode(http.request.uri.path, "r") wildcard "*.tgz") or
+  (url_decode(http.request.uri.path, "r") wildcard "*.xz") or
+  (url_decode(http.request.uri.path, "r") wildcard "*.yaml") or
+  (url_decode(http.request.uri.path, "r") wildcard "*.yml")
+) and not http.host contains "cdn." or
 (url_decode(http.request.uri.path, "r") wildcard "*.bak") or
-(url_decode(http.request.uri.path, "r") wildcard "*.bz2" and not http.host contains "cdn.") or
-(url_decode(http.request.uri.path, "r") wildcard "*.gz" and not http.host contains "cdn.") or
 (url_decode(http.request.uri.path, "r") wildcard "*.key") or
-(url_decode(http.request.uri.path, "r") wildcard "*.log" and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (url_decode(http.request.uri.path, "r") wildcard "*.old") or
 (url_decode(http.request.uri.path, "r") wildcard "*.orig") or
 (url_decode(http.request.uri.path, "r") wildcard "*.pem") or
 (url_decode(http.request.uri.path, "r") wildcard "*.py") or
-(url_decode(http.request.uri.path, "r") wildcard "*.sh" and not http.host contains "cdn.") or
 (url_decode(http.request.uri.path, "r") wildcard "*.sql") or
 (url_decode(http.request.uri.path, "r") wildcard "*.swp") or
-(url_decode(http.request.uri.path, "r") wildcard "*.tar" and not http.host contains "cdn.") or
-(url_decode(http.request.uri.path, "r") wildcard "*.tgz" and not http.host contains "cdn.") or
-(url_decode(http.request.uri.path, "r") wildcard "*.xz" and not http.host contains "cdn.") or
-(url_decode(http.request.uri.path, "r") wildcard "*.yaml" and not http.host contains "cdn.") or
-(url_decode(http.request.uri.path, "r") wildcard "*.yml" and not http.host contains "cdn.") or
 (url_decode(http.request.uri.path, "r") wildcard "*/.env*") or
 (url_decode(http.request.uri.path, "r") wildcard "*auth.json*") or
 (url_decode(http.request.uri.path, "r") wildcard "*conf.*") or
