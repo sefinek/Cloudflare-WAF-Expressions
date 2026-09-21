@@ -1,8 +1,8 @@
 # Changelog
 
 ## [v3.3.2] - 21.09.2026
-1. Nothing major in this update. Added [data/tools/probeWAF.js](data/tools/probeWAF.js).
-2. Also updated the WAF expressions (21.09.2026).
+1. Added [data/tools/probeWAF.js](data/tools/probeWAF.js).
+2. Updated the WAF expressions (21.09.2026). [#10](https://github.com/sefinek/Cloudflare-WAF-Expressions/issues/10)
 3. Added recursive URL decoding to path and query checks, consolidated redundant conditions, and expanded WAF probes for encoded requests.
 
 
