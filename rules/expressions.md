@@ -20,55 +20,52 @@
 (http.referer eq "https://bing.com/") or
 (http.referer eq "https://google.com") or
 (http.referer eq "https://google.com/") or
-(http.request.uri.path contains "\\") or
-(http.request.uri.path eq "/backup") or
-(http.request.uri.path eq "/git") or
-(http.request.uri.path eq "/old") or
-(http.request.uri.path wildcard "*/.*" and not starts_with(http.request.uri.path, "/.well-known/")) or
-(http.request.uri.path wildcard "*//*") or
-(http.request.uri.path wildcard "*/actuator*") or
-(http.request.uri.path wildcard "*/dbadmin*") or
-(http.request.uri.path wildcard "*/etc/passwd*") or
-(http.request.uri.path wildcard "*/etc/shadow*") or
-(http.request.uri.path wildcard "*/login.action*") or
-(http.request.uri.path wildcard "*/phpmyadmin*") or
-(http.request.uri.path wildcard "*/sito*") or
-(http.request.uri.path wildcard "*/user.action*") or
-(http.request.uri.path wildcard "*/webdav*") or
-(http.request.uri.path wildcard "*/~adm*") or
-(http.request.uri.path wildcard "*/~sysadm*") or
-(http.request.uri.path wildcard "*/~webmaster*") or
-(http.request.uri.path wildcard "*appsettings*") or
-(http.request.uri.path wildcard "*authorized_keys*") or
-(http.request.uri.path wildcard "*backup.*") or
-(http.request.uri.path wildcard "*docker-compose*") or
-(http.request.uri.path wildcard "*dockerfile*") or
-(http.request.uri.path wildcard "*dump.*") or
-(http.request.uri.path wildcard "*file_put_contents*") or
-(http.request.uri.path wildcard "*id_rsa*") or
-(http.request.uri.path wildcard "*keys.json*") or
-(http.request.uri.path wildcard "*pboot:if*") or
-(http.request.uri.path wildcard "*server.key*") or
-(http.request.uri.path wildcard "*sftp*") or
-(http.request.uri.path wildcard "*wlwmanifest*") or
-(http.request.uri.path wildcard "*www-sql*") or
-(http.request.uri.path wildcard "*id_ed25519*") or
-(http.request.uri.path wildcard "*_all_dbs*") or
-(http.request.uri.path wildcard "*_debugbar*") or
-(http.request.uri.path wildcard "*~ftp*") or
-(http.request.uri.path wildcard "*~tmp*") or
-(http.request.uri.query wildcard "*.env*") or
-(http.request.uri.query wildcard "*etc/passwd*") or
-(http.user_agent contains "   ") or
-(http.user_agent eq "" and not http.host contains "api." and not starts_with(http.host, "api-") and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
-(http.user_agent eq "Mozilla/5.0 (Windows NT 10.0; Win64; x64)") or
-(http.user_agent eq "Mozilla/5.0") or
-(http.user_agent wildcard "*embeddedbrowser*" and not http.host contains "api." and not starts_with(http.host, "api-") and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
-(http.user_agent wildcard "*go-http-client*" and not http.host contains "api." and not starts_with(http.host, "api-") and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
-(http.user_agent wildcard "*headless*" and not http.host contains "api." and not starts_with(http.host, "api-") and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
-(http.user_agent wildcard "*mozilla/4*") or
-(http.user_agent wildcard "*private_keys*") or
-(http.user_agent wildcard "*windows 11*")
+(url_decode(http.request.uri.path, "r") contains "\\") or
+(url_decode(http.request.uri.path, "r") eq "/backup") or
+(url_decode(http.request.uri.path, "r") eq "/git") or
+(url_decode(http.request.uri.path, "r") eq "/old") or
+(url_decode(http.request.uri.path, "r") wildcard "*/.*" and not starts_with(url_decode(http.request.uri.path, "r"), "/.well-known/")) or
+(url_decode(http.request.uri.path, "r") wildcard "*//*") or
+(url_decode(http.request.uri.path, "r") wildcard "*/actuator*") or
+(url_decode(http.request.uri.path, "r") wildcard "*/aws-ses.json") or
+(url_decode(http.request.uri.path, "r") wildcard "*/aws/*.json") or
+(url_decode(http.request.uri.path, "r") wildcard "*/aws_s3_config.json") or
+(url_decode(http.request.uri.path, "r") wildcard "*/client_secret*.json") or
+(url_decode(http.request.uri.path, "r") wildcard "*/dbadmin*") or
+(url_decode(http.request.uri.path, "r") wildcard "*/etc/passwd*") or
+(url_decode(http.request.uri.path, "r") wildcard "*/etc/shadow*") or
+(url_decode(http.request.uri.path, "r") wildcard "*/login.action*") or
+(url_decode(http.request.uri.path, "r") wildcard "*/phpmyadmin*") or
+(url_decode(http.request.uri.path, "r") wildcard "*/s3.*") or
+(url_decode(http.request.uri.path, "r") wildcard "*/sito*") or
+(url_decode(http.request.uri.path, "r") wildcard "*/terraform.tfstate*") or
+(url_decode(http.request.uri.path, "r") wildcard "*/user.action*") or
+(url_decode(http.request.uri.path, "r") wildcard "*/webdav*") or
+(url_decode(http.request.uri.path, "r") wildcard "*/~adm*") or
+(url_decode(http.request.uri.path, "r") wildcard "*/~sysadm*") or
+(url_decode(http.request.uri.path, "r") wildcard "*/~webmaster*") or
+(url_decode(http.request.uri.path, "r") wildcard "*_all_dbs*") or
+(url_decode(http.request.uri.path, "r") wildcard "*_debugbar*") or
+(url_decode(http.request.uri.path, "r") wildcard "*appsettings*") or
+(url_decode(http.request.uri.path, "r") wildcard "*authorized_keys*") or
+(url_decode(http.request.uri.path, "r") wildcard "*backup.*") or
+(url_decode(http.request.uri.path, "r") wildcard "*docker-compose*") or
+(url_decode(http.request.uri.path, "r") wildcard "*dockerfile*") or
+(url_decode(http.request.uri.path, "r") wildcard "*dump.*") or
+(url_decode(http.request.uri.path, "r") wildcard "*file_put_contents*") or
+(url_decode(http.request.uri.path, "r") wildcard "*id_ed25519*") or
+(url_decode(http.request.uri.path, "r") wildcard "*id_rsa*") or
+(url_decode(http.request.uri.path, "r") wildcard "*keys.json*") or
+(url_decode(http.request.uri.path, "r") wildcard "*pboot:if*") or
+(url_decode(http.request.uri.path, "r") wildcard "*server.key*") or
+(url_decode(http.request.uri.path, "r") wildcard "*sftp*") or
+(url_decode(http.request.uri.path, "r") wildcard "*wlwmanifest*") or
+(url_decode(http.request.uri.path, "r") wildcard "*www-sql*") or
+(url_decode(http.request.uri.path, "r") wildcard "*~ftp*") or
+(url_decode(http.request.uri.path, "r") wildcard "*~tmp*") or
+(url_decode(http.request.uri.query, "r") wildcard "*.env*") or
+(url_decode(http.request.uri.query, "r") wildcard "*/.git*") or
+(url_decode(http.request.uri.query, "r") wildcard "*etc/passwd*")
 ```
 
 ## 🧨 Part 2 - Malicious extensions & injections<div id="part2"></div>
@@ -79,8 +76,8 @@
   http.user_agent contains "aioquic" or
   http.user_agent contains "curl" or
   http.user_agent contains "okhttp" or
-  http.user_agent contains "python-requests" or
   http.user_agent contains "python-httpx" or
+  http.user_agent contains "python-requests" or
   http.user_agent contains "wget"
 ) and not (
   starts_with(http.host, "api.") or
@@ -88,71 +85,68 @@
   starts_with(http.host, "cdn.") or
   http.host eq "blocklist.sefinek.net"
 ) or
-(http.request.uri.path wildcard "*.7z" and not http.host contains "cdn.") or
-(http.request.uri.path wildcard "*.bak") or
-(http.request.uri.path wildcard "*.bz2" and not http.host contains "cdn.") or
-(http.request.uri.path wildcard "*.gz" and not http.host contains "cdn.") or
-(http.request.uri.path wildcard "*.key") or
-(http.request.uri.path wildcard "*.log" and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
-(http.request.uri.path wildcard "*.old") or
-(http.request.uri.path wildcard "*.orig") or
-(http.request.uri.path wildcard "*.pem") or
-(http.request.uri.path wildcard "*.py") or
-(http.request.uri.path wildcard "*.sh" and not http.host contains "cdn.") or
-(http.request.uri.path wildcard "*.sql") or
-(http.request.uri.path wildcard "*.swp") or
-(http.request.uri.path wildcard "*.tar" and not http.host contains "cdn.") or
-(http.request.uri.path wildcard "*.tgz" and not http.host contains "cdn.") or
-(http.request.uri.path wildcard "*.xz" and not http.host contains "cdn.") or
-(http.request.uri.path wildcard "*.yaml" and not http.host contains "cdn.") or
-(http.request.uri.path wildcard "*.yml" and not http.host contains "cdn.") or
-(http.request.uri.path wildcard "*/.env*") or
-(http.request.uri.path wildcard "*auth.json*") or
-(http.request.uri.path wildcard "*conf.*") or
-(http.request.uri.path wildcard "*crlfinjection*") or
-(http.request.uri.path wildcard "*curl%20*") or
-(http.request.uri.path wildcard "*curl+*") or
-(http.request.uri.path wildcard "*env.js*") or
-(http.request.uri.path wildcard "*fancyupload*") or
-(http.request.uri.path wildcard "*id_dsa*") or
-(http.request.uri.path wildcard "*id_ecdsa*") or
-(http.request.uri.path wildcard "*key.json*") or
-(http.request.uri.path wildcard "*php.ini*") or
-(http.request.uri.path wildcard "*phpinfo*") or
-(http.request.uri.path wildcard "*phpsysinfo*") or
-(http.request.uri.path wildcard "*settings.local*") or
-(http.request.uri.path wildcard "*settings.prod*") or
-(http.request.uri.path wildcard "*wget%20*") or
-(http.request.uri.path wildcard "*wget+*") or
+(url_decode(http.request.uri.path, "r") wildcard "*.7z" and not http.host contains "cdn.") or
+(url_decode(http.request.uri.path, "r") wildcard "*.bak") or
+(url_decode(http.request.uri.path, "r") wildcard "*.bz2" and not http.host contains "cdn.") or
+(url_decode(http.request.uri.path, "r") wildcard "*.gz" and not http.host contains "cdn.") or
+(url_decode(http.request.uri.path, "r") wildcard "*.key") or
+(url_decode(http.request.uri.path, "r") wildcard "*.log" and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
+(url_decode(http.request.uri.path, "r") wildcard "*.old") or
+(url_decode(http.request.uri.path, "r") wildcard "*.orig") or
+(url_decode(http.request.uri.path, "r") wildcard "*.pem") or
+(url_decode(http.request.uri.path, "r") wildcard "*.py") or
+(url_decode(http.request.uri.path, "r") wildcard "*.sh" and not http.host contains "cdn.") or
+(url_decode(http.request.uri.path, "r") wildcard "*.sql") or
+(url_decode(http.request.uri.path, "r") wildcard "*.swp") or
+(url_decode(http.request.uri.path, "r") wildcard "*.tar" and not http.host contains "cdn.") or
+(url_decode(http.request.uri.path, "r") wildcard "*.tgz" and not http.host contains "cdn.") or
+(url_decode(http.request.uri.path, "r") wildcard "*.xz" and not http.host contains "cdn.") or
+(url_decode(http.request.uri.path, "r") wildcard "*.yaml" and not http.host contains "cdn.") or
+(url_decode(http.request.uri.path, "r") wildcard "*.yml" and not http.host contains "cdn.") or
+(url_decode(http.request.uri.path, "r") wildcard "*/.env*") or
+(url_decode(http.request.uri.path, "r") wildcard "*auth.json*") or
+(url_decode(http.request.uri.path, "r") wildcard "*conf.*") or
+(url_decode(http.request.uri.path, "r") wildcard "*crlfinjection*") or
+(url_decode(http.request.uri.path, "r") wildcard "*curl *") or
+(url_decode(http.request.uri.path, "r") wildcard "*env.js*") or
+(url_decode(http.request.uri.path, "r") wildcard "*fancyupload*") or
+(url_decode(http.request.uri.path, "r") wildcard "*id_dsa*") or
+(url_decode(http.request.uri.path, "r") wildcard "*id_ecdsa*") or
+(url_decode(http.request.uri.path, "r") wildcard "*key.json*") or
+(url_decode(http.request.uri.path, "r") wildcard "*php.ini*") or
+(url_decode(http.request.uri.path, "r") wildcard "*phpinfo*") or
+(url_decode(http.request.uri.path, "r") wildcard "*phpsysinfo*") or
+(url_decode(http.request.uri.path, "r") wildcard "*settings.local*") or
+(url_decode(http.request.uri.path, "r") wildcard "*settings.prod*") or
+(url_decode(http.request.uri.path, "r") wildcard "*wget *") or
 (lower(raw.http.request.uri.query) contains "%00") or
 (lower(raw.http.request.uri.query) contains "%0a") or
 (lower(raw.http.request.uri.query) contains "%0d") or
 (lower(raw.http.request.uri.query) contains "%2e%2e") or
-(lower(raw.http.request.uri.query) contains "..%2f") or
-(lower(raw.http.request.uri.query) contains "..%5c") or
-(http.request.uri.query contains "../") or
-(http.request.uri.query contains "..\\") or
-(http.request.uri.query contains "squelette=../") or
-(http.request.uri.query wildcard "*auto_prepend_file*") or
-(http.request.uri.query wildcard "*crlfinjection*") or
-(http.request.uri.query wildcard "*curl%20*") or
-(http.request.uri.query wildcard "*curl+*") or
-(http.request.uri.query wildcard "*ed25519*") or
-(http.request.uri.query wildcard "*file://*") or
-(http.request.uri.query wildcard "*formfinder*") or
-(http.request.uri.query wildcard "*php://*") or
-(http.request.uri.query wildcard "*secrets.json*") or
-(http.request.uri.query wildcard "*set-cookie:*") or
-(http.request.uri.query wildcard "*wget%20*") or
-(http.request.uri.query wildcard "*wget+*") or
-(http.user_agent wildcard "*alittle client*") or
-(http.user_agent wildcard "*\"*")
+(url_decode(http.request.uri.query, "r") contains "../") or
+(url_decode(http.request.uri.query, "r") contains "..\\") or
+(url_decode(http.request.uri.query, "r") wildcard "*auto_prepend_file*") or
+(url_decode(http.request.uri.query, "r") wildcard "*crlfinjection*") or
+(url_decode(http.request.uri.query, "r") wildcard "*curl *") or
+(url_decode(http.request.uri.query, "r") wildcard "*ed25519*") or
+(url_decode(http.request.uri.query, "r") wildcard "*file://*") or
+(url_decode(http.request.uri.query, "r") wildcard "*formfinder*") or
+(url_decode(http.request.uri.query, "r") wildcard "*php://*") or
+(url_decode(http.request.uri.query, "r") wildcard "*secrets.json*") or
+(url_decode(http.request.uri.query, "r") wildcard "*set-cookie:*") or
+(url_decode(http.request.uri.query, "r") wildcard "*wget *") or
+(http.user_agent wildcard "*\"*") or
+(http.user_agent wildcard "*alittle client*")
 ```
 
 ## 🤖 Part 3 - Unwanted bots<div id="part3"></div>
 > **Action:** Block
 ```
 (cf.verified_bot_category in {"Archiver"}) or
+(http.user_agent contains "   ") or
+(http.user_agent eq "" and not http.host contains "api." and not starts_with(http.host, "api-") and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
+(http.user_agent eq "Mozilla/5.0") or
+(http.user_agent eq "Mozilla/5.0 (Windows NT 10.0; Win64; x64)") or
 (http.user_agent wildcard "*2ip*") or
 (http.user_agent wildcard "*awariobot*") or
 (http.user_agent wildcard "*barkrowler*") or
@@ -173,8 +167,11 @@
 (http.user_agent wildcard "*domainstatsbot*") or
 (http.user_agent wildcard "*domcopbot*") or
 (http.user_agent wildcard "*dotbot*") or
+(http.user_agent wildcard "*embeddedbrowser*" and not http.host contains "api." and not starts_with(http.host, "api-") and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.user_agent wildcard "*globalping*") or
+(http.user_agent wildcard "*go-http-client*" and not http.host contains "api." and not starts_with(http.host, "api-") and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.user_agent wildcard "*gulperbot*") or
+(http.user_agent wildcard "*headless*" and not http.host contains "api." and not starts_with(http.host, "api-") and not http.host contains "cdn." and http.host ne "blocklist.sefinek.net") or
 (http.user_agent wildcard "*httrack*") or
 (http.user_agent wildcard "*iboubot*") or
 (http.user_agent wildcard "*intelx.io*") or
@@ -187,6 +184,7 @@
 (http.user_agent wildcard "*megaindex*") or
 (http.user_agent wildcard "*mj12bot*") or
 (http.user_agent wildcard "*moe-downloader*") or
+(http.user_agent wildcard "*mozilla/4*") or
 (http.user_agent wildcard "*nimbostratus*") or
 (http.user_agent wildcard "*omgili*") or
 (http.user_agent wildcard "*onalyticabot*") or
@@ -194,6 +192,7 @@
 (http.user_agent wildcard "*palo alto networks company*") or
 (http.user_agent wildcard "*panscient.com*") or
 (http.user_agent wildcard "*peer39_crawler*") or
+(http.user_agent wildcard "*private_keys*") or
 (http.user_agent wildcard "*proximic*") or
 (http.user_agent wildcard "*riddler*") or
 (http.user_agent wildcard "*rogerbot*") or
@@ -212,7 +211,9 @@
 (http.user_agent wildcard "*voluumdsp*") or
 (http.user_agent wildcard "*wc-test-dev-bot*") or
 (http.user_agent wildcard "*webtechbot*") or
+(http.user_agent wildcard "*what10bot*") or
 (http.user_agent wildcard "*whatcms*") or
+(http.user_agent wildcard "*windows 11*") or
 (http.user_agent wildcard "*zgrab*")
 ```
 
@@ -268,10 +269,10 @@
 ```
 (cf.waf.credential_check.password_leaked) or
 (http.referer contains "http://" and not http.referer contains "localhost" and not http.referer contains "127.0.0.1" and not cf.client.bot) or
-(http.request.uri.path wildcard "*.php*" and not cf.client.bot) or
-(http.request.uri.path wildcard "*/wp-admin*") or
-(http.request.uri.path wildcard "*/wp-content*" and not cf.client.bot) or
-(http.request.uri.path wildcard "*/wp-includes*" and not cf.client.bot) or
+(url_decode(http.request.uri.path, "r") wildcard "*.php*" and not cf.client.bot) or
+(url_decode(http.request.uri.path, "r") wildcard "*/wp-admin*") or
+(url_decode(http.request.uri.path, "r") wildcard "*/wp-content*" and not cf.client.bot) or
+(url_decode(http.request.uri.path, "r") wildcard "*/wp-includes*" and not cf.client.bot) or
 (http.user_agent contains "Windows NT 5" and not cf.client.bot) or
 (http.user_agent wildcard "*chrome/101*" and not cf.client.bot) or
 (http.user_agent wildcard "*chrome/103*" and not cf.client.bot) or
@@ -315,5 +316,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 10.09.2026 (DD.MM.YYYY)</h4>
+    <h4>📥 » Last update: 21.09.2026 (DD.MM.YYYY)</h4>
 </div>

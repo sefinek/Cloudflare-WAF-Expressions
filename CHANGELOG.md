@@ -1,10 +1,16 @@
 # Changelog
 
+## [v3.3.2] - 21.09.2026
+1. Nothing major in this update. Added [data/tools/probeWAF.js](data/tools/probeWAF.js).
+2. Also updated the WAF expressions (21.09.2026).
+3. Added recursive URL decoding to path and query checks, consolidated redundant conditions, and expanded WAF probes for encoded requests.
+
+
 ## [v3.3.1] - 19.09.2026
-- Added `MAILER_FROM` - a sender address separate from `MAILER_AUTH_USER`. [#9](https://github.com/sefinek/Cloudflare-WAF-Expressions/issues/9)
-- Fixed a Part 1-5 rule exceeding the 4096-character limit no longer failing the whole zone - the rule is skipped with a warning, the rest of the zone still updates.
-- Fixed duplicate email/Discord alerts on a partial send failure.
-- Fixed a shutdown race condition (SIGTERM/SIGINT) that could drop an alert being sent at that moment.
+1. Added `MAILER_FROM` - a sender address separate from `MAILER_AUTH_USER`. [#9](https://github.com/sefinek/Cloudflare-WAF-Expressions/issues/9)
+2. Fixed a Part 1-5 rule exceeding the 4096-character limit no longer failing the whole zone - the rule is skipped with a warning, the rest of the zone still updates.
+3. Fixed duplicate email/Discord alerts on a partial send failure.
+4. Fixed a shutdown race condition (SIGTERM/SIGINT) that could drop an alert being sent at that moment.
 
 
 ## [v3.3.0] - 06.09.2026

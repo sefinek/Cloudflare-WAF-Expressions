@@ -31,12 +31,12 @@ const parseExpressions = text => {
 		// Filter out PHP-related and WordPress static asset rules based on environment flags
 		const phpSupport = process.env.PHP_SUPPORT || 'false';
 		if (phpSupport.toLowerCase() === 'true') {
-			cleaned = cleaned.replace(/\s*\(\s*http\.request\.uri\.path\s+(?:wildcard|contains|eq)\s+"[^"]*\.php[^"]*"(?:\s+and\s+[^)]+)?\s*\)\s*(?:or|$)/gi, '');
+			cleaned = cleaned.replace(/\s*\(\s*(?:http\.request\.uri\.path|url_decode\(http\.request\.uri\.path,\s*"r"\))\s+(?:wildcard|contains|eq)\s+"[^"]*\.php[^"]*"(?:\s+and\s+[^)]+)?\s*\)\s*(?:or|$)/gi, '');
 		}
 
 		const wpSupport = process.env.WORDPRESS_SUPPORT || 'false';
 		if (wpSupport.toLowerCase() === 'true') {
-			cleaned = cleaned.replace(/\s*\(\s*http\.request\.uri\.path\s+wildcard\s+"[^"]*\/wp-(?:content|includes)[^"]*"(?:\s+and\s+[^)]+)?\s*\)\s*(?:or|$)/gi, '');
+			cleaned = cleaned.replace(/\s*\(\s*(?:http\.request\.uri\.path|url_decode\(http\.request\.uri\.path,\s*"r"\))\s+wildcard\s+"[^"]*\/wp-(?:content|includes)[^"]*"(?:\s+and\s+[^)]+)?\s*\)\s*(?:or|$)/gi, '');
 		}
 
 		if (phpSupport.toLowerCase() === 'true' || wpSupport.toLowerCase() === 'true') {

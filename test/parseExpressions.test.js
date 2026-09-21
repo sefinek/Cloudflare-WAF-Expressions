@@ -1,6 +1,8 @@
 const path = require('node:path');
 const parseExpressions = require('../data/scripts/parseExpressions.js');
 
+jest.mock('../data/scripts/log.js', () => jest.fn());
+
 const joinExpressions = result => Object.values(result)
 	.filter(block => block && block.expressions)
 	.map(block => block.expressions)
@@ -34,6 +36,13 @@ describe('parseExpressions', () => {
 		expect(joinExpressions(await run({ php: 'false' }))).toContain('.php');
 	});
 
+	test.each(['true', 'false'])('preserves recursive query decoding with PHP_SUPPORT=%s', async php => {
+		const result = await run({ php });
+		expect(result[1].expressions).toContain('(url_decode(http.request.uri.query, "r") wildcard "*/.git*")');
+		expect(result[1].action).toBe('block');
+		expect(result[1].length).toBeLessThanOrEqual(4096);
+	});
+
 	test('WORDPRESS_SUPPORT removes wp-content/wp-includes but keeps wp-admin', async () => {
 		const all = joinExpressions(await run({ php: 'true', wp: 'true' }));
 		expect(all).not.toContain('/wp-content');
@@ -45,5 +54,42 @@ describe('parseExpressions', () => {
 		const all = joinExpressions(await run({ list: 'custom_list_42' }));
 		expect(all).toContain('$custom_list_42');
 		expect(all).not.toContain('$sefinek_cf_waf');
+	});
+
+	test.each([
+		{ php: 'false', wp: 'false' },
+		{ php: 'true', wp: 'false' },
+		{ php: 'false', wp: 'true' },
+		{ php: 'true', wp: 'true' },
+	])('keeps rule limits and grouping valid with %j', async flags => {
+		const result = await run(flags);
+		for (let i = 1; i <= 5; i++) {
+			const expression = result[i].expressions;
+			expect(expression.length).toBeLessThanOrEqual(4096);
+			const unquoted = expression.replace(/"(?:\\.|[^"\\])*"/g, '""');
+			let depth = 0;
+			for (const char of unquoted) {
+				if (char === '(') depth++;
+				if (char === ')') depth--;
+				expect(depth).toBeGreaterThanOrEqual(0);
+			}
+			expect(depth).toBe(0);
+			expect(unquoted).not.toMatch(/\b(?:or|and)\s+(?:or|and)\b|\b(?:or|and)\s*$/);
+		}
+	});
+
+	test('preserves decoded command spaces and raw control-byte checks', async () => {
+		const all = joinExpressions(await run());
+		for (const field of ['path', 'query']) {
+			for (const command of ['curl', 'wget']) {
+				expect(all).toContain(`url_decode(http.request.uri.${field}, "r") wildcard "*${command} *"`);
+				expect(all).not.toContain(`*${command}%20*`);
+				expect(all).not.toContain(`*${command}+*`);
+			}
+		}
+		for (const code of ['%00', '%0a', '%0d']) expect(all).toContain(`lower(raw.http.request.uri.query) contains "${code}"`);
+		expect(all).not.toContain('squelette=../');
+		expect(all).not.toContain('..%2f');
+		expect(all).not.toContain('..%5c');
 	});
 });

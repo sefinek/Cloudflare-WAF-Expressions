@@ -2,3 +2,4 @@ node_modules
 .env
 data/rule-ids.json
 rules/my-lists
+waf-probe-results.md

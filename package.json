@@ -1,6 +1,6 @@
 {
   "name": "cf-waf-expressions",
-  "version": "3.3.1",
+  "version": "3.3.2",
   "private": true,
   "homepage": "https://github.com/sefinek/Cloudflare-WAF-Expressions#readme",
   "bugs": {
@@ -17,6 +17,7 @@
     "m": "ncu -u && npm install && npm update",
     "pull": "git pull origin main",
     "test": "jest",
+    "probe:waf": "node data/tools/probeWAF.js",
     "update": "npm run pull && npm ci --omit=dev && pm2 restart cf-waf"
   },
   "dependencies": {
