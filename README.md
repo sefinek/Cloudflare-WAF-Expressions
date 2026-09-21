@@ -122,6 +122,13 @@ Part 4 references a Cloudflare Custom IP List (`ip.src in $sefinek_cf_waf`). To 
 > On the free Cloudflare plan, you can have only 1 custom IP list per account (up to 10,000 entries). Paid plans allow more. Remember to update it regularly as new entries are added to [`rules/ip-blocklist.txt`](rules/ip-blocklist.txt). The automatic method handles this for you.
 
 
+## 📥 How to Update
+To update an existing installation, navigate to the project directory and run:
+```bash
+npm run update
+```
+
+
 ## 🗑️ Cleanup Tool
 To remove all WAF custom rules and the IP blocklist from Cloudflare (e.g. before a fresh install), run:
 ```bash
