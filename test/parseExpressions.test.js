@@ -50,6 +50,31 @@ describe('parseExpressions', () => {
 		expect(all).toContain('/wp-admin');
 	});
 
+	test.each([
+		{ php: 'false', wp: 'false' },
+		{ php: 'true', wp: 'false' },
+		{ php: 'false', wp: 'true' },
+		{ php: 'true', wp: 'true' },
+	])('filters only the intended decoded path clauses with %j', async flags => {
+		const baseline = await run();
+		const result = await run(flags);
+		const phpClause = '(url_decode(http.request.uri.path, "r") wildcard "*.php*" and not cf.client.bot)';
+		const wpClauses = ['content', 'includes'].map(directory =>
+			`(url_decode(http.request.uri.path, "r") wildcard "*/wp-${directory}*" and not cf.client.bot)`);
+		const all = joinExpressions(baseline);
+		for (const clause of [phpClause, ...wpClauses]) expect(all).toContain(clause);
+
+		for (let i = 1; i <= baseline._meta.blocks; i++) {
+			let expected = baseline[i].expressions;
+			if (flags.php === 'true') expected = expected.replace(`${phpClause} or `, '');
+			if (flags.wp === 'true') {
+				for (const clause of wpClauses) expected = expected.replace(`${clause} or `, '');
+			}
+			expect(result[i]).toEqual({ ...baseline[i], expressions: expected, length: expected.length });
+		}
+		expect(joinExpressions(result)).toContain('(url_decode(http.request.uri.path, "r") wildcard "*/wp-admin*")');
+	});
+
 	test('CF_IP_BLOCKLIST_NAME is injected into the expressions', async () => {
 		const all = joinExpressions(await run({ list: 'custom_list_42' }));
 		expect(all).toContain('$custom_list_42');
