@@ -57,12 +57,4 @@ export default [
 			'yoda': 'error',
 		},
 	},
-	{
-		files: ['test/**/*.js'],
-		languageOptions: {
-			globals: {
-				...globals.jest,
-			},
-		},
-	},
 ];

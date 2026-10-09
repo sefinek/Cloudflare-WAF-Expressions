@@ -1,3 +1,5 @@
+const { describe, test } = require('node:test');
+const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
@@ -100,17 +102,19 @@ describe('decoded query rules', () => {
 	const { cases } = require('../data/tools/probeWAF.js');
 	const queryRules = [...MD.matchAll(/url_decode\(http\.request\.uri\.query, "r"\) (wildcard|contains) ("(?:\\.|[^"\\])*")/g)]
 		.map(([, operator, literal]) => ({ operator, pattern: JSON.parse(literal) }));
-	test.each(cases.filter(item => item.endpoint.startsWith('/?') && !(/%(?:00|0a|0d)/i).test(item.endpoint)))('$expect: $endpoint', item => {
-		const query = decode(item.endpoint.slice(2));
-		const blocked = queryRules.some(rule => rule.operator === 'wildcard' ? wildcardToRegex(rule.pattern).test(query) : query.includes(rule.pattern));
-		expect(blocked).toBe(item.expect === 'block');
-	});
+	for (const item of cases.filter(c => c.endpoint.startsWith('/?') && !(/%(?:00|0a|0d)/i).test(c.endpoint))) {
+		test(`${item.expect}: ${item.endpoint}`, () => {
+			const query = decode(item.endpoint.slice(2));
+			const blocked = queryRules.some(rule => rule.operator === 'wildcard' ? wildcardToRegex(rule.pattern).test(query) : query.includes(rule.pattern));
+			assert.equal(blocked, item.expect === 'block');
+		});
+	}
 });
 
 test('contains no duplicate top-level conditions across blocks', () => {
 	const conditions = MD.split('\n').filter(line => line.startsWith('(') && (/\)(?: or)?\s*$/).test(line))
 		.map(line => line.trim().replace(/ or$/, ''));
-	expect(new Set(conditions).size).toBe(conditions.length);
+	assert.equal(new Set(conditions).size, conditions.length);
 });
 
 test('keeps comparison values sorted within each logical scope, field and operator group', () => {
@@ -128,13 +132,13 @@ test('keeps comparison values sorted within each logical scope, field and operat
 			if (!groups.has(key)) groups.set(key, []);
 			groups.get(key).push(JSON.parse(match[2]));
 		}
-		for (const values of groups.values()) expect(values).toEqual([...values].sort());
+		for (const values of groups.values()) assert.deepEqual(values, [...values].sort());
 	}
 });
 
 describe('WAF path rules on the primary host', () => {
-	test.each(PASS)('passes: %s', uriPath => expect(isPathBlockedOnPrimaryHost(uriPath)).toBe(false));
-	test.each(BLOCK)('blocks: %s', uriPath => expect(isPathBlockedOnPrimaryHost(uriPath)).toBe(true));
+	for (const uriPath of PASS) test(`passes: ${uriPath}`, () => assert.equal(isPathBlockedOnPrimaryHost(uriPath), false));
+	for (const uriPath of BLOCK) test(`blocks: ${uriPath}`, () => assert.equal(isPathBlockedOnPrimaryHost(uriPath), true));
 });
 
 describe('regression guards for the extension-anchoring fix', () => {
@@ -143,13 +147,13 @@ describe('regression guards for the extension-anchoring fix', () => {
 			'"*.sh*"', '"*.py*"', '"*.sql*"', '"*.yml*"', '"*.yaml*"', '"*.log*"',
 			'"*.sh.*"', '"*.py.*"', '"*.sql.*"', '"*.yml.*"', '"*.yaml.*"', '"*.log.*"',
 		]) {
-			expect(MD).not.toContain(removed);
+			assert.ok(!MD.includes(removed), removed);
 		}
 	});
 
 	test('end-anchored extension and backup/archive rules are present', () => {
 		for (const anchored of ['"*.sh"', '"*.py"', '"*.sql"', '"*/.env*"', '"*.gz"', '"*.bak"', '"*.tar"']) {
-			expect(MD).toContain(anchored);
+			assert.ok(MD.includes(anchored), anchored);
 		}
 	});
 });

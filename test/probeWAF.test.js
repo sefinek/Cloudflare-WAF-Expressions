@@ -1,30 +1,34 @@
+const { describe, test } = require('node:test');
+const assert = require('node:assert/strict');
 const { cases, verdict } = require('../data/tools/probeWAF.js');
 
 describe('WAF probe verdicts', () => {
 	test('does not repeat endpoints', () => {
-		expect(new Set(cases.map(item => item.endpoint)).size).toBe(cases.length);
+		assert.equal(new Set(cases.map(item => item.endpoint)).size, cases.length);
 	});
 
 	test('does not count a challenge as a confirmed block', () => {
-		expect(verdict(403, true, 'block')).toMatch(/^INCONCLUSIVE:/);
-		expect(verdict(403, false, 'block')).toMatch(/^PASS:/);
+		assert.match(verdict(403, true, 'block'), /^INCONCLUSIVE:/);
+		assert.match(verdict(403, false, 'block'), /^PASS:/);
 	});
 
-	test.each([301, 302, 429, 500, 503])('treats HTTP %i as inconclusive', status => {
-		expect(verdict(status, false, 'block')).toMatch(/^INCONCLUSIVE:/);
-	});
+	for (const status of [301, 302, 429, 500, 503]) {
+		test(`treats HTTP ${status} as inconclusive`, () => {
+			assert.match(verdict(status, false, 'block'), /^INCONCLUSIVE:/);
+		});
+	}
 
 	test('distinguishes missing protected files from missing control paths', () => {
-		expect(verdict(404, false, 'block')).toMatch(/^FAIL:/);
-		expect(verdict(404, false, 'control')).toMatch(/^PASS:/);
+		assert.match(verdict(404, false, 'block'), /^FAIL:/);
+		assert.match(verdict(404, false, 'control'), /^PASS:/);
 	});
 
 	test('flags rejection of a control request', () => {
-		expect(verdict(403, false, 'control')).toMatch(/^FAIL:/);
+		assert.match(verdict(403, false, 'control'), /^FAIL:/);
 	});
 
 	test('does not assert success for deployment-dependent probes', () => {
-		expect(verdict(200, false, 'observe')).toMatch(/^OBSERVED:/);
-		expect(verdict(403, false, 'observe')).toMatch(/^OBSERVED:/);
+		assert.match(verdict(200, false, 'observe'), /^OBSERVED:/);
+		assert.match(verdict(403, false, 'observe'), /^OBSERVED:/);
 	});
 });

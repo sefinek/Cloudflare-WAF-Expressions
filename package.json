@@ -16,7 +16,7 @@
   "scripts": {
     "m": "ncu -u && npm install && npm update",
     "pull": "git pull origin main",
-    "test": "jest",
+    "test": "node --test test/*.test.js",
     "probe:waf": "node data/tools/probeWAF.js",
     "update": "npm run pull && npm ci --omit=dev && pm2 restart cf-waf"
   },
@@ -29,15 +29,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/jest": "^30.0.0",
-    "globals": "^17.13.0",
-    "jest": "^30.5.2"
+    "globals": "^17.13.0"
   },
   "engines": {
     "node": ">=20.19.0"
-  },
-  "allowScripts": {
-    "unrs-resolver@1.12.2": true,
-    "@parcel/watcher@2.6.0": true
   }
 }
