@@ -1,4 +1,4 @@
-const simpleGit = require('simple-git');
+const { simpleGit } = require('simple-git');
 const restartApp = require('./reloadApp.js');
 const log = require('../scripts/log.js');
 
