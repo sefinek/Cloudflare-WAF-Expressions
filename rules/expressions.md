@@ -252,6 +252,8 @@
 (http.user_agent wildcard "*chrome/68*") or
 (http.user_agent wildcard "*chrome/69*") or
 (http.user_agent wildcard "*chrome/71*") or
+(http.user_agent wildcard "*chrome/124*") or
+(http.user_agent wildcard "*chrome/123*") or
 (http.user_agent wildcard "*firefox/10*") or
 (http.user_agent wildcard "*firefox/45*") or
 (http.user_agent wildcard "*firefox/52*") or
@@ -318,5 +320,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 21.09.2026 (DD.MM.YYYY)</h4>
+    <h4>📥 » Last update: 15.10.2026 (DD.MM.YYYY)</h4>
 </div>
