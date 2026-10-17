@@ -224,6 +224,11 @@
 > **Action:** Block
 ```
 (http.user_agent wildcard "*android 8*") or
+(http.user_agent wildcard "*chrome/121*") or
+(http.user_agent wildcard "*chrome/122*") or
+(http.user_agent wildcard "*chrome/123*") or
+(http.user_agent wildcard "*chrome/124*") or
+(http.user_agent wildcard "*chrome/125*") or
 (http.user_agent wildcard "*chrome/17*") or
 (http.user_agent wildcard "*chrome/30*") or
 (http.user_agent wildcard "*chrome/31*") or
@@ -253,11 +258,6 @@
 (http.user_agent wildcard "*chrome/68*") or
 (http.user_agent wildcard "*chrome/69*") or
 (http.user_agent wildcard "*chrome/71*") or
-(http.user_agent wildcard "*chrome/121*") or
-(http.user_agent wildcard "*chrome/122*") or
-(http.user_agent wildcard "*chrome/123*") or
-(http.user_agent wildcard "*chrome/124*") or
-(http.user_agent wildcard "*chrome/125*") or
 (http.user_agent wildcard "*firefox/10*") or
 (http.user_agent wildcard "*firefox/45*") or
 (http.user_agent wildcard "*firefox/52*") or
