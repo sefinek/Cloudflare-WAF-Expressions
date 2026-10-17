@@ -133,7 +133,6 @@ module.exports = async () => {
 		'',
 		...FILES.map(f => `* ${hyperlink(f.label, `${USER_LISTS_DIR}/${f.name}`)} - ${f.hint}`),
 		'',
-		'Edit these files to customize your WAF.',
-		'They will never be overwritten by updates.',
+		'Edit these files to customize your WAF. They will never be overwritten by updates.',
 	]);
 };
