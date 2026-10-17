@@ -1,5 +1,9 @@
 # Changelog
 
+## [v3.6.0] - 17.10.2026
+1. The rules are now downloaded from `https://api.sefinek.net/api/v2/cloudflare-waf/rules` (`RULES_API_URL`), with raw GitHub (`RULES_SOURCE_URL`) as a fallback. The API publishes only validated snapshots and serves the newest rules in the format your version supports, so a broken commit never reaches your zones and older versions keep receiving updates. Both files come from one snapshot and are verified with SHA-256.
+
+
 ## [v3.5.0] - 17.10.2026
 1. **`rules/my-lists/challengelist.txt` (BETA)** - expressions that get a Managed Challenge, synced alongside the managed Part 1-5 rules. Works like `blocklist.txt`: on plans with no spare rule slot (e.g. Free) it is merged into the Managed Challenge Part, otherwise it gets its own rule. Supports `[zone.com]` / `[!zone.com]` prefixes and respects `allowlist.txt`.
 

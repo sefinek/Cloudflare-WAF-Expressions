@@ -1,6 +1,6 @@
 {
   "name": "cf-waf-expressions",
-  "version": "3.5.0",
+  "version": "3.6.0",
   "private": true,
   "homepage": "https://github.com/sefinek/Cloudflare-WAF-Expressions#readme",
   "bugs": {

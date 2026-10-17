@@ -169,3 +169,117 @@ describe('sync', () => {
 		assert.throws(() => setup({}).rules.getPath('other.md'), /Unknown rule file/);
 	});
 });
+
+describe('sync from the API', () => {
+	const API_URL = 'https://api.example/rules';
+	const crypto = require('node:crypto');
+	const sha = text => crypto.createHash('sha256').update(text).digest('hex');
+
+	const snapshot = (files = { 'expressions.md': expressions(), 'ip-blocklist.txt': BLOCKLIST }, version = 'v1') => JSON.stringify({
+		success: true, format: SUPPORTED_FORMAT, version,
+		files: Object.fromEntries(Object.entries(files).map(([name, content]) => [name, { content, sha256: sha(content), size: content.length }])),
+	});
+
+	// api: { status, data, etag } or an Error; raw: responses per file name for the GitHub fallback
+	const createHttpWithApi = ({ api, raw = {} }) => {
+		const calls = [];
+		return {
+			calls,
+			get: async (url, options) => {
+				if (url === API_URL) {
+					calls.push({ api: true, params: options.params, headers: options.headers });
+					if (api instanceof Error) throw api;
+					return { status: api.status ?? 200, data: api.data, headers: api.etag ? { etag: api.etag } : {} };
+				}
+				const name = url.slice(SOURCE_URL.length + 1);
+				calls.push({ name, headers: options.headers });
+				const res = raw[name];
+				if (!res || res instanceof Error) throw res ?? new Error(`unexpected request ${url}`);
+				return { status: res.status ?? 200, data: res.data, headers: res.etag ? { etag: res.etag } : {} };
+			},
+		};
+	};
+
+	const rulesWith = (dir, http, sourceUrl = SOURCE_URL) => createRemoteRules({ apiUrl: API_URL, sourceUrl, dir, http });
+	const tempDir = () => fs.mkdtempSync(path.join(os.tmpdir(), 'remote-rules-api-'));
+
+	test('downloads both files from the API without touching GitHub, asking for the supported format', async () => {
+		const dir = tempDir();
+		const http = createHttpWithApi({ api: { data: snapshot(), etag: '"1-v1"' } });
+		await rulesWith(dir, http).sync();
+
+		assert.equal(read(dir, 'expressions.md'), expressions());
+		assert.equal(read(dir, 'ip-blocklist.txt'), BLOCKLIST);
+		assert.deepEqual(http.calls.map(c => c.api), [true]);
+		assert.deepEqual(http.calls[0].params, { format: SUPPORTED_FORMAT });
+		assert.equal(JSON.parse(read(dir, 'state.json')).api.version, 'v1');
+	});
+
+	test('sends the ETag on the next sync and keeps the files on 304', async () => {
+		const dir = tempDir();
+		await rulesWith(dir, createHttpWithApi({ api: { data: snapshot(), etag: '"1-v1"' } })).sync();
+
+		const http = createHttpWithApi({ api: { status: 304 } });
+		await rulesWith(dir, http).sync();
+
+		assert.deepEqual(http.calls[0].headers, { 'If-None-Match': '"1-v1"' });
+		assert.equal(http.calls.length, 1);
+		assert.equal(read(dir, 'expressions.md'), expressions());
+	});
+
+	test('falls back to GitHub when the API is unavailable, warning only once', async () => {
+		const dir = tempDir();
+		const raw = { 'expressions.md': { data: expressions() }, 'ip-blocklist.txt': { data: BLOCKLIST } };
+		await rulesWith(dir, createHttpWithApi({ api: new Error('connect ECONNREFUSED'), raw })).sync();
+		await rulesWith(dir, createHttpWithApi({ api: new Error('connect ECONNREFUSED'), raw })).sync();
+
+		assert.equal(read(dir, 'expressions.md'), expressions());
+		const warnings = log.mock.calls.filter(c => String(c.arguments[0]).startsWith('Rules API'));
+		assert.deepEqual(warnings.map(c => c.arguments[1]), [2, 0]);
+		assert.match(warnings[0].arguments[0], /ECONNREFUSED\. Falling back to GitHub/);
+	});
+
+	test('a file not matching its checksum is not written and GitHub is used instead', async () => {
+		const dir = tempDir();
+		const body = JSON.parse(snapshot());
+		body.files['ip-blocklist.txt'].sha256 = 'f'.repeat(64);
+		const raw = { 'expressions.md': { data: expressions() }, 'ip-blocklist.txt': { data: '1.1.1.1\n' } };
+		await rulesWith(dir, createHttpWithApi({ api: { data: JSON.stringify(body) }, raw })).sync();
+
+		assert.equal(read(dir, 'ip-blocklist.txt'), '1.1.1.1\n');
+		assert.ok(log.mock.calls.some(c => (/ip-blocklist\.txt does not match its checksum/).test(c.arguments[0])));
+	});
+
+	test('an incompatible or broken snapshot is rejected as a whole', async () => {
+		const dir = tempDir();
+		await rulesWith(dir, createHttpWithApi({ api: { data: snapshot(), etag: '"1-v1"' } })).sync();
+
+		const newer = snapshot({ 'expressions.md': expressions(SUPPORTED_FORMAT + 1), 'ip-blocklist.txt': '9.9.9.9\n' }, 'v2');
+		await rulesWith(dir, createHttpWithApi({ api: { data: newer } }), '').sync();
+
+		assert.equal(read(dir, 'expressions.md'), expressions());
+		assert.equal(read(dir, 'ip-blocklist.txt'), BLOCKLIST);
+		assert.ok(log.mock.calls.some(c => (/rejected expressions\.md: rules format .* requires a newer version.*Keeping the current rules/).test(c.arguments[0])));
+	});
+
+	test('invalid JSON is treated as an API failure', async () => {
+		const dir = tempDir();
+		const raw = { 'expressions.md': { data: expressions() }, 'ip-blocklist.txt': { data: BLOCKLIST } };
+		await rulesWith(dir, createHttpWithApi({ api: { data: '<html>502 Bad Gateway</html>' }, raw })).sync();
+		assert.equal(read(dir, 'expressions.md'), expressions());
+		assert.ok(log.mock.calls.some(c => (/invalid JSON response/).test(c.arguments[0])));
+	});
+
+	test('after a GitHub fallback the next API request does not reuse the old ETag', async () => {
+		const dir = tempDir();
+		await rulesWith(dir, createHttpWithApi({ api: { data: snapshot(), etag: '"1-v1"' } })).sync();
+
+		const raw = { 'expressions.md': { data: expressions(SUPPORTED_FORMAT, '(http.host eq "x")') }, 'ip-blocklist.txt': { status: 304 } };
+		await rulesWith(dir, createHttpWithApi({ api: new Error('timeout'), raw })).sync();
+
+		const http = createHttpWithApi({ api: { data: snapshot(), etag: '"1-v1"' } });
+		await rulesWith(dir, http).sync();
+		assert.deepEqual(http.calls[0].headers, {});
+		assert.equal(read(dir, 'expressions.md'), expressions());
+	});
+});

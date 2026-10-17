@@ -122,7 +122,7 @@ Part 4 references a Cloudflare Custom IP List (`ip.src in $sefinek_cf_waf`). To 
 
 
 ## 📥 How to Update
-The rules (`rules/expressions.md` and `rules/ip-blocklist.txt`) are downloaded automatically before every sync, so new rules reach you without updating the script. Each downloaded file is validated first: if it is broken or requires a newer version of the script, the last valid copy is kept and you get a warning.
+The rules (`rules/expressions.md` and `rules/ip-blocklist.txt`) are downloaded automatically before every sync from `api.sefinek.net` (with GitHub as a fallback), so new rules reach you without updating the script. The API only publishes rule files that passed validation, and it always serves the newest rules in the format your version of the script understands. Each downloaded file is validated first: if it is broken or requires a newer version of the script, the last valid copy is kept and you get a warning.
 
 The script itself is not updated automatically. When a new version is available, you will see a notification in the logs (and via email/Discord, if configured). To update, navigate to the project directory and run:
 ```bash
