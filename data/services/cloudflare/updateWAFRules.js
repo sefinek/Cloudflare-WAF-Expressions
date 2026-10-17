@@ -2,7 +2,7 @@ const { axiosCf, getRequestCfCount, getRequestScCount, getRequestAbCount } = req
 const expressionParser = require('../../scripts/parseExpressions.js');
 const syncIPList = require('./syncIPList.js');
 const { load: loadCache, save: saveCache } = require('../ruleCache.js');
-const { pull } = require('../updates.js');
+const remoteRules = require('../remoteRules.js');
 const { PHASE, MAX_EXPRESSION_LENGTH, BLOCKLIST_PATH, BLOCKLIST_DESCRIPTION, isManagedDescription, isPartDescription, passthroughRule, buildZoneExpression, getRuleCap } = require('./wafRuleset.js');
 const parseZoneScopedList = require('../../scripts/parseZoneScopedList.js');
 const ensureUserLists = require('../../scripts/ensureUserLists.js');
@@ -201,11 +201,11 @@ const updateWAFCustomRulesForZone = async (expressions, allowlistEntries, blockl
 module.exports = async () => {
 	const start = Date.now();
 
-	await pull();
+	await remoteRules.sync().catch(err => log(`Failed to sync the rule files: ${err.message}`, 3));
 	await ensureUserLists();
 
 	try {
-		const [expressions, allowlistEntries, blocklistEntries] = await Promise.all([expressionParser(), parseZoneScopedList(ALLOWLIST_PATH), parseZoneScopedList(BLOCKLIST_PATH)]);
+		const [expressions, allowlistEntries, blocklistEntries] = await Promise.all([expressionParser(remoteRules.getPath('expressions.md')), parseZoneScopedList(ALLOWLIST_PATH), parseZoneScopedList(BLOCKLIST_PATH)]);
 		if (!expressions || !Object.keys(expressions).length) return log('No expressions found.', 3);
 
 		const blocklistHostIndex = pickBlocklistHostIndex(expressions);

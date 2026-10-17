@@ -2,6 +2,7 @@ const fs = require('node:fs/promises');
 const { setTimeout: sleep } = require('node:timers/promises');
 const { axiosCf } = require('../axios.js');
 const { load: loadCache, save: saveCache } = require('../ruleCache.js');
+const remoteRules = require('../remoteRules.js');
 const fetchSniffCatIPs = require('../sniffcat.js');
 const fetchAbuseIPDBIPs = require('../abuseipdb.js');
 const log = require('../../scripts/log.js');
@@ -149,7 +150,7 @@ const readIPsFromFile = async filePath => {
 
 const readIPs = async maxListSize => {
 	const [builtinIPs, userIPs, sniffcatIPs, abuseIPDBIPs] = await Promise.all([
-		readIPsFromFile('rules/ip-blocklist.txt'),
+		readIPsFromFile(remoteRules.getPath('ip-blocklist.txt')),
 		readIPsFromFile(USER_IP_LIST_PATH),
 		fetchSniffCatIPs(),
 		fetchAbuseIPDBIPs(),

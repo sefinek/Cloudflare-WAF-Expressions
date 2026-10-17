@@ -1,5 +1,13 @@
 # Changelog
 
+## [v3.4.0] - 17.10.2026
+1. **Rules are downloaded automatically** - `rules/expressions.md` and `rules/ip-blocklist.txt` are fetched before every sync (`RULES_SOURCE_URL`, GitHub by default), so new rules no longer require updating the script. Each file is validated first; a broken file or one that requires a newer version of the script is rejected and the last valid copy is kept.
+2. Added a rules format version (`<!-- rules-format: N -->` in `rules/expressions.md`). Older installs reject a newer format instead of breaking.
+3. **Removed automatic script updates** (`git pull` + restart). You are now notified when a new version is available; update with `npm run update`. `GIT_PULL_CRON` is no longer used and logs a warning if still set.
+4. `NODE_ENV` is no longer required.
+5. Removed the `simple-git` dependency.
+
+
 ## [v3.3.2] - 21.09.2026
 1. Added [data/tools/probeWAF.js](data/tools/probeWAF.js).
 2. Updated the WAF expressions (21.09.2026). [#10](https://github.com/sefinek/Cloudflare-WAF-Expressions/issues/10)

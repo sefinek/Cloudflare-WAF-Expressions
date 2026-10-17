@@ -1,3 +1,4 @@
+<!-- rules-format: 1 -->
 # ☁️ Firewall Rules for Cloudflare WAF
 1. If **you use PHP**: for requests ending with `.php`, the **MANAGED CHALLENGE** event will be triggered.
     - **Using the script:** set `PHP_SUPPORT=true` in the `.env` file

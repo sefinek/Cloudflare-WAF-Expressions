@@ -59,7 +59,7 @@ const parseExpressions = text => {
 	});
 };
 
-module.exports = async () => {
+module.exports = async (filePath = 'rules/expressions.md') => {
 	// Validate environment variables
 	const phpSupport = process.env.PHP_SUPPORT || 'false';
 	if (!['true', 'false'].includes(phpSupport)) log('Invalid PHP_SUPPORT value. Must be "true" or "false"', 2);
@@ -70,7 +70,7 @@ module.exports = async () => {
 
 	try {
 		// Extract expressions
-		let data = await fs.readFile('rules/expressions.md', 'utf8');
+		let data = await fs.readFile(filePath, 'utf8');
 
 		// Replace hardcoded IP list name with the configured one
 		const listName = process.env.CF_IP_BLOCKLIST_NAME || process.env.CF_IP_LIST_NAME || 'sefinek_cf_waf';
@@ -99,10 +99,12 @@ module.exports = async () => {
 			blocks: parsed.length,
 		};
 
-		log(`Parsed ${result._meta.blocks} expression blocks (rules version: ${result._meta.version}, length: ${result._meta.totalLength} characters); PHP support: ${phpSupport === 'true' ? 'Enabled' : 'Disabled'}; WordPress support: ${wpSupport === 'true' ? 'Enabled' : 'Disabled'}`, 1);
+		log(`Parsed ${result._meta.blocks} expression blocks from ${filePath} (rules version: ${result._meta.version}, length: ${result._meta.totalLength} characters); PHP support: ${phpSupport === 'true' ? 'Enabled' : 'Disabled'}; WordPress support: ${wpSupport === 'true' ? 'Enabled' : 'Disabled'}`, 1);
 		return Object.keys(result).length ? result : null;
 	} catch (err) {
 		log(`Error reading the file: ${err.message}`, 3);
 		return null;
 	}
 };
+
+module.exports.parse = parseExpressions;

@@ -71,7 +71,6 @@ There's no need to add them manually, as the script takes care of everything for
    cp .env.example .env
    ```
 4. Open the `.env` file and configure the following variables:
-   - Set `NODE_ENV` to `production`
    - Paste your Account API token (Account → Manage account → Account API tokens) in place of `CF_API_TOKEN`. The token needs the following permissions:
      ![Where to create the Account API token](data/images/api-token-location.png)
      ![Required API token permissions](data/images/api-token-permissions.png)
@@ -123,7 +122,9 @@ Part 4 references a Cloudflare Custom IP List (`ip.src in $sefinek_cf_waf`). To 
 
 
 ## 📥 How to Update
-To update an existing installation, navigate to the project directory and run:
+The rules (`rules/expressions.md` and `rules/ip-blocklist.txt`) are downloaded automatically before every sync, so new rules reach you without updating the script. Each downloaded file is validated first: if it is broken or requires a newer version of the script, the last valid copy is kept and you get a warning.
+
+The script itself is not updated automatically. When a new version is available, you will see a notification in the logs (and via email/Discord, if configured). To update, navigate to the project directory and run:
 ```bash
 npm run update
 ```
