@@ -9,6 +9,7 @@ const {
 	buildZoneExpression,
 	getRuleCap,
 	BLOCKLIST_DESCRIPTION,
+	CHALLENGELIST_DESCRIPTION,
 } = require('../data/services/cloudflare/wafRuleset.js');
 
 describe('isPartDescription', () => {
@@ -36,6 +37,7 @@ describe('isManagedDescription', () => {
 
 	test('recognizes the blocklist description', () => {
 		assert.equal(isManagedDescription(BLOCKLIST_DESCRIPTION), true);
+		assert.equal(isManagedDescription(CHALLENGELIST_DESCRIPTION), true);
 	});
 
 	test('does not flag unrelated user rules', () => {

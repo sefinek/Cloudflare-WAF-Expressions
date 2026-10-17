@@ -1,5 +1,9 @@
 # Changelog
 
+## [v3.5.0] - 17.10.2026
+1. **`rules/my-lists/challengelist.txt` (BETA)** - expressions that get a Managed Challenge, synced alongside the managed Part 1-5 rules. Works like `blocklist.txt`: on plans with no spare rule slot (e.g. Free) it is merged into the Managed Challenge Part, otherwise it gets its own rule. Supports `[zone.com]` / `[!zone.com]` prefixes and respects `allowlist.txt`.
+
+
 ## [v3.4.0] - 17.10.2026
 1. **Rules are downloaded automatically** - `rules/expressions.md` and `rules/ip-blocklist.txt` are fetched before every sync (`RULES_SOURCE_URL`, GitHub by default), so new rules no longer require updating the script. Each file is validated first; a broken file or one that requires a newer version of the script is rejected and the last valid copy is kept.
 2. Added a rules format version (`<!-- rules-format: N -->` in `rules/expressions.md`). Older installs reject a newer format instead of breaking.

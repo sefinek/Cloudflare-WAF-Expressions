@@ -3,7 +3,7 @@ const expressionParser = require('../../scripts/parseExpressions.js');
 const syncIPList = require('./syncIPList.js');
 const { load: loadCache, save: saveCache } = require('../ruleCache.js');
 const remoteRules = require('../remoteRules.js');
-const { PHASE, MAX_EXPRESSION_LENGTH, BLOCKLIST_PATH, BLOCKLIST_DESCRIPTION, isManagedDescription, isPartDescription, passthroughRule, buildZoneExpression, getRuleCap } = require('./wafRuleset.js');
+const { PHASE, MAX_EXPRESSION_LENGTH, CUSTOM_LISTS, isManagedDescription, isPartDescription, passthroughRule, buildZoneExpression, getRuleCap } = require('./wafRuleset.js');
 const parseZoneScopedList = require('../../scripts/parseZoneScopedList.js');
 const ensureUserLists = require('../../scripts/ensureUserLists.js');
 const log = require('../../scripts/log.js');
@@ -16,15 +16,15 @@ if (!CF_API_TOKEN) throw new Error('CF_API_TOKEN is missing. Check the .env file
 const ALLOWLIST_PATH = 'rules/my-lists/allowlist.txt';
 
 // Fallback for plans with no spare rule slot (Free/Pro with Part 1-5 already using the whole quota, or any
-// zone with enough manual dashboard rules to fill it): merge the blocklist into whichever "block" action Part
-// has the most headroom, instead of adding a rule. Picking the smallest Part leaves the most room under the
-// per-rule character limit.
-const pickBlocklistHostIndex = expressions => {
+// zone with enough manual dashboard rules to fill it): merge a custom list into whichever Part with the same
+// action has the most headroom, instead of adding a rule. Picking the smallest Part leaves the most room under
+// the per-rule character limit.
+const pickHostIndex = (expressions, action) => {
 	let bestIndex = null;
 	let bestLength = Infinity;
 	for (const [indexStr, block] of Object.entries(expressions)) {
 		const index = parseInt(indexStr);
-		if (isNaN(index) || block.action !== 'block') continue;
+		if (isNaN(index) || block.action !== action) continue;
 		if (block.length < bestLength) {
 			bestLength = block.length;
 			bestIndex = index;
@@ -86,14 +86,14 @@ const normalize = rules => JSON.stringify(rules.map(r => ({
 	enabled: r.enabled !== false,
 })));
 
-const updateWAFCustomRulesForZone = async (expressions, allowlistEntries, blocklistEntries, blocklistHostIndex, zone) => {
+const updateWAFCustomRulesForZone = async (expressions, allowlistEntries, customLists, zone) => {
 	const allowlistExpression = buildZoneExpression(allowlistEntries, zone);
 	const allowlist = allowlistExpression ? `Active (${allowlistExpression.length} chars)` : 'None';
 
 	const wrap = expr => allowlistExpression ? `not (${allowlistExpression}) and (${expr})` : expr;
 
-	const blocklistExpression = buildZoneExpression(blocklistEntries, zone);
-	let blocklist = 'None';
+	// Status per custom list, e.g. { blocklist: 'None', challengelist: 'Active (...)' }
+	const lists = Object.fromEntries(customLists.map(({ list }) => [list.key, 'None']));
 	let parts = 'OK';
 
 	try {
@@ -130,45 +130,55 @@ const updateWAFCustomRulesForZone = async (expressions, allowlistEntries, blockl
 		}
 		if (skippedParts.length) parts = `Skipped (${skippedParts.join(', ')})`;
 
-		if (blocklistExpression) {
-			const ruleCap = getRuleCap(zone);
+		// Unwrapped Part expressions, so a merge always extends the current content of its host rule
+		const rawParts = new Map(Object.entries(expressions).filter(([index]) => !isNaN(parseInt(index))).map(([index, block]) => [parseInt(index), block.expressions]));
+		const ruleCap = getRuleCap(zone);
+
+		for (const { list, entries, hostIndex } of customLists) {
+			const listExpression = buildZoneExpression(entries, zone);
+			if (!listExpression) continue;
+
+			const label = `Custom ${list.key} (${list.path})`;
 			const hasSpareSlot = partRules.length + userRules.length < ruleCap;
 
 			if (hasSpareSlot) {
-				const expression = wrap(blocklistExpression);
+				const expression = wrap(listExpression);
 				if (expression.length > MAX_EXPRESSION_LENGTH) {
-					blocklist = `Skipped (${expression.length}/${MAX_EXPRESSION_LENGTH} chars)`;
-					log(`Custom blocklist for ${zone.name} would be ${expression.length} characters as its own rule, exceeding the ${MAX_EXPRESSION_LENGTH}-character limit per rule. Skipping it for this zone - trim rules/my-lists/blocklist.txt to fit.`, 2);
-				} else {
-					const match = existingManagedRules.find(r => r.description === BLOCKLIST_DESCRIPTION);
-					partRules.push({
-						...(match?.id ? { id: match.id } : {}),
-						action: 'block',
-						expression,
-						description: BLOCKLIST_DESCRIPTION,
-						enabled: true,
-					});
-					blocklist = `Active (own rule, ${expression.length} chars)`;
+					lists[list.key] = `Skipped (${expression.length}/${MAX_EXPRESSION_LENGTH} chars)`;
+					log(`${label} for ${zone.name} would be ${expression.length} characters as its own rule, exceeding the ${MAX_EXPRESSION_LENGTH}-character limit per rule. Skipping it for this zone - trim ${list.path} to fit.`, 2);
+					continue;
 				}
-			} else {
-				const hostIndex = blocklistHostIndex;
-				const host = hostIndex !== null ? partRules.find(r => isPartDescription(r.description, hostIndex)) : null;
 
-				if (!host) {
-					blocklist = 'Skipped (no block-action Part rule available)';
-					log(`Custom blocklist for ${zone.name} could not be merged - no "block" action Part rule found in rules/expressions.md.`, 2);
-				} else {
-					const rawPart = expressions[hostIndex].expressions;
-					const merged = wrap(`${rawPart} or (${blocklistExpression})`);
-					if (merged.length > MAX_EXPRESSION_LENGTH) {
-						blocklist = `Skipped (${merged.length}/${MAX_EXPRESSION_LENGTH} chars)`;
-						log(`Custom blocklist for ${zone.name} would push "${host.description}" to ${merged.length} characters, exceeding the ${MAX_EXPRESSION_LENGTH}-character limit per rule. Skipping it for this zone - trim rules/my-lists/blocklist.txt (remove entries or scope some to other zones with a [zone] prefix) to fit. This zone's plan has no spare rule slot (${partRules.length + userRules.length}/${ruleCap} used), so it can't get its own rule either.`, 2);
-					} else {
-						host.expression = merged;
-						blocklist = `Active (merged into "${host.description}", ${merged.length} chars)`;
-					}
-				}
+				const match = existingManagedRules.find(r => r.description === list.description);
+				partRules.push({
+					...(match?.id ? { id: match.id } : {}),
+					action: list.action,
+					expression,
+					description: list.description,
+					enabled: true,
+				});
+				lists[list.key] = `Active (own rule, ${expression.length} chars)`;
+				continue;
 			}
+
+			const host = hostIndex !== null ? partRules.find(r => isPartDescription(r.description, hostIndex)) : null;
+			if (!host) {
+				lists[list.key] = `Skipped (no ${list.action} Part rule available)`;
+				log(`${label} for ${zone.name} could not be merged - no "${list.action}" action Part rule found in rules/expressions.md.`, 2);
+				continue;
+			}
+
+			const raw = `${rawParts.get(hostIndex)} or (${listExpression})`;
+			const merged = wrap(raw);
+			if (merged.length > MAX_EXPRESSION_LENGTH) {
+				lists[list.key] = `Skipped (${merged.length}/${MAX_EXPRESSION_LENGTH} chars)`;
+				log(`${label} for ${zone.name} would push "${host.description}" to ${merged.length} characters, exceeding the ${MAX_EXPRESSION_LENGTH}-character limit per rule. Skipping it for this zone - trim ${list.path} (remove entries or scope some to other zones with a [zone] prefix) to fit. This zone's plan has no spare rule slot (${partRules.length + userRules.length}/${ruleCap} used), so it can't get its own rule either.`, 2);
+				continue;
+			}
+
+			rawParts.set(hostIndex, raw);
+			host.expression = merged;
+			lists[list.key] = `Active (merged into "${host.description}", ${merged.length} chars)`;
 		}
 
 		const desired = [
@@ -176,7 +186,7 @@ const updateWAFCustomRulesForZone = async (expressions, allowlistEntries, blockl
 			...partRules,
 		];
 
-		if (normalize(current) === normalize(desired)) return { status: 'Up to date', allowlist, blocklist, parts, details: '-' };
+		if (normalize(current) === normalize(desired)) return { status: 'Up to date', allowlist, lists, parts, details: '-' };
 
 		const { data } = await axiosCf.put(`/zones/${zone.id}/rulesets/phases/${PHASE}/entrypoint`, { rules: desired });
 		if (!data.success) throw new Error(`Update failed. ${JSON.stringify(data?.errors)}`);
@@ -184,7 +194,7 @@ const updateWAFCustomRulesForZone = async (expressions, allowlistEntries, blockl
 		return {
 			status: 'Updated',
 			allowlist,
-			blocklist,
+			lists,
 			parts,
 			details: `${partRules.length} managed, ${userRules.length} user ${pluralize(userRules.length, 'rule')} preserved`,
 		};
@@ -194,7 +204,7 @@ const updateWAFCustomRulesForZone = async (expressions, allowlistEntries, blockl
 			? 'Unknown IP list (run: node data/tools/deleteWAFRules.js)'
 			: cfErrors?.length ? cfErrors.map(e => e.message).join('; ') : err.message;
 
-		return { status: 'Error', allowlist, blocklist, parts, details };
+		return { status: 'Error', allowlist, lists, parts, details };
 	}
 };
 
@@ -205,10 +215,14 @@ module.exports = async () => {
 	await ensureUserLists();
 
 	try {
-		const [expressions, allowlistEntries, blocklistEntries] = await Promise.all([expressionParser(remoteRules.getPath('expressions.md')), parseZoneScopedList(ALLOWLIST_PATH), parseZoneScopedList(BLOCKLIST_PATH)]);
+		const [expressions, allowlistEntries, ...customListEntries] = await Promise.all([
+			expressionParser(remoteRules.getPath('expressions.md')),
+			parseZoneScopedList(ALLOWLIST_PATH),
+			...CUSTOM_LISTS.map(list => parseZoneScopedList(list.path)),
+		]);
 		if (!expressions || !Object.keys(expressions).length) return log('No expressions found.', 3);
 
-		const blocklistHostIndex = pickBlocklistHostIndex(expressions);
+		const customLists = CUSTOM_LISTS.map((list, i) => ({ list, entries: customListEntries[i], hostIndex: pickHostIndex(expressions, list.action) }));
 
 		await syncIPList();
 
@@ -222,16 +236,17 @@ module.exports = async () => {
 		const nameWidth = Math.max(...filteredZones.map(z => z.name.length));
 		let failed = 0;
 		for (const zone of filteredZones) {
-			const result = await updateWAFCustomRulesForZone(expressions, allowlistEntries, blocklistEntries, blocklistHostIndex, zone);
+			const result = await updateWAFCustomRulesForZone(expressions, allowlistEntries, customLists, zone);
 			if (result.status === 'Error') failed++;
 
 			const detailsSuffix = result.details !== '-' ? ` - ${result.details}` : '';
 			const allowlistSuffix = result.allowlist !== 'None' ? ` [allowlist: ${result.allowlist}]` : '';
-			const blocklistSuffix = result.blocklist !== 'None' ? ` [blocklist: ${result.blocklist}]` : '';
+			const listStatuses = Object.entries(result.lists).filter(([, status]) => status !== 'None');
+			const listsSuffix = listStatuses.map(([key, status]) => ` [${key}: ${status}]`).join('');
 			const partsSuffix = result.parts !== 'OK' ? ` [parts: ${result.parts}]` : '';
-			const hasWarning = result.blocklist.startsWith('Skipped') || result.parts.startsWith('Skipped');
+			const hasWarning = listStatuses.some(([, status]) => status.startsWith('Skipped')) || result.parts.startsWith('Skipped');
 			const type = result.status === 'Error' ? 3 : hasWarning ? 2 : result.status === 'Updated' ? 1 : 0;
-			const message = `${zone.name.padEnd(nameWidth)} : ${result.status}${detailsSuffix}${allowlistSuffix}${blocklistSuffix}${partsSuffix}`;
+			const message = `${zone.name.padEnd(nameWidth)} : ${result.status}${detailsSuffix}${allowlistSuffix}${listsSuffix}${partsSuffix}`;
 			log(message, type);
 
 			if (type === 1) log.notify(message);
@@ -256,3 +271,6 @@ module.exports = async () => {
 		log(`WAF update failed! ${err.message}${detail ? ` - ${detail}` : ` - ${cause.message}`} - after ${formatDuration(Date.now() - start)}`, 3);
 	}
 };
+
+module.exports.updateWAFCustomRulesForZone = updateWAFCustomRulesForZone;
+module.exports.pickHostIndex = pickHostIndex;

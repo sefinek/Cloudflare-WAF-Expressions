@@ -7,7 +7,16 @@ const MAX_EXPRESSION_LENGTH = 4096;
 
 const BLOCKLIST_PATH = 'rules/my-lists/blocklist.txt';
 const BLOCKLIST_DESCRIPTION = `🚫 Custom Blocklist (${BLOCKLIST_PATH})`;
-const isManagedDescription = desc => PART_REGEX.test(desc) || desc === BLOCKLIST_DESCRIPTION;
+const CHALLENGELIST_PATH = 'rules/my-lists/challengelist.txt';
+const CHALLENGELIST_DESCRIPTION = `🧩 Custom Challenge List (${CHALLENGELIST_PATH})`;
+
+// User lists synced as an extra rule, or merged into a Part with the same action when the zone has no spare rule slot
+const CUSTOM_LISTS = [
+	{ key: 'blocklist', path: BLOCKLIST_PATH, description: BLOCKLIST_DESCRIPTION, action: 'block' },
+	{ key: 'challengelist', path: CHALLENGELIST_PATH, description: CHALLENGELIST_DESCRIPTION, action: 'managed_challenge' },
+];
+
+const isManagedDescription = desc => PART_REGEX.test(desc) || CUSTOM_LISTS.some(list => list.description === desc);
 const isPartDescription = (desc, index) => new RegExp(`Part ${index}\\b`).test(desc || '');
 
 // Cloudflare caps the number of rules in the http_request_firewall_custom phase per plan.
@@ -52,4 +61,4 @@ const buildZoneExpression = (entries, zone) => {
 		: applicable.map(e => `(${e.expression})`).join(' or ');
 };
 
-module.exports = { PHASE, PART_REGEX, MAX_EXPRESSION_LENGTH, BLOCKLIST_PATH, BLOCKLIST_DESCRIPTION, isManagedDescription, isPartDescription, passthroughRule, buildZoneExpression, getRuleCap };
+module.exports = { PHASE, PART_REGEX, MAX_EXPRESSION_LENGTH, BLOCKLIST_PATH, BLOCKLIST_DESCRIPTION, CHALLENGELIST_PATH, CHALLENGELIST_DESCRIPTION, CUSTOM_LISTS, isManagedDescription, isPartDescription, passthroughRule, buildZoneExpression, getRuleCap };

@@ -28,7 +28,7 @@ const FILES = [
 		hint: 'expressions to bypass WAF rules',
 		template: `# === Cloudflare WAF Allowlist ===
 # Each non-comment, non-empty line must be a valid Cloudflare rule expression.
-# Lines are combined with OR. If any line matches, all managed WAF rules (Part 1-5, plus your blocklist.txt rule if you have one) are skipped for that request.
+# Lines are combined with OR. If any line matches, all managed WAF rules (Part 1-5, plus your blocklist.txt and challengelist.txt rules if you have them) are skipped for that request.
 # User rules added manually in the Cloudflare dashboard are NOT affected.
 # This file is yours. It will never be overwritten by git pulls or project updates.
 #
@@ -81,6 +81,29 @@ const FILES = [
 #
 #   Block for all zones except a specific one:
 #     [!sniffcat.com] http.user_agent contains "SomeBadBot"
+#
+# Leave this file empty (only comments) to disable this rule entirely.
+`,
+	},
+	{
+		name: 'challengelist.txt',
+		label: 'challengelist.txt',
+		hint: 'expressions to always challenge (Managed Challenge), synced alongside the managed Part 1-5 rules',
+		template: `# === Cloudflare WAF Challenge List [BETA] ===
+# Works exactly like blocklist.txt, but matching requests get a Managed Challenge instead of being blocked.
+# Each non-comment, non-empty line must be a valid Cloudflare rule expression. Lines are combined with OR.
+# Also respects allowlist.txt: a request matching the allowlist bypasses this rule too.
+# This file is yours. It will never be overwritten by git pulls or project updates.
+#
+# Without a spare rule slot (e.g. on the Free plan, where Part 1-5 use all 5), the content is merged into the
+# "Managed Challenge" Part rule. The ${MAX_EXPRESSION_LENGTH}-character limit per rule expression applies, just like for blocklist.txt.
+#
+# Examples:
+#   Challenge unverified bots on a path, only for a specific zone (by name or zone ID):
+#     [example.com] starts_with(lower(http.request.uri.path), "/search") and not cf.client.bot
+#
+#   Challenge a country for all zones except a specific one:
+#     [!sniffcat.com] ip.src.country eq "XX"
 #
 # Leave this file empty (only comments) to disable this rule entirely.
 `,
