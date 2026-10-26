@@ -224,11 +224,6 @@
 > **Action:** Block
 ```
 (http.user_agent wildcard "*android 8*") or
-(http.user_agent wildcard "*chrome/121*") or
-(http.user_agent wildcard "*chrome/122*") or
-(http.user_agent wildcard "*chrome/123*") or
-(http.user_agent wildcard "*chrome/124*") or
-(http.user_agent wildcard "*chrome/125*") or
 (http.user_agent wildcard "*chrome/17*") or
 (http.user_agent wildcard "*chrome/30*") or
 (http.user_agent wildcard "*chrome/31*") or
@@ -324,5 +319,5 @@
 ```
 
 <div align="right">
-    <h4>📥 » Last update: 15.10.2026 (DD.MM.YYYY)</h4>
+    <h4>📥 » Last update: 26.10.2026 (DD.MM.YYYY)</h4>
 </div>
