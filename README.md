@@ -83,6 +83,7 @@ There's no need to add them manually, as the script takes care of everything for
      ![Cloudflare IP list with synced entries](data/images/cloudflare-ip-list.png)
    - Set `PHP_SUPPORT` to `true` if your website uses PHP (removes the Managed Challenge rule for `.php` files)
    - Set `WORDPRESS_SUPPORT` to `true` if your website runs WordPress (removes the Managed Challenge rules for `/wp-admin`, `/wp-content` and `/wp-includes` paths so the admin panel, themes, plugins, CSS and images load correctly; also set `PHP_SUPPORT=true`)
+   - To enable PHP or WordPress only for selected domains, leave the flags at `false` and list the zones in `PHP_SUPPORT_ZONES` / `WORDPRESS_SUPPORT_ZONES` (comma-separated, e.g. `example.com,example.org`). A zone gets the support if the global flag is `true` or the zone is on the list
    - Set `SNIFFCAT_API_TOKEN` to include dynamic malicious IPs from [SniffCat](https://sniffcat.com) (optional, but highly recommended)
    - Set `ABUSEIPDB_API_KEY` to include dynamic malicious IPs from [AbuseIPDB](https://www.abuseipdb.com) (optional, but highly recommended)
    ```bash

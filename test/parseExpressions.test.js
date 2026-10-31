@@ -84,6 +84,16 @@ describe('parseExpressions', () => {
 		});
 	}
 
+	test('overrides take precedence over the environment flags', async () => {
+		const all = joinExpressions(await run());
+		assert.ok(all.includes('.php'));
+		process.env.PHP_SUPPORT = 'false';
+		process.env.WORDPRESS_SUPPORT = 'false';
+		const overridden = joinExpressions(await parseExpressions('rules/expressions.md', { php: true, wp: true }));
+		assert.ok(!overridden.includes('.php*'));
+		assert.ok(!overridden.includes('/wp-admin'));
+	});
+
 	test('CF_IP_BLOCKLIST_NAME is injected into the expressions', async () => {
 		const all = joinExpressions(await run({ list: 'custom_list_42' }));
 		assert.ok(all.includes('$custom_list_42'));

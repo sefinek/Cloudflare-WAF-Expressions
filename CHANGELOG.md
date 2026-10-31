@@ -1,5 +1,10 @@
 # Changelog
 
+## [v3.7.0] - 31.10.2026
+1. **Per-zone PHP and WordPress support** - new `PHP_SUPPORT_ZONES` and `WORDPRESS_SUPPORT_ZONES` variables (comma-separated zone names). A zone gets the support if the global flag is `true` or the zone is on the list, so you no longer need separate instances for domains with and without PHP/WordPress.
+2. `WORDPRESS_SUPPORT=true` now also removes the Managed Challenge rule for `/wp-admin`, which previously blocked the admin panel and its AJAX/REST requests.
+
+
 ## [v3.6.0] - 17.10.2026
 1. The rules are now downloaded from `https://api.sefinek.net/api/v2/cloudflare-waf/rules` (`RULES_API_URL`), with raw GitHub (`RULES_SOURCE_URL`) as a fallback. The API publishes only validated snapshots and serves the newest rules in the format your version supports, so a broken commit never reaches your zones and older versions keep receiving updates. Both files come from one snapshot and are verified with SHA-256.
 

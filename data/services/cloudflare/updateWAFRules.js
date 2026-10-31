@@ -15,6 +15,9 @@ if (!CF_API_TOKEN) throw new Error('CF_API_TOKEN is missing. Check the .env file
 
 const ALLOWLIST_PATH = 'rules/my-lists/allowlist.txt';
 
+const parseZoneNames = value => new Set((value || '').split(',').map(s => s.trim().toLowerCase()).filter(Boolean));
+const isGlobalFlag = flag => (process.env[flag] || 'false').toLowerCase() === 'true';
+
 // Fallback for plans with no spare rule slot (Free/Pro with Part 1-5 already using the whole quota, or any
 // zone with enough manual dashboard rules to fill it): merge a custom list into whichever Part with the same
 // action has the most headroom, instead of adding a rule. Picking the smallest Part leaves the most room under
@@ -215,14 +218,29 @@ module.exports = async () => {
 	await ensureUserLists();
 
 	try {
-		const [expressions, allowlistEntries, ...customListEntries] = await Promise.all([
-			expressionParser(remoteRules.getPath('expressions.md')),
+		const [allowlistEntries, ...customListEntries] = await Promise.all([
 			parseZoneScopedList(ALLOWLIST_PATH),
 			...CUSTOM_LISTS.map(list => parseZoneScopedList(list.path)),
 		]);
-		if (!expressions || !Object.keys(expressions).length) return log('No expressions found.', 3);
 
-		const customLists = CUSTOM_LISTS.map((list, i) => ({ list, entries: customListEntries[i], hostIndex: pickHostIndex(expressions, list.action) }));
+		const phpZones = parseZoneNames(process.env.PHP_SUPPORT_ZONES);
+		const wpZones = parseZoneNames(process.env.WORDPRESS_SUPPORT_ZONES);
+
+		// One parsed rule set per PHP/WordPress flag combination, since zones can differ in their support flags
+		const variants = new Map();
+		const getVariant = async ({ php, wp }) => {
+			const key = `${php}:${wp}`;
+			if (variants.has(key)) return variants.get(key);
+
+			const expressions = await expressionParser(remoteRules.getPath('expressions.md'), { php, wp });
+			const variant = expressions && Object.keys(expressions).length
+				? { expressions, customLists: CUSTOM_LISTS.map((list, i) => ({ list, entries: customListEntries[i], hostIndex: pickHostIndex(expressions, list.action) })) }
+				: null;
+			variants.set(key, variant);
+			return variant;
+		};
+
+		if (!await getVariant({ php: isGlobalFlag('PHP_SUPPORT'), wp: isGlobalFlag('WORDPRESS_SUPPORT') })) return log('No expressions found.', 3);
 
 		await syncIPList();
 
@@ -236,7 +254,8 @@ module.exports = async () => {
 		const nameWidth = Math.max(...filteredZones.map(z => z.name.length));
 		let failed = 0;
 		for (const zone of filteredZones) {
-			const result = await updateWAFCustomRulesForZone(expressions, allowlistEntries, customLists, zone);
+			const variant = await getVariant({ php: isGlobalFlag('PHP_SUPPORT') || phpZones.has(zone.name.toLowerCase()), wp: isGlobalFlag('WORDPRESS_SUPPORT') || wpZones.has(zone.name.toLowerCase()) });
+			const result = await updateWAFCustomRulesForZone(variant.expressions, allowlistEntries, variant.customLists, zone);
 			if (result.status === 'Error') failed++;
 
 			const detailsSuffix = result.details !== '-' ? ` - ${result.details}` : '';
