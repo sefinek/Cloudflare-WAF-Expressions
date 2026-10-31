@@ -82,7 +82,7 @@ There's no need to add them manually, as the script takes care of everything for
    - Set `CF_IP_BLOCKLIST_NAME` to a custom name for the managed IP list, leave the default (`sefinek_cf_waf`), or leave it empty to disable IP list synchronization entirely
      ![Cloudflare IP list with synced entries](data/images/cloudflare-ip-list.png)
    - Set `PHP_SUPPORT` to `true` if your website uses PHP (removes the Managed Challenge rule for `.php` files)
-   - Set `WORDPRESS_SUPPORT` to `true` if your website runs WordPress (removes the Managed Challenge rules for `/wp-content` and `/wp-includes` paths so themes, plugins, CSS and images load correctly; also set `PHP_SUPPORT=true`)
+   - Set `WORDPRESS_SUPPORT` to `true` if your website runs WordPress (removes the Managed Challenge rules for `/wp-admin`, `/wp-content` and `/wp-includes` paths so the admin panel, themes, plugins, CSS and images load correctly; also set `PHP_SUPPORT=true`)
    - Set `SNIFFCAT_API_TOKEN` to include dynamic malicious IPs from [SniffCat](https://sniffcat.com) (optional, but highly recommended)
    - Set `ABUSEIPDB_API_KEY` to include dynamic malicious IPs from [AbuseIPDB](https://www.abuseipdb.com) (optional, but highly recommended)
    ```bash

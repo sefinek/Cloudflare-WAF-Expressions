@@ -55,11 +55,11 @@ describe('parseExpressions', () => {
 		});
 	}
 
-	test('WORDPRESS_SUPPORT removes wp-content/wp-includes but keeps wp-admin', async () => {
+	test('WORDPRESS_SUPPORT removes wp-admin, wp-content and wp-includes', async () => {
 		const all = joinExpressions(await run({ php: 'true', wp: 'true' }));
 		assert.ok(!all.includes('/wp-content'));
 		assert.ok(!all.includes('/wp-includes'));
-		assert.ok(all.includes('/wp-admin'));
+		assert.ok(!all.includes('/wp-admin'));
 	});
 
 	for (const flags of FLAG_COMBINATIONS) {
@@ -67,8 +67,8 @@ describe('parseExpressions', () => {
 			const baseline = await run();
 			const result = await run(flags);
 			const phpClause = '(url_decode(http.request.uri.path, "r") wildcard "*.php*" and not cf.client.bot)';
-			const wpClauses = ['content', 'includes'].map(directory =>
-				`(url_decode(http.request.uri.path, "r") wildcard "*/wp-${directory}*" and not cf.client.bot)`);
+			const wpClauses = ['admin', 'content', 'includes'].map(directory =>
+				`(url_decode(http.request.uri.path, "r") wildcard "*/wp-${directory}*"${directory === 'admin' ? '' : ' and not cf.client.bot'})`);
 			const all = joinExpressions(baseline);
 			for (const clause of [phpClause, ...wpClauses]) assert.ok(all.includes(clause), clause);
 
@@ -80,7 +80,7 @@ describe('parseExpressions', () => {
 				}
 				assert.deepEqual(result[i], { ...baseline[i], expressions: expected, length: expected.length });
 			}
-			assert.ok(joinExpressions(result).includes('(url_decode(http.request.uri.path, "r") wildcard "*/wp-admin*")'));
+			assert.equal(joinExpressions(result).includes(wpClauses[0]), flags.wp !== 'true');
 		});
 	}
 
