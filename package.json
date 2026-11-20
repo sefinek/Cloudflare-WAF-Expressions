@@ -24,7 +24,7 @@
     "axios": "^1.21.1",
     "axios-retry": "^4.5.0",
     "cron": "^4.4.0",
-    "nodemailer": "^10.6.0"
+    "nodemailer": "^10.6.1"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
