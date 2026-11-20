@@ -12,11 +12,12 @@ module.exports = {
 
 		// Application restart policy settings
 		wait_ready: true,
+		listen_timeout: 30000,
+		kill_timeout: 10000,
 		autorestart: true,
 		max_restarts: 10,
-		min_uptime: 20000,
+		min_uptime: 30000,
 		restart_delay: 5000,
-		exp_backoff_restart_delay: 3000,
 
 		// Environment variables configuration
 		env: {
