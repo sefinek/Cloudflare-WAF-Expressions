@@ -14,11 +14,11 @@
   "author": "Sefinek <contact@sefinek.net> (https://sefinek.net)",
   "main": "index.js",
   "scripts": {
-    "m": "ncu -u && npm install && npm update",
-    "pull": "git pull origin main",
     "lint": "eslint .",
-    "test": "node --test test/*.test.js",
+    "m": "ncu -u && npm install && npm update",
     "probe:waf": "node data/tools/probeWAF.js",
+    "pull": "git pull origin main",
+    "test": "node --test test/*.test.js",
     "update": "npm run pull && npm ci --omit=dev && pm2 restart cf-waf"
   },
   "dependencies": {
