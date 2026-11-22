@@ -4,7 +4,6 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const { isIP } = require('node:net');
 const axios = require('axios');
-const axiosRetry = require('axios-retry').default;
 const { parse: parseExpressions } = require('../scripts/parseExpressions.js');
 const log = require('../scripts/log.js');
 const { version } = require('../../package.json');
@@ -59,18 +58,13 @@ const FILES = [
 	{ name: 'ip-blocklist.txt', bundled: 'rules/ip-blocklist.txt', validate: validateBlocklist },
 ];
 
-const createHttp = () => {
-	const http = axios.create({
-		timeout: 15000,
-		maxContentLength: MAX_FILE_SIZE,
-		responseType: 'text',
-		transformResponse: [data => data],
-		headers: { 'User-Agent': `Mozilla/5.0 (compatible; Cloudflare-WAF-Expressions/${version}; +https://github.com/sefinek/Cloudflare-WAF-Expressions)` },
-	});
-
-	axiosRetry(http, { retries: 2, retryDelay: count => count * 5000 });
-	return http;
-};
+const createHttp = () => axios.create({
+	timeout: 15000,
+	maxContentLength: MAX_FILE_SIZE,
+	responseType: 'text',
+	transformResponse: [data => data],
+	headers: { 'User-Agent': `Mozilla/5.0 (compatible; Cloudflare-WAF-Expressions/${version}; +https://github.com/sefinek/Cloudflare-WAF-Expressions)` },
+});
 
 const writeAtomic = async (filePath, data) => {
 	const tmp = `${filePath}.tmp`;
