@@ -6,7 +6,7 @@ const { isIP } = require('node:net');
 const axios = require('axios');
 const { parse: parseExpressions } = require('../scripts/parseExpressions.js');
 const log = require('../scripts/log.js');
-const { version } = require('../../package.json');
+const { version, homepage } = require('../../package.json');
 
 // Rules format understood by this version of the script. Bump it only when rules/expressions.md changes in a way
 // older parsers cannot handle; such files are then rejected by older installs instead of breaking them.
@@ -63,7 +63,7 @@ const createHttp = () => axios.create({
 	maxContentLength: MAX_FILE_SIZE,
 	responseType: 'text',
 	transformResponse: [data => data],
-	headers: { 'User-Agent': `Mozilla/5.0 (compatible; Cloudflare-WAF-Expressions/${version}; +https://github.com/sefinek/Cloudflare-WAF-Expressions)` },
+	headers: { 'User-Agent': `Mozilla/5.0 (compatible; Cloudflare-WAF-Expressions/${version}; +${homepage})` },
 });
 
 const writeAtomic = async (filePath, data) => {
