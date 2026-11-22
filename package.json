@@ -16,6 +16,7 @@
   "scripts": {
     "m": "ncu -u && npm install && npm update",
     "pull": "git pull origin main",
+    "lint": "eslint .",
     "test": "node --test test/*.test.js",
     "probe:waf": "node data/tools/probeWAF.js",
     "update": "npm run pull && npm ci --omit=dev && pm2 restart cf-waf"
